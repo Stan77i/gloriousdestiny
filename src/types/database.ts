@@ -671,6 +671,7 @@ export type Database = {
           created_at: string
           delai_appro_jours: number | null
           description: string | null
+          fiche: Json
           id: string
           nom: string
           prix_fcfa: number
@@ -688,6 +689,7 @@ export type Database = {
           created_at?: string
           delai_appro_jours?: number | null
           description?: string | null
+          fiche?: Json
           id?: string
           nom: string
           prix_fcfa: number
@@ -705,6 +707,7 @@ export type Database = {
           created_at?: string
           delai_appro_jours?: number | null
           description?: string | null
+          fiche?: Json
           id?: string
           nom?: string
           prix_fcfa?: number

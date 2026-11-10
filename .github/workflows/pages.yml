@@ -1,0 +1,52 @@
+# Publie le site compilé sur GitHub Pages à chaque poussée sur main.
+# Réglage unique côté GitHub : Settings > Pages > Source = « GitHub Actions ».
+name: Publication GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Compiler
+        run: npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+          # Valeurs PUBLIQUES (envoyées au navigateur de toute façon) : URL du projet et clé
+          # publishable. Jamais de clé secrète ici ; la sécurité repose sur les règles RLS.
+          VITE_SUPABASE_URL: https://jsaggenlgszbosgjymmz.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_occKRM_8rtgHqyjtKcHIBA_WV_ToWz-
+      # Application d'une seule page : toute adresse inconnue renvoie l'application,
+      # qui affiche la bonne page (ou sa propre page 404).
+      - run: cp dist/index.html dist/404.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  publier:
+    needs: construire
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - id: deploiement
+        uses: actions/deploy-pages@v4

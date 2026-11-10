@@ -1,9 +1,33 @@
+import { z } from 'zod'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { supabase } from '@/services/supabase/client'
 
 /** Lecture du catalogue publié (la RLS ne renvoie que le contenu publié aux visiteuses). */
 
 export type Disponibilite = 'disponible' | 'bientot_epuise' | 'epuise'
+
+/**
+ * Fiche de vente (colonne `produits.fiche`). Lecture tolérante : un champ mal formé est ignoré,
+ * jamais la page entière ; une fiche vide laisse la page sur la seule description.
+ */
+const schemaFiche = z.object({
+  accroche: z.string().min(1).optional().catch(undefined),
+  histoire: z.string().min(1).optional().catch(undefined),
+  benefices: z.array(z.string().min(1)).catch([]).default([]),
+  utilisation: z.array(z.string().min(1)).catch([]).default([]),
+  conseil: z.string().min(1).optional().catch(undefined),
+  faq: z
+    .array(z.object({ q: z.string().min(1), r: z.string().min(1) }))
+    .catch([])
+    .default([]),
+  associes: z.array(z.string().min(1)).catch([]).default([]),
+})
+export type FicheProduit = z.infer<typeof schemaFiche>
+
+export function lireFiche(brute: unknown): FicheProduit {
+  const r = schemaFiche.safeParse(brute ?? {})
+  return r.success ? r.data : schemaFiche.parse({})
+}
 
 export type Variante = { id: string; sku: string; libelle: string; prix: number }
 
@@ -12,6 +36,7 @@ export type Produit = {
   slug: string
   nom: string
   description: string | null
+  fiche: FicheProduit
   type: 'perruque' | 'produit' | 'accessoire_cils'
   prix: number
   categorie: { slug: string; nom: string }
@@ -29,13 +54,14 @@ export type Service = {
 }
 
 const CHAMPS_PRODUIT =
-  'id, slug, nom, description, type, prix_fcfa, categorie:categories!inner(slug, nom), variantes(id, sku, libelle, prix_fcfa, actif)'
+  'id, slug, nom, description, fiche, type, prix_fcfa, categorie:categories!inner(slug, nom), variantes(id, sku, libelle, prix_fcfa, actif)'
 
 type LigneProduit = {
   id: string
   slug: string
   nom: string
   description: string | null
+  fiche: unknown
   type: string
   prix_fcfa: number
   categorie: { slug: string; nom: string }
@@ -54,6 +80,7 @@ function versProduit(l: LigneProduit): Produit {
     slug: l.slug,
     nom: l.nom,
     description: l.description,
+    fiche: lireFiche(l.fiche),
     type: l.type as Produit['type'],
     prix: l.prix_fcfa,
     categorie: l.categorie,

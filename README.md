@@ -60,3 +60,12 @@ supabase/
 - Le stock ne change jamais sans mouvement : seules les fonctions SQL écrivent dans `stocks`.
 - L'historique commercial n'est jamais supprimé (triggers de protection).
 - Les types de `src/types/database.ts` sont générés, jamais écrits à la main.
+
+## Publication (GitHub Pages)
+
+Le site compilé est publié automatiquement à chaque poussée sur `main` par
+`.github/workflows/pages.yml`, à l'adresse <https://stan77i.github.io/gloriousdestiny/>.
+
+Réglage à faire une seule fois sur GitHub : **Settings → Pages → Build and deployment →
+Source : « GitHub Actions »**. Sans ce réglage, la page affiche les fichiers sources bruts
+(page blanche).
