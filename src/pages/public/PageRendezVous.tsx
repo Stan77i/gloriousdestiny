@@ -148,8 +148,9 @@ export function PageRendezVous() {
         intro="Choisissez votre prestation et votre créneau : il vous est réservé aussitôt, puis l’équipe vous le confirme sur WhatsApp."
       />
 
-      <div className="grid gap-10 pb-16 lg:grid-cols-[1fr_340px] lg:gap-12">
-        <div className="flex flex-col gap-12">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-10 pb-16 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12">
+        {/* min-w-0 : la rangée de jours défile dans sa colonne au lieu d’élargir la page. */}
+        <div className="flex min-w-0 flex-col gap-12">
           <Etape numero={1} titre="La prestation">
             {services.isError ? (
               <EtatErreur
@@ -345,17 +346,18 @@ export function PageRendezVous() {
               >
                 {(a) => (
                   <div className="flex gap-2">
-                    <Selection
-                      aria-label="Indicatif"
-                      value={indicatif}
-                      onChange={(e) => {
-                        setIndicatif(e.target.value as Indicatif)
-                      }}
-                      className="w-[7.5rem] shrink-0"
-                    >
-                      <option value="+237">+237</option>
-                      <option value="+225">+225</option>
-                    </Selection>
+                    <div className="w-[7.5rem] shrink-0">
+                      <Selection
+                        aria-label="Indicatif"
+                        value={indicatif}
+                        onChange={(e) => {
+                          setIndicatif(e.target.value as Indicatif)
+                        }}
+                      >
+                        <option value="+237">+237</option>
+                        <option value="+225">+225</option>
+                      </Selection>
+                    </div>
                     <Saisie
                       {...a}
                       type="tel"
