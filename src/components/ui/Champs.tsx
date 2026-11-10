@@ -13,7 +13,7 @@ const BASE_CHAMP =
 
 type PropsChamp = {
   libelle: string
-  aide?: string
+  aide?: string | undefined
   erreur?: string | undefined
   obligatoire?: boolean
   className?: string

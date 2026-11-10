@@ -1056,7 +1056,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      vue_stock: {
+        Row: {
+          categorie: string | null
+          delai_appro_jours: number | null
+          disponible: number | null
+          libelle: string | null
+          mis_a_jour_le: string | null
+          physique: number | null
+          produit: string | null
+          produit_id: string | null
+          publie: boolean | null
+          reserve: number | null
+          seuil_alerte: number | null
+          sku: string | null
+          slug: string | null
+          statut: string | null
+          stock_securite_jours: number | null
+          variante_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       annoter_cliente: {
@@ -1073,6 +1093,24 @@ export type Database = {
       }
       confirmer_commande: { Args: { p_id: string }; Returns: Json }
       creer_commande: { Args: { p_commande: Json }; Returns: Json }
+      corriger_inventaire: {
+        Args: {
+          p_cle_idempotence: string
+          p_motif: string
+          p_quantite_comptee: number
+          p_variante_id: string
+        }
+        Returns: number
+      }
+      declarer_perte: {
+        Args: {
+          p_cle_idempotence: string
+          p_motif: string
+          p_quantite: number
+          p_variante_id: string
+        }
+        Returns: number
+      }
       disponibilite_variantes: {
         Args: { p_variante_ids: string[] }
         Returns: {
@@ -1102,6 +1140,20 @@ export type Database = {
       expedier_commande: { Args: { p_id: string }; Returns: Json }
       livrer_commande: { Args: { p_id: string }; Returns: Json }
       message_whatsapp_commande: { Args: { p_id: string }; Returns: string }
+      receptionner: { Args: { p_reception: Json }; Returns: string }
+      regler_alertes_stock: {
+        Args: {
+          p_delai_appro_jours: number
+          p_produit_id: string
+          p_seuil_alerte: number
+          p_stock_securite_jours: number
+        }
+        Returns: undefined
+      }
+      retourner_commande: {
+        Args: { p_id: string; p_lignes: Json; p_motif: string }
+        Returns: Json
+      }
       signaler_ouverture_whatsapp: {
         Args: { p_reference: string; p_telephone: string }
         Returns: boolean

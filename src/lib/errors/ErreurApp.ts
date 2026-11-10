@@ -9,6 +9,7 @@ export type CodeErreur =
   | 'stock_insuffisant'
   | 'trop_de_commandes'
   | 'transition'
+  | 'validation_admin'
   | 'configuration'
   | 'inconnue'
 
@@ -36,6 +37,8 @@ export const MESSAGES: Record<CodeErreur, string> = {
   trop_de_commandes:
     'Vous avez déjà plusieurs commandes en attente de confirmation. Notre équipe vous contacte : vous pourrez commander à nouveau ensuite.',
   transition: "Cette action n'est plus possible : la commande a changé d'état. Actualisez la page.",
+  validation_admin:
+    'Écart important : un administrateur doit valider ce recomptage (rôle admin ou propriétaire).',
   configuration: "L'application est mal configurée. Contactez l'équipe Glorious Destiny.",
   inconnue: 'Une erreur inattendue est survenue. Réessayez dans un instant.',
 }

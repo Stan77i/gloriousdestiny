@@ -217,7 +217,15 @@ export type DetailCommande = CommandeListe & {
   payeLe: string | null
   notesInternes: string | null
   whatsappOuvertLe: string | null
-  lignes: { id: string; nom: string; quantite: number; prixUnitaire: number; total: number }[]
+  lignes: {
+    id: string
+    varianteId: string
+    nom: string
+    quantite: number
+    quantiteRetournee: number
+    prixUnitaire: number
+    total: number
+  }[]
   livraison: {
     quartier: string
     adresse: string | null
@@ -253,6 +261,8 @@ type LigneDetail = LigneListe & {
   message_whatsapp_ouvert_at: string | null
   lignes: {
     id: string
+    variante_id: string
+    quantite_retournee: number
     nom_snapshot: string
     quantite: number
     prix_unitaire_snapshot_fcfa: number
@@ -292,7 +302,7 @@ export async function detailCommande(id: string): Promise<DetailCommande | null>
     .select(
       `${CHAMPS_LISTE}, devise, sous_total_fcfa, frais_livraison_fcfa, confirmee_at, annulee_at, motif_annulation,
        mode_paiement, montant_encaisse_fcfa, reference_paiement, paye_at, notes_internes, message_whatsapp_ouvert_at,
-       lignes:commande_lignes(id, nom_snapshot, quantite, prix_unitaire_snapshot_fcfa, total_ligne_fcfa),
+       lignes:commande_lignes(id, variante_id, quantite_retournee, nom_snapshot, quantite, prix_unitaire_snapshot_fcfa, total_ligne_fcfa),
        livraisons(quartier, adresse, point_de_repere, telephone, statut, motif_echec, expediee_at, livree_at, created_at),
        historique:commande_historique(id, evenement, statut_avant, statut_apres, motif, created_at)`,
     )
@@ -318,8 +328,10 @@ export async function detailCommande(id: string): Promise<DetailCommande | null>
     whatsappOuvertLe: data.message_whatsapp_ouvert_at,
     lignes: data.lignes.map((l) => ({
       id: l.id,
+      varianteId: l.variante_id,
       nom: l.nom_snapshot,
       quantite: l.quantite,
+      quantiteRetournee: l.quantite_retournee,
       prixUnitaire: l.prix_unitaire_snapshot_fcfa,
       total: l.total_ligne_fcfa,
     })),

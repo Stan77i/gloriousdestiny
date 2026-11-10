@@ -35,6 +35,7 @@ export const EVENEMENT_COMMANDE: Record<string, string> = {
   livraison: 'Colis livré',
   paiement: 'Paiement encaissé',
   note: 'Notes modifiées',
+  retour: 'Retour enregistré',
 }
 
 export const MODE_PAIEMENT: Record<'especes' | 'mobile_money', string> = {

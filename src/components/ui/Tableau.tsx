@@ -9,6 +9,8 @@ export type Colonne<T> = {
   numerique?: boolean
   /** Masquée sur petit écran (la vue carte reprend les colonnes essentielles). */
   secondaire?: boolean
+  /** Sur mobile, occupe toute la largeur de la fiche (ex. rangée d'actions). */
+  pleineLargeur?: boolean
 }
 
 /**
@@ -65,6 +67,7 @@ export function Tableau<T>({
                     i === 0 && 'col-span-2 font-semibold text-ivoire sm:col-span-1',
                     c.numerique && 'chiffres sm:text-right',
                     c.secondaire && 'sm:hidden lg:table-cell',
+                    c.pleineLargeur && 'col-span-2 sm:col-span-1',
                   )}
                 >
                   {i > 0 && (

@@ -1,12 +1,21 @@
 import { useState } from 'react'
-import { ArrowLeft, Check, MessageCircle, PackageCheck, Truck, Wallet, X } from 'lucide-react'
+import {
+  ArrowLeft,
+  Check,
+  MessageCircle,
+  PackageCheck,
+  Truck,
+  Undo2,
+  Wallet,
+  X,
+} from 'lucide-react'
 import { Link, useParams } from 'react-router'
 import { useNotifications } from '@/components/feedback/notifications/useNotifications'
 import { Alerte } from '@/components/ui/Alerte'
 import { Badge } from '@/components/ui/Badge'
 import { Bouton } from '@/components/ui/Bouton'
 import { EtatChargement, EtatErreur } from '@/components/ui/Etats'
-import { Champ, Saisie, Selection, ZoneTexte } from '@/components/ui/Champs'
+import { CaseACocher, Champ, Saisie, Selection, ZoneTexte } from '@/components/ui/Champs'
 import { Modale } from '@/components/ui/Modale'
 import { Panneau } from '@/components/ui/Panneau'
 import { classesBouton } from '@/components/ui/classesBouton'
@@ -24,6 +33,7 @@ import {
   useCommande,
   useMessageWhatsapp,
 } from '@/features/commandes-admin/requetes'
+import { useOperationStock } from '@/features/stock-admin/requetes'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterDateHeure } from '@/lib/format/date'
@@ -188,6 +198,136 @@ function ModalePaiement({
   )
 }
 
+type SaisieRetour = { quantite: string; revendable: boolean }
+
+/**
+ * Retour après livraison : par article, quantité rendue et état. Un article revendable
+ * revient en stock (mouvement « retour ») ; sinon, il est seulement tracé sur la commande.
+ */
+function ModaleRetour({ commande, onFermer }: { commande: DetailCommande; onFermer: () => void }) {
+  const operation = useOperationStock()
+  const { notifier } = useNotifications()
+  const restantes = commande.lignes.filter((l) => l.quantite - l.quantiteRetournee > 0)
+  const [saisies, setSaisies] = useState<Record<string, SaisieRetour>>(() =>
+    Object.fromEntries(restantes.map((l) => [l.id, { quantite: '0', revendable: true }])),
+  )
+  const [motif, setMotif] = useState('')
+  const [erreur, setErreur] = useState<string | null>(null)
+
+  const lignes = restantes.map((l) => {
+    const s = saisies[l.id] ?? { quantite: '0', revendable: true }
+    const q = Number.parseInt(s.quantite, 10)
+    const max = l.quantite - l.quantiteRetournee
+    return { l, s, q: Number.isInteger(q) ? q : NaN, max }
+  })
+  const choisies = lignes.filter((x) => x.q > 0)
+  const valide =
+    choisies.length > 0 &&
+    lignes.every((x) => x.s.quantite.trim() === '' || (x.q >= 0 && x.q <= x.max)) &&
+    motif.trim().length >= 3
+
+  function maj(id: string, champ: Partial<SaisieRetour>) {
+    setSaisies((s) => ({
+      ...s,
+      [id]: { ...(s[id] ?? { quantite: '0', revendable: true }), ...champ },
+    }))
+  }
+
+  return (
+    <Modale
+      ouverte
+      onFermer={onFermer}
+      titre={`Retour · ${commande.reference}`}
+      description="Articles rendus par la cliente. La commande et ses montants restent dans l’historique."
+      pied={
+        <>
+          <Bouton variante="fantome" onClick={onFermer}>
+            Annuler
+          </Bouton>
+          <Bouton
+            enCours={operation.isPending}
+            disabled={!valide}
+            onClick={() => {
+              setErreur(null)
+              operation.mutate(
+                {
+                  type: 'retour',
+                  commandeId: commande.id,
+                  motif: motif.trim(),
+                  lignes: choisies.map((x) => ({
+                    varianteId: x.l.varianteId,
+                    quantite: x.q,
+                    revendable: x.s.revendable,
+                  })),
+                },
+                {
+                  onSuccess: () => {
+                    notifier('Retour enregistré.', 'succes')
+                    onFermer()
+                  },
+                  onError: (e) => {
+                    setErreur(versErreurApp(e).message)
+                  },
+                },
+              )
+            }}
+          >
+            Enregistrer le retour
+          </Bouton>
+        </>
+      }
+    >
+      <div className="flex flex-col gap-5">
+        <ul className="flex flex-col gap-3">
+          {lignes.map(({ l, s, max }) => (
+            <li key={l.id} className="rounded-[12px] border border-filet p-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="text-sm">
+                  {l.nom}
+                  <span className="chiffres block text-[13px] text-ivoire-3">
+                    {max} retournable(s) sur {l.quantite}
+                  </span>
+                </span>
+                <span className="w-24">
+                  <Saisie
+                    aria-label={`Quantité rendue, ${l.nom}`}
+                    inputMode="numeric"
+                    value={s.quantite}
+                    onChange={(e) => {
+                      maj(l.id, { quantite: e.target.value })
+                    }}
+                  />
+                </span>
+              </div>
+              <CaseACocher
+                libelle="Revendable : remettre en stock"
+                className="mt-3"
+                checked={s.revendable}
+                onChange={(e) => {
+                  maj(l.id, { revendable: e.target.checked })
+                }}
+              />
+            </li>
+          ))}
+        </ul>
+        <Champ libelle="Motif" obligatoire>
+          {(a) => (
+            <ZoneTexte
+              {...a}
+              value={motif}
+              onChange={(e) => {
+                setMotif(e.target.value)
+              }}
+              placeholder="Ex. : teinte ne convenant pas, flacon abîmé à la livraison"
+            />
+          )}
+        </Champ>
+        {erreur && <Alerte ton="danger" titre={erreur} />}
+      </div>
+    </Modale>
+  )
+}
+
 function PanneauWhatsApp({ id, ouvertLe }: { id: string; ouvertLe: string | null }) {
   const message = useMessageWhatsapp(id)
   return (
@@ -225,7 +365,7 @@ export function PageAdminCommande() {
   const auth = useAuth()
   const { notifier } = useNotifications()
   const role = auth.statut === 'connecte' ? (auth.profil?.role ?? null) : null
-  const [modale, setModale] = useState<'annulation' | 'paiement' | null>(null)
+  const [modale, setModale] = useState<'annulation' | 'paiement' | 'retour' | null>(null)
   const [notes, setNotes] = useState<string | null>(null)
   useTitreDocument(commande.data?.reference ?? 'Commande')
 
@@ -255,6 +395,9 @@ export function PageAdminCommande() {
 
   const ventes = aRole(role, ['ventes'])
   const logistique = aRole(role, ['logistique', 'ventes'])
+  const retournable =
+    (c.statut === 'livree' || c.statut === 'retournee') &&
+    c.lignes.some((l) => l.quantite > l.quantiteRetournee)
   const encaissable =
     ['confirmee', 'expediee', 'livree'].includes(c.statut) && c.statutPaiement === 'non_paye'
 
@@ -326,6 +469,17 @@ export function PageAdminCommande() {
               Encaisser
             </Bouton>
           )}
+          {retournable && aRole(role, ['ventes', 'logistique', 'stock']) && (
+            <Bouton
+              variante="secondaire"
+              icone={<Undo2 />}
+              onClick={() => {
+                setModale('retour')
+              }}
+            >
+              Retour
+            </Bouton>
+          )}
           {(c.statut === 'nouvelle' || c.statut === 'confirmee') && ventes && (
             <Bouton
               variante="danger"
@@ -363,6 +517,11 @@ export function PageAdminCommande() {
                 >
                   <span>
                     {l.nom} <span className="chiffres text-ivoire-3">× {l.quantite}</span>
+                    {l.quantiteRetournee > 0 && (
+                      <Badge ton="danger" className="ml-2">
+                        {l.quantiteRetournee} retourné(s)
+                      </Badge>
+                    )}
                     <span className="chiffres block text-[13px] text-ivoire-3">
                       {formaterFcfa(l.prixUnitaire)} l’unité
                     </span>
@@ -537,6 +696,14 @@ export function PageAdminCommande() {
           lancer({ type: 'annuler', motif }, `${c.reference} annulée. Stock libéré.`)
         }}
       />
+      {modale === 'retour' && (
+        <ModaleRetour
+          commande={c}
+          onFermer={() => {
+            setModale(null)
+          }}
+        />
+      )}
       <ModalePaiement
         ouverte={modale === 'paiement'}
         total={c.total}

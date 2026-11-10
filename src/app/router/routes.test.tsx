@@ -6,6 +6,8 @@ import { RouterProvider } from 'react-router/dom'
 import { NotificationsProvider } from '@/components/feedback/notifications/NotificationsProvider'
 import { AuthContext, type EtatAuth, type ValeurAuth } from '@/features/auth/AuthContext'
 import { PanierProvider } from '@/features/panier/PanierProvider'
+import type * as ServiceCommandes from '@/services/commandes.service'
+import type * as ServiceStock from '@/services/stock.service'
 import { routes } from './routes'
 
 vi.mock('@/services/parametres.service', () => ({
@@ -25,8 +27,42 @@ vi.mock('@/services/catalogue.service', () => ({
   serviceParSlug: vi.fn(() => Promise.resolve(null)),
   disponibilites: vi.fn(() => Promise.resolve(new Map())),
 }))
-vi.mock('@/services/supabase/sante', () => ({
-  verifierConnexionBase: vi.fn(() => Promise.resolve({ villes: 4 })),
+vi.mock('@/services/commandes.service', async (original) => ({
+  ...(await original<typeof ServiceCommandes>()),
+  compterCommandes: vi.fn(() =>
+    Promise.resolve({
+      nouvelle: 3,
+      confirmee: 1,
+      expediee: 2,
+      livree: 0,
+      annulee: 0,
+      retournee: 0,
+    }),
+  ),
+}))
+vi.mock('@/services/stock.service', async (original) => ({
+  ...(await original<typeof ServiceStock>()),
+  listerStock: vi.fn(() =>
+    Promise.resolve([
+      {
+        varianteId: 'v1',
+        produitId: 'p1',
+        produit: 'Lace Glue',
+        libelle: 'Format standard',
+        sku: 'GLUE-STD',
+        categorie: 'produits',
+        publie: true,
+        seuilAlerte: 5,
+        delaiApproJours: null,
+        stockSecuriteJours: null,
+        physique: 4,
+        reserve: 1,
+        disponible: 3,
+        statut: 'bientot_epuise',
+        misAJourLe: null,
+      },
+    ]),
+  ),
 }))
 
 function rendre(chemin: string, etat: EtatAuth) {
@@ -89,7 +125,37 @@ describe('routes', () => {
       session: sessionFactice,
       profil: { id: 'u1', nom: 'Awa', role: 'ventes' },
     })
-    expect(await screen.findByRole('heading', { name: 'Administration' })).toBeInTheDocument()
-    expect(await screen.findByText(/4 villes desservies/)).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Bonjour Awa' })).toBeInTheDocument()
+    expect(await screen.findByText('À confirmer')).toBeInTheDocument()
+    expect(screen.queryByText('Stock à surveiller')).not.toBeInTheDocument()
+  })
+
+  it('montre les alertes de stock au rôle stock', async () => {
+    rendre('/admin', {
+      statut: 'connecte',
+      session: sessionFactice,
+      profil: { id: 'u2', nom: 'Bintou', role: 'stock' },
+    })
+    expect(await screen.findByText('Stock à surveiller')).toBeInTheDocument()
+    expect(await screen.findByText('Lace Glue')).toBeInTheDocument()
+  })
+
+  it('refuse le module stock au rôle ventes', async () => {
+    rendre('/admin/stock', {
+      statut: 'connecte',
+      session: sessionFactice,
+      profil: { id: 'u1', nom: 'Awa', role: 'ventes' },
+    })
+    expect(await screen.findByText(/pas accès/)).toBeInTheDocument()
+  })
+
+  it('ouvre le module stock au rôle stock', async () => {
+    rendre('/admin/stock', {
+      statut: 'connecte',
+      session: sessionFactice,
+      profil: { id: 'u2', nom: 'Bintou', role: 'stock' },
+    })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Stock' })).toBeInTheDocument()
+    expect(await screen.findByText('GLUE-STD')).toBeInTheDocument()
   })
 })

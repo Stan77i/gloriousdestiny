@@ -130,6 +130,19 @@ export const routes: RouteObject[] = [
               }
             },
           },
+          {
+            path: 'stock',
+            lazy: async () => {
+              const { PageAdminStock } = await import('@/pages/admin/PageAdminStock')
+              return {
+                element: (
+                  <RequireStaff roles={['stock']}>
+                    <PageAdminStock />
+                  </RequireStaff>
+                ),
+              }
+            },
+          },
           { ...routeSystemeDesign, path: 'systeme-design' },
         ],
       },
