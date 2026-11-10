@@ -1,4 +1,4 @@
-import { ArrowRight, Boxes, Inbox, Truck, TriangleAlert } from 'lucide-react'
+import { ArrowRight, Boxes, CalendarClock, Inbox, TriangleAlert, Truck } from 'lucide-react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/Badge'
 import { Squelette } from '@/components/ui/Chargeur'
@@ -8,6 +8,7 @@ import { aRole, type Role } from '@/domain/roles'
 import { useAuth } from '@/features/auth/useAuth'
 import { useCompteurs } from '@/features/commandes-admin/requetes'
 import { STATUT_STOCK } from '@/features/stock-admin/libelles'
+import { useDemandesRdv } from '@/features/rendez-vous/requetes'
 import { useStock } from '@/features/stock-admin/requetes'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
@@ -52,6 +53,28 @@ function ResumeCommandes() {
         icone={<Truck />}
       />
     </div>
+  )
+}
+
+function ResumeRendezVous() {
+  const demandes = useDemandesRdv()
+  if (demandes.isError) {
+    return (
+      <EtatErreur
+        message={versErreurApp(demandes.error).message}
+        onReessayer={() => void demandes.refetch()}
+      />
+    )
+  }
+  if (demandes.isPending) return <Squelette className="h-32 w-full" />
+  return (
+    <TuileChiffre
+      fond={demandes.data > 0 ? 'or' : 'sable'}
+      libelle="Rendez-vous à confirmer"
+      valeur={String(demandes.data)}
+      complement="réservés sur le site, à confirmer sur WhatsApp"
+      icone={<CalendarClock />}
+    />
   )
 }
 
@@ -127,6 +150,15 @@ export function PageAdminAccueil() {
             <Lien vers="/admin/commandes">Voir la file</Lien>
           </div>
           <ResumeCommandes />
+        </div>
+      )}
+      {aRole(role, ['ventes']) && (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-[17px] font-semibold">Rendez-vous</h2>
+            <Lien vers="/admin/rendez-vous">Ouvrir l’agenda</Lien>
+          </div>
+          <ResumeRendezVous />
         </div>
       )}
       {stock && <ResumeStock />}

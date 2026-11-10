@@ -9,6 +9,12 @@ const PREFIXES_METIER: [string, CodeErreur][] = [
   ['VALIDATION_ADMIN_REQUISE', 'validation_admin'],
   ['TROP_DE_COMMANDES', 'trop_de_commandes'],
   ['TRANSITION_IMPOSSIBLE', 'transition'],
+  ['CRENEAU_INDISPONIBLE', 'creneau_indisponible'],
+  ['TROP_DE_RENDEZ_VOUS', 'trop_de_rendez_vous'],
+  ['ANNULATION_TARDIVE', 'annulation_tardive'],
+  ['RDV_EXISTANTS', 'rdv_existants'],
+  ['RENDEZ_VOUS_INTROUVABLE', 'introuvable'],
+  ['SERVICE_INDISPONIBLE', 'introuvable'],
   ['PRODUIT_INDISPONIBLE', 'introuvable'],
   ['COMMANDE_INTROUVABLE', 'introuvable'],
   ['CLIENTE_INTROUVABLE', 'introuvable'],
@@ -26,7 +32,7 @@ const CODES_SQL: Record<string, CodeErreur> = {
   '23514': 'validation', // contrainte CHECK
   '23502': 'validation', // NOT NULL
   '23503': 'validation', // clé étrangère
-  '23P01': 'conflit', // contrainte d'exclusion (créneau déjà pris)
+  '23P01': 'creneau_indisponible', // contrainte d'exclusion (créneau déjà pris)
   '22023': 'validation',
   P0002: 'introuvable',
   PGRST116: 'introuvable',

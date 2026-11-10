@@ -7,6 +7,7 @@ import { NotificationsProvider } from '@/components/feedback/notifications/Notif
 import { AuthContext, type EtatAuth, type ValeurAuth } from '@/features/auth/AuthContext'
 import { PanierProvider } from '@/features/panier/PanierProvider'
 import type * as ServiceCommandes from '@/services/commandes.service'
+import type * as ServiceRdv from '@/services/rendezvous.service'
 import type * as ServiceStock from '@/services/stock.service'
 import { routes } from './routes'
 
@@ -39,6 +40,11 @@ vi.mock('@/services/commandes.service', async (original) => ({
       retournee: 0,
     }),
   ),
+}))
+vi.mock('@/services/rendezvous.service', async (original) => ({
+  ...(await original<typeof ServiceRdv>()),
+  compterDemandes: vi.fn(() => Promise.resolve(2)),
+  listerCreneaux: vi.fn(() => Promise.resolve([])),
 }))
 vi.mock('@/services/stock.service', async (original) => ({
   ...(await original<typeof ServiceStock>()),
@@ -98,6 +104,21 @@ describe('routes', () => {
     expect(await screen.findByText("Cette page n'existe pas.")).toBeInTheDocument()
   })
 
+  it('ouvre la prise de rendez-vous en ligne', async () => {
+    rendre('/rendez-vous', { statut: 'anonyme' })
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Rendez-vous' }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Réserver ce créneau/ })).toBeInTheDocument()
+  })
+
+  it('demande le téléphone pour suivre un rendez-vous', async () => {
+    rendre('/rendez-vous/RDV-2611-0001', { statut: 'anonyme' })
+    expect(
+      await screen.findByLabelText('Téléphone utilisé pour la réservation'),
+    ).toBeInTheDocument()
+  })
+
   it('affiche le panier vide', async () => {
     rendre('/panier', { statut: 'anonyme' })
     expect(await screen.findByText('Votre panier est vide')).toBeInTheDocument()
@@ -127,6 +148,7 @@ describe('routes', () => {
     })
     expect(await screen.findByRole('heading', { name: 'Bonjour Awa' })).toBeInTheDocument()
     expect(await screen.findByText('À confirmer')).toBeInTheDocument()
+    expect(await screen.findByText('Rendez-vous à confirmer')).toBeInTheDocument()
     expect(screen.queryByText('Stock à surveiller')).not.toBeInTheDocument()
   })
 

@@ -10,6 +10,10 @@ export type CodeErreur =
   | 'trop_de_commandes'
   | 'transition'
   | 'validation_admin'
+  | 'creneau_indisponible'
+  | 'trop_de_rendez_vous'
+  | 'annulation_tardive'
+  | 'rdv_existants'
   | 'configuration'
   | 'inconnue'
 
@@ -36,9 +40,18 @@ export const MESSAGES: Record<CodeErreur, string> = {
   stock_insuffisant: "Stock insuffisant pour l'un des articles.",
   trop_de_commandes:
     'Vous avez déjà plusieurs commandes en attente de confirmation. Notre équipe vous contacte : vous pourrez commander à nouveau ensuite.',
-  transition: "Cette action n'est plus possible : la commande a changé d'état. Actualisez la page.",
+  transition:
+    "Cette action n'est plus possible : la commande ou le rendez-vous a changé d'état. Actualisez la page.",
   validation_admin:
     'Écart important : un administrateur doit valider ce recomptage (rôle admin ou propriétaire).',
+  creneau_indisponible:
+    'Ce créneau vient d’être pris ou n’est plus disponible. Choisissez-en un autre.',
+  trop_de_rendez_vous:
+    'Vous avez déjà deux demandes de rendez-vous en attente. Notre équipe vous recontacte sur WhatsApp.',
+  annulation_tardive:
+    'Votre rendez-vous est trop proche pour être annulé en ligne. Prévenez-nous sur WhatsApp.',
+  rdv_existants:
+    'Des rendez-vous sont prévus ce jour-là : annulez-les (en prévenant les clientes) avant de fermer.',
   configuration: "L'application est mal configurée. Contactez l'équipe Glorious Destiny.",
   inconnue: 'Une erreur inattendue est survenue. Réessayez dans un instant.',
 }

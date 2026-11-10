@@ -15,6 +15,7 @@ import { PageProduit } from '@/pages/public/PageProduit'
 import { PageRendezVous } from '@/pages/public/PageRendezVous'
 import { PageService, PageServices } from '@/pages/public/PageServices'
 import { PageSuiviCommande } from '@/pages/public/PageSuiviCommande'
+import { PageSuiviRendezVous } from '@/pages/public/PageSuiviRendezVous'
 import { CHEMINS } from './chemins'
 import { RequireStaff } from './RequireStaff'
 
@@ -48,6 +49,7 @@ export const routes: RouteObject[] = [
           { path: CHEMINS.services, element: <PageServices /> },
           { path: `${CHEMINS.services}/:slug`, element: <PageService /> },
           { path: CHEMINS.rendezVous, element: <PageRendezVous /> },
+          { path: `${CHEMINS.rendezVous}/:reference`, element: <PageSuiviRendezVous /> },
           { path: CHEMINS.contact, element: <PageContact /> },
           { path: CHEMINS.panier, element: <PagePanier /> },
           { path: CHEMINS.commande, element: <PageCommande /> },
@@ -125,6 +127,19 @@ export const routes: RouteObject[] = [
                 element: (
                   <RequireStaff roles={['ventes']}>
                     <PageAdminCliente />
+                  </RequireStaff>
+                ),
+              }
+            },
+          },
+          {
+            path: 'rendez-vous',
+            lazy: async () => {
+              const { PageAdminRendezVous } = await import('@/pages/admin/PageAdminRendezVous')
+              return {
+                element: (
+                  <RequireStaff roles={['ventes']}>
+                    <PageAdminRendezVous />
                   </RequireStaff>
                 ),
               }

@@ -10,6 +10,8 @@ export const CHEMINS = {
   services: '/services',
   service: (slug: string) => `/services/${slug}`,
   rendezVous: '/rendez-vous',
+  reserver: (slug: string) => `/rendez-vous?service=${slug}`,
+  suiviRendezVous: (reference: string) => `/rendez-vous/${reference}`,
   contact: '/contact',
   panier: '/panier',
   commande: '/commande',

@@ -832,44 +832,71 @@ export type Database = {
       }
       rendez_vous: {
         Row: {
+          annule_at: string | null
+          annule_par: string | null
+          cle_idempotence: string | null
           cliente_id: string
+          cloture_at: string | null
+          confirme_at: string | null
           created_at: string
           debut: string
           fin: string
           id: string
+          message_whatsapp_ouvert_at: string | null
           motif_annulation: string | null
           notes: string | null
           occupe_debut: string
           occupe_fin: string
+          prix_snapshot_fcfa: number | null
+          reference: string
           service_id: string
+          service_nom_snapshot: string | null
           statut: string
           updated_at: string
         }
         Insert: {
+          annule_at?: string | null
+          annule_par?: string | null
+          cle_idempotence?: string | null
           cliente_id: string
+          cloture_at?: string | null
+          confirme_at?: string | null
           created_at?: string
           debut: string
           fin: string
           id?: string
+          message_whatsapp_ouvert_at?: string | null
           motif_annulation?: string | null
           notes?: string | null
           occupe_debut: string
           occupe_fin: string
+          prix_snapshot_fcfa?: number | null
+          reference?: string
           service_id: string
+          service_nom_snapshot?: string | null
           statut?: string
           updated_at?: string
         }
         Update: {
+          annule_at?: string | null
+          annule_par?: string | null
+          cle_idempotence?: string | null
           cliente_id?: string
+          cloture_at?: string | null
+          confirme_at?: string | null
           created_at?: string
           debut?: string
           fin?: string
           id?: string
+          message_whatsapp_ouvert_at?: string | null
           motif_annulation?: string | null
           notes?: string | null
           occupe_debut?: string
           occupe_fin?: string
+          prix_snapshot_fcfa?: number | null
+          reference?: string
           service_id?: string
+          service_nom_snapshot?: string | null
           statut?: string
           updated_at?: string
         }
@@ -887,6 +914,47 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "services"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      rendez_vous_historique: {
+        Row: {
+          auteur_id: string | null
+          created_at: string
+          evenement: string
+          id: number
+          motif: string | null
+          rendez_vous_id: string
+          statut_apres: string
+          statut_avant: string | null
+        }
+        Insert: {
+          auteur_id?: string | null
+          created_at?: string
+          evenement: string
+          id?: never
+          motif?: string | null
+          rendez_vous_id: string
+          statut_apres: string
+          statut_avant?: string | null
+        }
+        Update: {
+          auteur_id?: string | null
+          created_at?: string
+          evenement?: string
+          id?: never
+          motif?: string | null
+          rendez_vous_id?: string
+          statut_apres?: string
+          statut_avant?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'rendez_vous_historique_rendez_vous_id_fkey'
+            columns: ['rendez_vous_id']
+            isOneToOne: false
+            referencedRelation: 'rendez_vous'
+            referencedColumns: ['id']
           },
         ]
       }
@@ -1082,6 +1150,28 @@ export type Database = {
       }
     }
     Functions: {
+      annuler_rendez_vous: { Args: { p_id: string; p_motif: string }; Returns: Json }
+      annuler_rendez_vous_cliente: {
+        Args: { p_reference: string; p_telephone: string }
+        Returns: Json
+      }
+      cloturer_rendez_vous: { Args: { p_id: string; p_issue: string }; Returns: Json }
+      confirmer_rendez_vous: { Args: { p_id: string }; Returns: Json }
+      creneaux_disponibles: {
+        Args: { p_au: string; p_du: string; p_service_id: string }
+        Returns: string[]
+      }
+      fermer_journee: { Args: { p_date: string; p_motif: string }; Returns: undefined }
+      reserver_rendez_vous: { Args: { p_rdv: Json }; Returns: Json }
+      rouvrir_journee: { Args: { p_date: string }; Returns: undefined }
+      signaler_ouverture_whatsapp_rdv: {
+        Args: { p_reference: string; p_telephone: string }
+        Returns: boolean
+      }
+      suivre_rendez_vous: {
+        Args: { p_reference: string; p_telephone: string }
+        Returns: Json
+      }
       annoter_cliente: {
         Args: { p_id: string; p_notes: string }
         Returns: undefined

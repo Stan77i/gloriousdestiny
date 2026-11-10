@@ -18,7 +18,11 @@ import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterDateHeure } from '@/lib/format/date'
 import { formaterFcfa } from '@/lib/format/montant'
 import { normaliserTelephone } from '@/lib/format/telephone'
-import { suivreCommande, type ResumeCommande } from '@/services/commandes.service'
+import {
+  signalerOuvertureWhatsapp,
+  suivreCommande,
+  type ResumeCommande,
+} from '@/services/commandes.service'
 
 function Frise({ statut }: { statut: ResumeCommande['statut'] }) {
   if (statut === 'annulee' || statut === 'retournee') {
@@ -62,7 +66,14 @@ function Detail({ c, nouvelle }: { c: ResumeCommande; nouvelle: boolean }) {
             votre commande ici.
           </Alerte>
         )}
-        {c.statut === 'nouvelle' && <EnvoiWhatsApp commande={c} />}
+        {c.statut === 'nouvelle' && (
+          <EnvoiWhatsApp
+            objet="commande"
+            message={c.message_whatsapp}
+            dejaOuvert={c.message_whatsapp_ouvert_at !== null}
+            onOuverture={() => signalerOuvertureWhatsapp(c.reference, c.cliente.telephone)}
+          />
+        )}
         <section aria-labelledby="titre-avancement" className="flex flex-col gap-4">
           <h2 id="titre-avancement" className="text-[19px] font-semibold">
             Avancement

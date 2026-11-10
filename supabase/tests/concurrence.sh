@@ -36,3 +36,28 @@ else
   echo " ECHEC concurrence : succès=$succes refus=$refus stock=$etat" >&2
   exit 1
 fi
+
+# Deux réservations simultanées du MÊME créneau : une seule doit réussir
+# (la contrainte d'exclusion tranche, même si les deux ont vu le créneau libre).
+CRENEAU=$("${PSQL[@]}" -t -A -c "select min(c) from public.creneaux_disponibles((select id from public.services where slug = 'pose-de-cils'), (now() at time zone 'Africa/Douala')::date + 7, (now() at time zone 'Africa/Douala')::date + 13) c")
+reservation() {
+  "${PSQL[@]}" -t -A <<SQL 2>&1 || true
+set role anon;
+select public.reserver_rendez_vous(jsonb_build_object(
+  'cle_idempotence', 'test-concurrence-rdv-$1',
+  'service_id', (select id from public.services where slug = 'pose-de-cils'),
+  'debut', '$CRENEAU',
+  'cliente', jsonb_build_object('nom', 'Cliente $1', 'telephone', '+23769000050$1')
+)) ->> 'reference';
+SQL
+}
+reservation 1 > /tmp/gd-rdv-1 & reservation 2 > /tmp/gd-rdv-2 & wait
+succes=$(grep -lE '^RDV-' /tmp/gd-rdv-1 /tmp/gd-rdv-2 | wc -l)
+refus=$(grep -l 'CRENEAU_INDISPONIBLE' /tmp/gd-rdv-1 /tmp/gd-rdv-2 | wc -l)
+rm -f /tmp/gd-rdv-1 /tmp/gd-rdv-2
+if [ "$succes" = 1 ] && [ "$refus" = 1 ]; then
+  echo " TEST CONCURRENCE RENDEZ-VOUS PASSÉ (1 réservation acceptée, 1 refusée)"
+else
+  echo " ECHEC concurrence rendez-vous : succès=$succes refus=$refus" >&2
+  exit 1
+fi

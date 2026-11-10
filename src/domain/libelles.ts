@@ -50,3 +50,15 @@ export const ETAPES_COMMANDE: { statut: StatutCommande; libelle: string }[] = [
   { statut: 'expediee', libelle: 'Expédiée' },
   { statut: 'livree', libelle: 'Livrée' },
 ]
+
+/** Statuts d'un rendez-vous (vocabulaire de la cliente et de l'équipe). */
+export const STATUT_RDV: Record<
+  'demande' | 'confirme' | 'annule' | 'termine' | 'absent',
+  { libelle: string; ton: TonBadge }
+> = {
+  demande: { libelle: 'À confirmer', ton: 'alerte' },
+  confirme: { libelle: 'Confirmé', ton: 'succes' },
+  annule: { libelle: 'Annulé', ton: 'neutre' },
+  termine: { libelle: 'Venue', ton: 'info' },
+  absent: { libelle: 'Absente', ton: 'danger' },
+}

@@ -12,7 +12,7 @@ describe('versErreurApp', () => {
 
   it('traduit les codes SQL courants', () => {
     expect(versErreurApp({ code: '23505', message: 'duplicate key' }).code).toBe('conflit')
-    expect(versErreurApp({ code: '23P01', message: 'exclusion' }).code).toBe('conflit')
+    expect(versErreurApp({ code: '23P01', message: 'exclusion' }).code).toBe('creneau_indisponible')
     expect(versErreurApp({ code: '23514', message: 'check' }).code).toBe('validation')
     expect(versErreurApp({ code: 'PGRST116', message: 'no rows' }).code).toBe('introuvable')
   })
@@ -46,5 +46,20 @@ describe('erreurs du commerce', () => {
     const e = versErreurApp({ message: 'STOCK_INSUFFISANT: Lace Glue', code: 'P0001' })
     expect(e.code).toBe('stock_insuffisant')
     expect(e.detail).toContain('Lace Glue')
+  })
+})
+
+describe('erreurs des rendez-vous', () => {
+  it('reconnaît les refus métier de la réservation', () => {
+    expect(versErreurApp({ message: 'CRENEAU_INDISPONIBLE', code: 'P0001' }).code).toBe(
+      'creneau_indisponible',
+    )
+    expect(versErreurApp({ message: 'TROP_DE_RENDEZ_VOUS', code: 'P0001' }).code).toBe(
+      'trop_de_rendez_vous',
+    )
+    expect(versErreurApp({ message: 'ANNULATION_TARDIVE', code: 'P0001' }).code).toBe(
+      'annulation_tardive',
+    )
+    expect(versErreurApp({ message: 'RDV_EXISTANTS: 2', code: 'P0001' }).code).toBe('rdv_existants')
   })
 })

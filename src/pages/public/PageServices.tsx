@@ -96,7 +96,7 @@ export function PageService() {
         intro={s.description}
         actions={
           <Link
-            to={CHEMINS.rendezVous}
+            to={CHEMINS.reserver(s.slug)}
             className={classesBouton('principal', 'grand', 'no-underline')}
           >
             Réserver ce service
