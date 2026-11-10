@@ -1,6 +1,6 @@
 # GLORIOUS DESTINY — Document d'architecture (Phase 1)
 
-Statut : **proposition, en attente de validation**. Aucun code d'application n'a été écrit.
+Statut : **validé par le client le 10/11/2026 (décisions 1 à 7 de la section O), soumis à son audit**. Version 1.1 : intègre les réponses du client (devise, villes, paiement, WhatsApp, catégories, livraison).
 
 Sommaire : A. Architecture générale · B. Pages publiques · C. Espace cliente · D. Espace administrateur · E. Modules métier · F. Base de données · G. Logique du stock · H. Logique WhatsApp · I. Logique rendez-vous · J. Prévisions · K. Sécurité · L. Structure des fichiers · M. Risques · N. Roadmap · O. Décisions à valider
 
@@ -85,10 +85,10 @@ Chaque page indique son objectif, son contenu, ses actions et les données néce
 - **Données** : produits de type `produit`, variantes éventuelles (format).
 
 ### B6. Cils `/cils`
-- **Objectif** : présenter la pose de cils et les accessoires associés.
-- **Contenu** : explication de la prestation, tarifs (services), accessoires liés.
-- **Actions** : réserver une pose, ajouter un accessoire au panier.
-- **Données** : services de type `cils`, produits de catégorie `accessoires cils`.
+- **Objectif** : présenter la pose de cils.
+- **Contenu** : explication de la prestation, durée, tarif, déroulé, entretien. Accessoires cils affichés seulement quand il y en aura au catalogue (aucun parmi les 7 produits actuels).
+- **Actions** : réserver une pose, poser une question sur WhatsApp.
+- **Données** : services de type `cils`, produits de type `accessoire_cils` (vide pour l'instant).
 
 ### B7. Services `/services` et `/services/:slug`
 - **Objectif** : présenter les prestations (pose de perruque, entretien, pose de cils).
@@ -104,7 +104,7 @@ Chaque page indique son objectif, son contenu, ses actions et les données néce
 
 ### B9. Panier `/panier`
 - **Objectif** : réviser sa sélection avant commande.
-- **Contenu** : lignes (produit, variante, quantité, prix), sous-total, frais de livraison estimés, avertissement si un article n'est plus disponible.
+- **Contenu** : lignes (produit, variante, quantité, prix), sous-total, mention « frais de livraison convenus sur WhatsApp si applicables », avertissement si un article n'est plus disponible.
 - **Actions** : modifier la quantité, retirer une ligne, passer à la commande.
 - **Données** : panier local (identifiant de variante + quantité), prix et disponibilité **revérifiés côté serveur**.
 
@@ -221,7 +221,7 @@ Accès réservé aux rôles staff (voir K). Chaque écran a un état loading, em
 ### D10. Paramètres (rôle admin ou owner)
 - Informations boutique, numéro WhatsApp, horaires.
 - Délai d'expiration des réservations (en heures).
-- Villes et quartiers desservis, frais de livraison par zone.
+- Villes desservies (Douala, Yaoundé, Garoua, Abidjan) : activer, désactiver, en ajouter.
 - Utilisateurs et rôles.
 - Modèles de messages WhatsApp.
 
@@ -237,13 +237,13 @@ Pour chaque module : responsabilité, entités, règles principales.
 
 **E1. Catalogue** — Regroupe produits, variantes, images, catégories. Un produit est publié (visible) ou non, actif ou archivé. Un produit archivé reste visible dans l'historique des commandes. Les 7 produits officiels sont saisis par l'administration, pas codés en dur.
 
-**E2. Produits** — Type `produit` (soin, coiffage, accessoire de pose). Un produit a un SKU unique, un prix, des variantes optionnelles (format : 200 ml, 250 g…).
+**E2. Produits** — Type `produit`. Deux catégories pour la gamme actuelle : **Pose de perruque** (Lace Glue, Lace Melting Spray, Lace Glue Remover Spray, Glue Residue Remover Shampoo) et **Coiffage** (Hair Curl Mousse, Wax Stick, Braid Gel). Les produits « Lace » sont des produits de perruque (validé). Un produit a un SKU unique, un prix, des variantes optionnelles (format : 200 ml, 250 g…).
 
 **E3. Perruques** — Type `perruque`. Attributs : longueur, texture, couleur, densité, type de dentelle (lace), taille du bonnet. Chaque combinaison vendable est une variante avec son propre SKU et son propre stock. Attributs stockés en colonnes ou en `jsonb` validé ; à trancher (voir O).
 
 **E4. Services** — Pose de perruque, entretien de perruque, pose de cils, etc. Un service a une durée, un prix, un temps tampon avant/après, une liste de disponibilités. Un service n'a pas de stock.
 
-**E5. Cils** — Deux usages à distinguer : *prestation* (service, rendez-vous) et *accessoires* (produits de type accessoire, stock physique).
+**E5. Cils** — Pour l'instant, uniquement la *prestation* (service, rendez-vous). Le type `accessoire_cils` existe pour de futurs produits ajoutés depuis l'admin.
 
 **E6. Panier** — Local au navigateur (pas de stock, pas de réservation). Contient uniquement `variant_id` et `quantité`. Au moment de la commande, le serveur recalcule tout.
 
@@ -347,12 +347,12 @@ Extensions : `btree_gist` (contrainte d'exclusion sur les créneaux), `pgcrypto`
 - Contrainte : `UNIQUE (date)`.
 
 ### F15. `rendez_vous`
-- Colonnes : `id`, `cliente_id`, `service_id`, `debut` (timestamptz), `fin` (timestamptz), `statut` (`demande` | `confirme` | `annule` | `termine` | `absent`), `notes`, `motif_annulation`, `created_at`, `updated_at`.
-- Contraintes : `fin > debut` ; **contrainte d'exclusion** `EXCLUDE USING gist (tstzrange(debut, fin) WITH &&) WHERE (statut IN ('demande','confirme'))` pour empêcher deux rendez-vous actifs qui se chevauchent (tampons inclus dans `debut`/`fin` stockés étendus).
+- Colonnes : `id`, `cliente_id`, `service_id`, `debut` / `fin` (heure de la prestation), `occupe_debut` / `occupe_fin` (prestation + tampons, utilisés pour les chevauchements), `statut` (`demande` | `confirme` | `annule` | `termine` | `absent`), `notes`, `motif_annulation`, `created_at`, `updated_at`.
+- Contraintes : `fin > debut` ; **contrainte d'exclusion** `EXCLUDE USING gist (tstzrange(occupe_debut, occupe_fin) WITH &&) WHERE (statut IN ('demande','confirme'))` pour empêcher deux rendez-vous actifs qui se chevauchent, tampons compris (un seul salon).
 - Index : `(debut)`, `(cliente_id)`.
 
 ### F16. `commandes`
-- Colonnes : `id`, `reference` (unique, lisible, ex. `GD-2611-0042`), `cliente_id`, `canal` (`web` | `whatsapp`), `statut`, `sous_total_fcfa`, `frais_livraison_fcfa`, `total_fcfa`, `cle_idempotence` (unique), `reservation_expire_at`, `message_whatsapp_genere_at`, `message_whatsapp_ouvert_at`, `confirmee_at`, `annulee_at`, `motif_annulation`, `notes_internes`, `created_at`, `updated_at`.
+- Colonnes : `id`, `reference` (unique, lisible, ex. `GD-2611-0042`), `cliente_id`, `ville_id`, `devise`, `canal` (`web` | `whatsapp`), `statut`, `sous_total_fcfa`, `frais_livraison_fcfa`, `total_fcfa`, `cle_idempotence` (unique), `reservation_expire_at`, `message_whatsapp_genere_at`, `message_whatsapp_ouvert_at`, `confirmee_at`, `annulee_at`, `motif_annulation`, `notes_internes`, `created_at`, `updated_at`.
 - Statuts : `nouvelle` → `confirmee` → `expediee` → `livree` ; `annulee` possible depuis `nouvelle` ou `confirmee` ; `retournee` possible après `livree` (partielle ou totale).
 - Devise : `devise` (`XAF` pour le Cameroun, `XOF` pour Abidjan), déduite de la ville de livraison. Affichage « FCFA » partout, montants identiques.
 - Paiement (à la livraison, aucun paiement en ligne) : `statut_paiement` (`non_paye` | `paye` | `rembourse`), `mode_paiement` (`especes` | `mobile_money`, nullable tant que non payé), `montant_encaisse_fcfa`, `reference_paiement` (numéro de transaction Mobile Money, nullable), `paye_at`, `encaisse_par`. Champs sur la commande et non table séparée : un seul encaissement par commande en V1.
@@ -368,9 +368,15 @@ Extensions : `btree_gist` (contrainte d'exclusion sur les créneaux), `pgcrypto`
 - Remarque : l'adresse est **copiée**, pas référencée.
 - Index : `(ville, livree_at)`, `(statut)`.
 
-### F19. `zones_livraison` (optionnelle en V1)
-- Colonnes : `id`, `ville`, `quartier` (nullable), `frais_fcfa`, `actif`.
-- Contrainte : `UNIQUE (ville, quartier)`.
+### F19. `villes` (remplace `zones_livraison`, abandonnée : pas de frais de livraison calculés)
+- Rôle : liste fermée des villes desservies, pour des statistiques fiables (« Yaoundé » et « Yaounde » ne deviennent pas deux villes) et pour déduire devise et fuseau.
+- Colonnes : `id`, `nom` (unique), `pays` (`CM` | `CI`), `indicatif` (`+237` | `+225`), `devise` (`XAF` | `XOF`), `fuseau` (`Africa/Douala` | `Africa/Abidjan`), `actif`, `ordre`.
+- Données initiales : Douala, Yaoundé, Garoua (Cameroun, XAF) ; Abidjan (Côte d'Ivoire, XOF).
+- `adresses_clientes.ville_id`, `livraisons.ville_id` et `commandes.ville_id` y font référence. Le quartier reste un texte libre.
+
+### F19 bis. `emplacements`
+- Rôle : lieux de stock. Une seule ligne au départ (« Stock principal »), pour permettre un futur `transfert` sans migration.
+- Colonnes : `id`, `code` (unique), `nom`, `actif`.
 
 ### F20. `parametres`
 - Colonnes : `cle` (PK), `valeur` (`jsonb`), `modifie_par`, `updated_at`.
@@ -439,7 +445,7 @@ Parcours : **PANIER → COMMANDE → ENREGISTREMENT → MESSAGE WHATSAPP**
    - enregistrer l'adresse (ou réutiliser une adresse identique) ;
    - recharger les prix et les variantes depuis la base (le prix du panier n'est jamais cru) ;
    - vérifier les variantes actives et la disponibilité ; réserver le stock (G) ;
-   - calculer le sous-total, les frais de livraison (zone), le total ;
+   - calculer le sous-total et le total (frais de livraison à 0 par défaut : ils ne sont pas calculés par le site ; l'équipe peut les ajouter dans l'admin s'ils ont été convenus sur WhatsApp) ;
    - générer la référence lisible ;
    - insérer la commande, ses lignes, la livraison à préparer ;
    - générer le **texte du message** à partir de ces données enregistrées ;
@@ -447,7 +453,10 @@ Parcours : **PANIER → COMMANDE → ENREGISTREMENT → MESSAGE WHATSAPP**
    - retourner la référence et le texte.
    Si l'une de ces étapes échoue, rien n'est écrit.
 4. **Message WhatsApp** : le texte est construit par le serveur, donc ce qui est envoyé est identique à ce qui est enregistré. Contenu : référence, produits, quantités, prix, total, nom, téléphone, adresse complète, demande de confirmation.
-5. **Ouverture** : le front ouvre `https://wa.me/<numero>?text=<message encodé>`. Il enregistre `message_whatsapp_ouvert_at` au clic. Le front affiche la page de confirmation avec la référence et un bouton « Renvoyer sur WhatsApp » qui relance le même lien.
+5. **Ouverture** : deux modes selon le paramètre disponible.
+   - **Avec le numéro de la boutique** (`parametres.whatsapp_numero`, recommandé) : le front ouvre `https://wa.me/<numero>?text=<message encodé>`. Le message est déjà écrit dans WhatsApp, la cliente appuie sur « Envoyer ».
+   - **Avec le lien court seulement** (`https://wa.me/message/IJXZX7ST64EGG1`, fourni par le client) : WhatsApp n'accepte pas de texte pré-rempli sur ce type de lien. Le front **copie automatiquement le message** dans le presse-papiers, puis ouvre le lien court ; un encadré indique « Votre commande est copiée : collez-la et envoyez ». La cliente ne recopie rien, mais doit coller (une action de plus, et la copie automatique peut échouer sur certains navigateurs : bouton « Copier » de secours).
+   Dans les deux cas : enregistrement de `message_whatsapp_ouvert_at` au clic, page de confirmation avec la référence et un bouton « Renvoyer sur WhatsApp ».
 
 Cas limites :
 - **La cliente ferme WhatsApp sans envoyer.** La commande existe, en statut `nouvelle`, avec stock réservé. Elle apparaît dans la file « À confirmer ». Si personne ne la confirme avant l'expiration, elle est annulée et le stock libéré (G). Elle n'est jamais supprimée.
@@ -604,12 +613,14 @@ Règles de structure :
 8. **Dépendance à WhatsApp** (lien `wa.me` sans confirmation d'envoi). → L'équipe confirme manuellement ; pas de promesse de statut automatique.
 9. **Spam de commandes ou de rendez-vous** qui vide le stock ou le planning. → Limitation de débit, délai d'expiration, validation manuelle possible.
 10. **Erreurs de fuseau horaire** sur les créneaux. → Tout stocké en UTC, affiché en Africa/Douala, tests sur les bords de jour.
-11. **Adresses incomplètes** (quartiers non standardisés). → Liste de zones de livraison, saisie guidée, point de repère obligatoire.
+11. **Adresses incomplètes** (quartiers non standardisés). → Liste fermée de villes, quartier en texte libre, point de repère obligatoire.
 12. **Montants en décimales** (erreurs d'arrondi). → Entiers de FCFA partout.
 13. **Dérive de la PWA** : un service worker qui sert un stock périmé. → Pas de cache des données de stock ni des pages admin ; réseau requis pour commander (Phase 12).
 14. **Conformité données personnelles** (téléphone, adresse) et envoi de messages. → Mentions légales, consentement à la communication, vérification des obligations locales avant mise en production.
 15. **Devise et taxes** non confirmées (XAF supposé, TVA non précisée). → À confirmer avant de coder les montants.
-16. **Ambiguïté des produits « lace »** : Lace Glue, Lace Melting Spray et Lace Glue Remover sont des produits de pose de perruque, pas de cils. → À classer précisément dans le catalogue (voir O).
+16. ~~Ambiguïté des produits « lace »~~ : réglé, ce sont des produits de perruque.
+17. **Étiquettes différentes du brief** sur les visuels fournis : Hair Curl Mousse marquée **250 ml** (brief : 200 ml) ; Glue Residue Remover Shampoo marquée **300 ml** (brief : 245 ml). → Le brief fait foi dans la base ; à corriger soit dans le brief, soit sur les visuels.
+18. **Lien WhatsApp court** sans numéro : pré-remplissage impossible (voir H). → Fournir le numéro pour supprimer l'étape « coller ».
 
 ---
 
@@ -623,7 +634,7 @@ Chaque phase a une **condition de sortie** : elle n'est terminée que si ses tes
 | **2. Fondations techniques** | Vite, React, TypeScript, Tailwind, Supabase, Auth, Storage, structure des dossiers, gestion d'erreurs, variables d'environnement, premier schéma de base, types générés, CI de base | Projet qui démarre, connexion Supabase testée, migrations rejouables depuis zéro |
 | **3. Design system** | Tokens couleurs (noir, doré, ivoire), typographies, boutons, cartes, badges, formulaires, navigation, modales, alertes, tableaux, graphiques, états loading / empty / error, responsive | Composants documentés, contrastes vérifiés, rendu correct sur mobile et desktop |
 | **4. Site public** | Accueil, catalogue, perruques, produits, cils, services, fiches, rendez-vous (interface), contact, panier (local) | Parcours de navigation complet, données réelles en base, aucune donnée factice en production |
-| **5. Commerce** | Création de commande, clientes, adresses, statuts, historique, frais de livraison par zone | Commande créée en base avec prix serveur et statuts corrects |
+| **5. Commerce** | Création de commande, clientes, adresses, statuts, historique, encaissement (espèces / Mobile Money) | Commande créée en base avec prix serveur et statuts corrects |
 | **6. WhatsApp** | Enregistrement atomique, génération du message côté serveur, ouverture `wa.me`, page de confirmation, renvoi | Les dix étapes de la logique H passent les tests ; aucune commande perdue si WhatsApp n'ouvre pas |
 | **7. Stock** | Soldes physique / réservé / disponible, journal append-only, toutes les opérations de G, réceptions, pertes, corrections | Chaque opération produit un mouvement ; contraintes de base vérifiées ; tests de concurrence |
 | **8. Livraison** | Statuts logistiques, adresse figée, échecs, retours, requêtes par ville et produit | Les questions types (« Lace Glue livrées à Yaoundé ce mois-ci ») répondent juste sur jeu de test |
@@ -648,7 +659,7 @@ Ces points changent le modèle ou le travail. Merci de répondre avant la Phase 
 - **Rendez-vous** : un seul salon, dans une seule ville (ville à préciser).
 - **Lien WhatsApp fourni** : `https://wa.me/message/…` est un lien court de WhatsApp Business. Ce type de lien **ne permet pas de pré-remplir le message de la commande**. Il faut le **numéro de téléphone** de la boutique (format `wa.me/237XXXXXXXXX?text=…`) pour respecter la règle « la cliente ne recopie jamais sa commande ». Le lien court reste utilisable pour le bouton « Nous écrire » général.
 
-**Décisions d'architecture proposées**
+**Décisions d'architecture — toutes validées par le client le 10/11/2026**
 1. **Logique métier dans PostgreSQL (RPC)** plutôt que dans le navigateur. Recommandé : oui.
 2. **Pas d'API WhatsApp Business en V1** ; lien `wa.me` seulement. Recommandé : oui.
 3. **Commande sans compte possible** (commande invitée), compte optionnel. Recommandé : oui.
@@ -666,12 +677,12 @@ Ces points changent le modèle ou le travail. Merci de répondre avant la Phase 
 13. **Rendez-vous composés** : une cliente peut-elle réserver plusieurs services d'affilée dans un seul créneau global ?
 
 **Informations manquantes (bloquantes pour la Phase 2)**
-14. **Prix officiels** des 7 produits et des services. Aucun prix n'est fourni dans le brief ; je ne les inventerai pas.
+14. **Prix officiels** : à fournir. En attendant, **prix provisoires** dans les données de développement uniquement, à la demande du client (fichier de seed marqué « provisoire », jamais en production).
 15. ~~Devise~~ : réglé (FCFA, voir plus haut). Reste à confirmer : TVA applicable ou non.
-16. **Quantités de stock initiales** pour chaque produit, et formats (ex. 200 ml, 250 g) et conditionnements.
-17. ~~Villes~~ : réglé. Restent : **quartiers** desservis dans chaque ville, **frais de livraison** par ville, délai et mode d'envoi vers **Abidjan** (envoi international).
-18. **Numéro WhatsApp** de la boutique (numéro complet, pas le lien court), **horaires** d'ouverture, **ville du salon**.
-19. **Catégorisation** : les produits Lace Glue, Lace Melting Spray et Lace Glue Remover sont-ils destinés à la pose de perruque ou à celle de cils ? Le brief les place sous « cils » mais leur usage semble être la perruque.
+16. **Quantités de stock initiales** : à fournir. En attendant, stock provisoire en données de développement, saisi par des mouvements `entree` (jamais par écriture directe). Formats : ceux du brief (200 ml, 245 ml, 50 ml, 250 g) ; formats non précisés pour Lace Melting Spray, Lace Glue et Wax Stick.
+17. ~~Villes et frais de livraison~~ : réglé. Villes : Douala, Yaoundé, Garoua, Abidjan. Pas de frais de livraison calculés par le site (« on n'en a pas besoin ») : la livraison se règle sur WhatsApp.
+18. **WhatsApp** : lien court fourni (`wa.me/message/IJXZX7ST64EGG1`) ; le numéro complet reste recommandé (voir H). Restent : **horaires** d'ouverture et **ville du salon**.
+19. ~~Catégorisation~~ : réglé (les produits « Lace » relèvent de la perruque ; pas de produit cils actuellement).
 20. **Ajout de variantes** : les 7 produits existent-ils en plusieurs formats ou couleurs, ou un seul format chacun ?
 21. **Perruques** : liste des attributs à gérer (longueur, couleur, texture, densité, type de dentelle, taille) et nombre de références prévues.
 22. **Fournisseurs** : nombre, et délai habituel d'approvisionnement.
