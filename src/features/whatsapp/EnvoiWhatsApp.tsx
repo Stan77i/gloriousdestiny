@@ -93,7 +93,7 @@ export function EnvoiWhatsApp({ commande }: { commande: ResumeCommande }) {
           />
         </summary>
         <div className="flex flex-col gap-3 border-t border-filet px-4 py-4">
-          <pre className="font-sans text-[14px] leading-relaxed whitespace-pre-wrap text-ivoire select-all">
+          <pre className="font-sans text-[15px] leading-relaxed whitespace-pre-wrap text-ivoire select-all">
             {message}
           </pre>
           <Bouton
