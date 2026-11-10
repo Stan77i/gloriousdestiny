@@ -1,4 +1,5 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router'
+import { Bouton } from '@/components/ui/Bouton'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { PageIntrouvable } from './PageIntrouvable'
 
@@ -11,19 +12,17 @@ export function PageErreurRoute() {
   const message = versErreurApp(erreur).message
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 px-4 text-center">
-      <p className="text-xs tracking-[0.4em] text-or uppercase">Glorious Destiny</p>
-      <h1 className="text-2xl font-light">Un problème est survenu.</h1>
-      <p className="text-sm text-ivoire/70">{message}</p>
-      <button
-        type="button"
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-5 px-4 text-center">
+      <h1 className="titre-affiche text-[40px] text-ivoire">Un problème est survenu.</h1>
+      <p className="text-sm leading-relaxed text-ivoire-2">{message}</p>
+      <Bouton
+        variante="secondaire"
         onClick={() => {
           window.location.reload()
         }}
-        className="min-h-11 border border-ivoire/30 px-5 text-sm hover:border-or hover:text-or"
       >
         Recharger la page
-      </button>
+      </Bouton>
     </main>
   )
 }

@@ -1,9 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
+import { MessageCircle } from 'lucide-react'
+import { VeineOr } from '@/components/marque/VeineOr'
+import { classesBouton } from '@/components/ui/classesBouton'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { lireParametresPublics } from '@/services/parametres.service'
 
 /**
- * Accueil provisoire (Phase 2) : aucune donnée inventée. Le lien WhatsApp vient
+ * Accueil provisoire : aucune donnée inventée. Le lien WhatsApp vient
  * de la table `parametres`. La vraie page d'accueil est construite en Phase 4.
  */
 export function PageAccueil() {
@@ -15,19 +18,21 @@ export function PageAccueil() {
   const lienWhatsApp = parametres.data?.whatsapp_lien
 
   return (
-    <section className="mx-auto flex min-h-[70dvh] max-w-3xl flex-col items-center justify-center gap-8 px-4 text-center">
-      <p className="text-xs tracking-[0.4em] text-or uppercase">Perruques · Cils · Soins</p>
-      <h1 className="text-4xl font-light tracking-[0.2em] uppercase sm:text-5xl">
-        Glorious Destiny
-      </h1>
-      <p className="max-w-md text-ivoire/70">Notre boutique en ligne est en préparation.</p>
+    <section className="mx-auto flex min-h-[calc(100dvh-10rem)] max-w-3xl flex-col items-center justify-center px-4 py-16 text-center">
+      <h1 className="titre-affiche text-[56px] text-ivoire sm:text-[88px]">Glorious Destiny</h1>
+      <VeineOr className="mt-6 max-w-sm" />
+      <p className="mt-6 max-w-md text-[17px] leading-relaxed text-ivoire-2">
+        Perruques, pose de cils et produits professionnels. Notre boutique en ligne est en
+        préparation.
+      </p>
       {lienWhatsApp && (
         <a
           href={lienWhatsApp}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-11 items-center border border-or px-6 text-sm tracking-wide text-or transition-colors hover:bg-or hover:text-noir"
+          className={classesBouton('principal', 'grand', 'mt-10 no-underline')}
         >
+          <MessageCircle aria-hidden="true" />
           Nous écrire sur WhatsApp
         </a>
       )}

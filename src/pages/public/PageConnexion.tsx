@@ -4,7 +4,9 @@ import { useForm } from 'react-hook-form'
 import { Navigate, useLocation, useNavigate } from 'react-router'
 import { z } from 'zod'
 import { CHEMINS } from '@/app/router/chemins'
+import { Alerte } from '@/components/ui/Alerte'
 import { Bouton } from '@/components/ui/Bouton'
+import { Champ, Saisie } from '@/components/ui/Champs'
 import { useAuth } from '@/features/auth/useAuth'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
@@ -53,50 +55,31 @@ export function PageConnexion() {
     }
   })
 
-  const champ =
-    'mt-2 block min-h-11 w-full border border-ivoire/20 bg-noir-doux px-3 text-ivoire placeholder:text-ivoire/40 focus:border-or focus:outline-none'
-
   return (
-    <section className="mx-auto flex max-w-sm flex-col gap-6 px-4 py-16">
-      <h1 className="text-2xl font-light tracking-[0.15em] uppercase">Connexion</h1>
+    <section className="mx-auto flex max-w-sm flex-col gap-7 px-4 py-16 sm:py-24">
+      <div>
+        <h1 className="titre-affiche text-[44px] text-ivoire">Connexion</h1>
+        <p className="mt-2 text-sm text-ivoire-3">Espace réservé à l’équipe Glorious Destiny.</p>
+      </div>
       {auth.statut === 'connecte' && !auth.profil && (
-        <p role="alert" className="text-sm text-ivoire/80">
-          Ce compte n'a pas accès à l'administration.
-        </p>
+        <Alerte ton="alerte" titre="Ce compte n'a pas accès à l'administration." />
       )}
       <form onSubmit={(e) => void soumettre(e)} noValidate className="flex flex-col gap-5">
-        <label className="text-sm">
-          E-mail
-          <input
-            type="email"
-            autoComplete="email"
-            className={champ}
-            aria-invalid={errors.email ? true : undefined}
-            {...register('email')}
-          />
-          {errors.email && (
-            <span className="mt-1 block text-xs text-red-300">{errors.email.message}</span>
+        <Champ libelle="E-mail" erreur={errors.email?.message}>
+          {(a) => <Saisie {...a} type="email" autoComplete="email" {...register('email')} />}
+        </Champ>
+        <Champ libelle="Mot de passe" erreur={errors.motDePasse?.message}>
+          {(a) => (
+            <Saisie
+              {...a}
+              type="password"
+              autoComplete="current-password"
+              {...register('motDePasse')}
+            />
           )}
-        </label>
-        <label className="text-sm">
-          Mot de passe
-          <input
-            type="password"
-            autoComplete="current-password"
-            className={champ}
-            aria-invalid={errors.motDePasse ? true : undefined}
-            {...register('motDePasse')}
-          />
-          {errors.motDePasse && (
-            <span className="mt-1 block text-xs text-red-300">{errors.motDePasse.message}</span>
-          )}
-        </label>
-        {erreur && (
-          <p role="alert" className="text-sm text-red-300">
-            {erreur}
-          </p>
-        )}
-        <Bouton type="submit" enCours={isSubmitting}>
+        </Champ>
+        {erreur && <Alerte ton="danger" titre={erreur} />}
+        <Bouton type="submit" taille="grand" enCours={isSubmitting} className="mt-1">
           Se connecter
         </Bouton>
       </form>

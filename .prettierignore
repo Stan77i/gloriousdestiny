@@ -6,3 +6,7 @@ src/types/database.ts
 supabase/**/*.sql
 .claude
 docs/ARCHITECTURE.md
+src/assets/**/*.json
+.impeccable
+DESIGN.md
+PRODUCT.md

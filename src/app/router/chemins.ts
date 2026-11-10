@@ -3,4 +3,6 @@ export const CHEMINS = {
   accueil: '/',
   connexion: '/connexion',
   admin: '/admin',
+  systemeDesign: '/systeme-design',
+  adminSystemeDesign: '/admin/systeme-design',
 } as const

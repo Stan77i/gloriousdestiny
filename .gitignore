@@ -28,3 +28,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# Captures de revue de design (régénérables)
+.impeccable/review/
+.impeccable/*.local.json

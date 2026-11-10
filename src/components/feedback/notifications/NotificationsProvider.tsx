@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
+import { CircleAlert, CircleCheck, Info, X } from 'lucide-react'
 import {
   NotificationsContext,
   type Notification,
@@ -9,10 +10,10 @@ import {
 const DUREE_MS = 5000
 const MAX_VISIBLES = 3
 
-const STYLES: Record<TonNotification, string> = {
-  succes: 'border-or/60',
-  erreur: 'border-red-400/70',
-  info: 'border-ivoire/30',
+const STYLES: Record<TonNotification, { icone: ReactNode; couleur: string }> = {
+  succes: { icone: <CircleCheck />, couleur: 'text-succes' },
+  erreur: { icone: <CircleAlert />, couleur: 'text-danger' },
+  info: { icone: <Info />, couleur: 'text-or' },
 }
 
 /**
@@ -54,18 +55,24 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
           <div
             key={n.id}
             role={n.ton === 'erreur' ? 'alert' : 'status'}
-            className={`pointer-events-auto flex w-full max-w-sm items-start gap-3 border bg-noir px-4 py-3 text-sm text-ivoire shadow-lg ${STYLES[n.ton]}`}
+            className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-[14px] border border-filet-fort bg-surface-2 py-3 pr-2 pl-4 text-sm text-ivoire shadow-flottant transition-[opacity,translate] duration-300 ease-(--ease-sortie) starting:translate-y-2 starting:opacity-0"
           >
-            <p className="flex-1">{n.message}</p>
+            <span
+              aria-hidden="true"
+              className={`mt-0.5 [&_svg]:size-[18px] ${STYLES[n.ton].couleur}`}
+            >
+              {STYLES[n.ton].icone}
+            </span>
+            <p className="flex-1 py-0.5 leading-relaxed">{n.message}</p>
             <button
               type="button"
               onClick={() => {
                 retirer(n.id)
               }}
-              className="text-ivoire/60 hover:text-ivoire focus-visible:outline-or"
+              className="grid size-8 shrink-0 place-items-center rounded-full text-ivoire-3 transition-colors hover:bg-surface-3 hover:text-ivoire [&_svg]:size-4"
               aria-label="Fermer la notification"
             >
-              ×
+              <X />
             </button>
           </div>
         ))}

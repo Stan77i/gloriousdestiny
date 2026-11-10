@@ -8,6 +8,14 @@ import { PageConnexion } from '@/pages/public/PageConnexion'
 import { CHEMINS } from './chemins'
 import { RequireStaff } from './RequireStaff'
 
+/** Vitrine du système de design : chargée à la demande (photos lourdes hors du site public). */
+const routeSystemeDesign: RouteObject = {
+  lazy: async () => {
+    const { PageSystemeDesign } = await import('@/pages/dev/PageSystemeDesign')
+    return { element: <PageSystemeDesign /> }
+  },
+}
+
 /**
  * Arbre des routes. L'espace admin est chargé à la demande (code séparé du site public).
  * Les pages publiques complètes arrivent en Phase 4, l'admin en Phase 10.
@@ -22,6 +30,8 @@ export const routes: RouteObject[] = [
         children: [
           { path: CHEMINS.accueil, element: <PageAccueil /> },
           { path: CHEMINS.connexion, element: <PageConnexion /> },
+          // En développement uniquement : en production, la vitrine est réservée au personnel.
+          ...(import.meta.env.DEV ? [{ ...routeSystemeDesign, path: CHEMINS.systemeDesign }] : []),
           { path: '*', element: <PageIntrouvable /> },
         ],
       },
@@ -45,6 +55,7 @@ export const routes: RouteObject[] = [
               return { element: <PageAdminAccueil /> }
             },
           },
+          { ...routeSystemeDesign, path: 'systeme-design' },
         ],
       },
     ],
