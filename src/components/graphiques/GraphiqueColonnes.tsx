@@ -35,7 +35,7 @@ export function GraphiqueColonnes({
         {/* Axe des valeurs */}
         <div
           aria-hidden="true"
-          className="chiffres relative w-14 shrink-0 text-right text-[11px] text-ivoire-3"
+          className="chiffres relative w-14 shrink-0 text-right text-[11px] text-encre-3"
         >
           {ticks.map((t) => (
             <span
@@ -81,10 +81,10 @@ export function GraphiqueColonnes({
                   />
                   {actif && (
                     <span
-                      className="pointer-events-none absolute bottom-[calc(var(--h)+10px)] z-10 rounded-[8px] border border-filet-fort bg-surface-3 px-2.5 py-1.5 text-xs whitespace-nowrap text-ivoire shadow-flottant"
+                      className="pointer-events-none absolute bottom-[calc(var(--h)+10px)] z-10 rounded-[8px] border border-filet-fort bg-carte-3 px-2.5 py-1.5 text-xs whitespace-nowrap text-encre shadow-flottant"
                       style={{ ['--h' as string]: `${(p.valeur / haut) * hauteur}px` }}
                     >
-                      <span className="block text-ivoire-3">{p.libelleLong ?? p.libelle}</span>
+                      <span className="block text-encre-3">{p.libelleLong ?? p.libelle}</span>
                       <span className="chiffres font-semibold">{formater(p.valeur)}</span>
                     </span>
                   )}
@@ -101,7 +101,7 @@ export function GraphiqueColonnes({
             key={p.libelle}
             className={cx(
               'flex-1 text-center text-[11px]',
-              enAvant === i ? 'font-semibold text-or-clair' : 'text-ivoire-3',
+              enAvant === i ? 'font-semibold text-or-texte' : 'text-encre-3',
               // Écran étroit : une étiquette sur deux, comptée depuis la période mise en avant (toujours visible).
               Math.abs(i - (enAvant ?? points.length - 1)) % 2 === 1 && 'max-sm:invisible',
             )}

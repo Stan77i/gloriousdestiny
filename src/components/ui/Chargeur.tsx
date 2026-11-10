@@ -38,7 +38,7 @@ export function Squelette({ className }: { className?: string }) {
   return (
     <span
       aria-hidden="true"
-      className={cx('block animate-pulse-doux rounded-md bg-surface-3', className)}
+      className={cx('block animate-pulse-doux rounded-md bg-carte-3', className)}
     />
   )
 }

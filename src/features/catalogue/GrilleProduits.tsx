@@ -6,6 +6,7 @@ import { EtatErreur } from '@/components/ui/Etats'
 import { usePanier } from '@/features/panier/usePanier'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterFcfa } from '@/lib/format/montant'
+import { TEINTE_TYPE_PRODUIT } from '@/domain/univers'
 import type { Produit } from '@/services/catalogue.service'
 import { lienProduit } from './liens'
 import { useDisponibilites } from './requetes'
@@ -45,7 +46,7 @@ export function GrilleProduits({
         aria-label="Chargement des produits"
       >
         {Array.from({ length: 4 }, (_, i) => (
-          <li key={i} className="rounded-panneau border border-filet bg-surface-1 p-4">
+          <li key={i} className="rounded-panneau border border-filet bg-carte p-4">
             <Squelette className="aspect-[4/5] w-full rounded-[12px]" />
             <Squelette className="mt-4 h-4 w-3/4" />
             <Squelette className="mt-2 h-3 w-1/2" />
@@ -68,6 +69,7 @@ export function GrilleProduits({
               nom={p.nom}
               format={variante && variante.libelle !== 'Format standard' ? variante.libelle : null}
               categorie={p.categorie.nom}
+              teinte={TEINTE_TYPE_PRODUIT[p.type]}
               detoure={visuel.detoure}
               photo={visuel.photo?.petite}
               prix={formaterFcfa(variante?.prix ?? p.prix)}

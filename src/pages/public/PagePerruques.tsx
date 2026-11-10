@@ -19,6 +19,7 @@ export function PagePerruques() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
       <EnTetePage
+        teinte="rose"
         titre="Perruques"
         intro="Vente, pose et entretien de perruques, avec les produits professionnels qui font tenir la pose."
         actions={
@@ -32,7 +33,7 @@ export function PagePerruques() {
       />
 
       <section aria-labelledby="titre-selection" className="pb-16">
-        <h2 id="titre-selection" className="titre-affiche mb-8 text-[34px] text-ivoire">
+        <h2 id="titre-selection" className="titre-affiche mb-8 text-[34px] text-encre">
           Notre sélection
         </h2>
         <GrilleProduits
@@ -41,7 +42,7 @@ export function PagePerruques() {
           erreur={produits.error}
           onReessayer={() => void produits.refetch()}
           vide={
-            <div className="rounded-panneau border border-filet bg-surface-1">
+            <div className="rounded-panneau border border-filet bg-carte">
               <EtatVide
                 titre="Notre sélection de perruques arrive en ligne"
                 action={<BoutonWhatsApp libelle="Être conseillée sur WhatsApp" />}
@@ -55,7 +56,7 @@ export function PagePerruques() {
       </section>
 
       <section aria-labelledby="titre-salon-perruques" className="border-t border-filet py-16">
-        <h2 id="titre-salon-perruques" className="titre-affiche mb-8 text-[34px] text-ivoire">
+        <h2 id="titre-salon-perruques" className="titre-affiche mb-8 text-[34px] text-encre">
           Au salon
         </h2>
         <ListeServices filtre={(s) => s.type === 'perruque'} />
@@ -63,7 +64,7 @@ export function PagePerruques() {
 
       {soins && soins.length > 0 && (
         <section aria-labelledby="titre-soins" className="border-t border-filet py-16">
-          <h2 id="titre-soins" className="titre-affiche mb-8 text-[34px] text-ivoire">
+          <h2 id="titre-soins" className="titre-affiche mb-8 text-[34px] text-encre">
             Pour la pose
           </h2>
           <GrilleProduits

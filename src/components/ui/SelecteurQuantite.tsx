@@ -15,12 +15,12 @@ export function SelecteurQuantite({
   libelle: string
 }) {
   const bouton =
-    'grid size-11 place-items-center rounded-full text-ivoire-2 transition-colors hover:bg-surface-3 hover:text-ivoire disabled:opacity-35 [&_svg]:size-4'
+    'grid size-11 place-items-center rounded-full text-encre-2 transition-colors hover:bg-carte-3 hover:text-encre disabled:opacity-35 [&_svg]:size-4'
   return (
     <div
       role="group"
       aria-label={libelle}
-      className="inline-flex items-center rounded-full border border-filet-fort bg-surface-2"
+      className="inline-flex items-center rounded-full border border-filet-fort bg-carte-2"
     >
       <button
         type="button"

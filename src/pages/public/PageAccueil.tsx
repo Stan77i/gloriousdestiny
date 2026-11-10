@@ -3,27 +3,41 @@ import { Link } from 'react-router'
 import { CHEMINS } from '@/app/router/chemins'
 import { VeineOr } from '@/components/marque/VeineOr'
 import { classesBouton } from '@/components/ui/classesBouton'
+import { FOND_TEINTE, type Teinte } from '@/domain/univers'
 import { GAMME } from '@/features/catalogue/gamme'
 import { GrilleProduits } from '@/features/catalogue/GrilleProduits'
 import { useParametresPublics, useProduits, useServices } from '@/features/catalogue/requetes'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { formaterDuree } from '@/lib/format/duree'
+import { cx } from '@/lib/cx'
 import { formaterFcfa } from '@/lib/format/montant'
 
 /** Le rituel de pose : les produits de la gamme dans l'ordre où on les utilise. */
-const RITUEL = [
-  { slug: 'lace-glue', geste: 'Fixer', texte: 'La colle se pose le long de la ligne frontale.' },
-  { slug: 'lace-melting-spray', geste: 'Fondre', texte: 'La dentelle disparaît dans la peau.' },
+const RITUEL: { slug: string; geste: string; texte: string; teinte: Teinte }[] = [
+  {
+    slug: 'lace-glue',
+    geste: 'Fixer',
+    texte: 'La colle se pose le long de la ligne frontale.',
+    teinte: 'sable',
+  },
+  {
+    slug: 'lace-melting-spray',
+    geste: 'Fondre',
+    texte: 'La dentelle disparaît dans la peau.',
+    teinte: 'rose',
+  },
   {
     slug: 'lace-glue-remover-spray',
     geste: 'Retirer',
     texte: 'La perruque se décolle en douceur.',
+    teinte: 'lilas',
   },
   {
     slug: 'glue-residue-remover-shampoo',
     geste: 'Nettoyer',
     texte: 'Les résidus de colle partent au lavage.',
+    teinte: 'sauge',
   },
 ]
 
@@ -36,8 +50,14 @@ function Rituel() {
     <ol className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
       {etapes.map((e, i) => (
         <li key={e.slug} className="w-[78%] shrink-0 snap-start sm:w-auto">
-          <Link to={CHEMINS.produit(e.slug)} className="group block no-underline">
-            <div className="relative aspect-[3/4] overflow-hidden rounded-panneau border border-filet">
+          <Link
+            to={CHEMINS.produit(e.slug)}
+            className={cx(
+              'group flex h-full flex-col rounded-panneau p-2 pb-5 no-underline transition-transform duration-300 ease-(--ease-sortie) hover:-translate-y-1',
+              FOND_TEINTE[e.teinte],
+            )}
+          >
+            <div className="relative aspect-[3/4] overflow-hidden rounded-[22px]">
               <img
                 src={e.photo.petite}
                 alt={e.photo.alt}
@@ -45,17 +65,15 @@ function Rituel() {
                 decoding="async"
                 className="size-full object-cover transition-transform duration-700 ease-(--ease-sortie) group-hover:scale-[1.03]"
               />
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-noir/70 to-transparent"
-              />
-              <span className="absolute top-4 left-4 font-display text-[44px] leading-none text-ivoire">
+              <span className="chiffres absolute top-3 left-3 grid size-11 place-items-center rounded-full bg-carte text-[17px] font-semibold text-encre shadow-panneau">
                 {i + 1}
               </span>
             </div>
-            <p className="mt-4 font-display text-[28px] text-ivoire">{e.geste}</p>
-            <p className="mt-1 text-sm leading-relaxed text-ivoire-3">{e.texte}</p>
-            <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-or-clair group-hover:text-or [&_svg]:size-4">
+            <p className="mt-4 px-3 text-[28px] font-semibold tracking-[-0.02em] text-encre">
+              {e.geste}
+            </p>
+            <p className="mt-1 px-3 text-sm leading-relaxed text-encre-2">{e.texte}</p>
+            <p className="mt-auto inline-flex items-center gap-1.5 px-3 pt-3 text-sm font-semibold text-encre underline-offset-4 group-hover:underline [&_svg]:size-4">
               {e.produit.nom}
               <ArrowRight aria-hidden="true" />
             </p>
@@ -78,7 +96,7 @@ function Services() {
     >
       <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
         {photo && (
-          <div className="relative order-last min-h-80 overflow-hidden rounded-panneau border border-filet lg:order-first">
+          <div className="relative order-last min-h-80 overflow-hidden rounded-panneau lg:order-first">
             <img
               src={photo.grande}
               srcSet={`${photo.petite} 800w, ${photo.grande} 1600w`}
@@ -91,30 +109,28 @@ function Services() {
           </div>
         )}
         <div>
-          <h2 id="titre-salon" className="titre-affiche text-[40px] text-ivoire sm:text-[52px]">
+          <h2 id="titre-salon" className="titre-affiche text-[40px] text-encre sm:text-[52px]">
             Le salon
           </h2>
-          <p className="mt-4 max-w-lg text-[17px] leading-relaxed text-ivoire-2">
+          <p className="mt-4 max-w-lg text-[17px] leading-relaxed text-encre-2">
             Pose et entretien de perruques, pose de cils
             {parametres.data?.ville_salon ? `, à ${parametres.data.ville_salon}` : ''}.
           </p>
-          <ul className="mt-8 divide-y divide-filet border-y border-filet">
+          <ul className="mt-8 flex flex-col gap-2">
             {services.data.map((s) => (
               <li key={s.id}>
                 <Link
                   to={CHEMINS.service(s.slug)}
-                  className="group flex items-baseline justify-between gap-4 py-5 no-underline"
+                  className="group flex items-center justify-between gap-4 rounded-[22px] bg-carte px-5 py-4 no-underline shadow-panneau transition-colors duration-300 hover:bg-sable"
                 >
                   <span>
-                    <span className="block text-[19px] font-semibold text-ivoire group-hover:text-or-clair">
-                      {s.nom}
-                    </span>
-                    <span className="mt-1 inline-flex items-center gap-1.5 text-[13px] text-ivoire-3 [&_svg]:size-3.5">
+                    <span className="block text-[19px] font-semibold text-encre">{s.nom}</span>
+                    <span className="mt-1 inline-flex items-center gap-1.5 text-[13px] text-encre-3 [&_svg]:size-3.5">
                       <Clock aria-hidden="true" />
                       {formaterDuree(s.dureeMinutes)}
                     </span>
                   </span>
-                  <span className="text-[17px] font-semibold whitespace-nowrap text-or-clair">
+                  <span className="chiffres rounded-full bg-carte-2 px-3.5 py-1.5 text-[15px] font-semibold whitespace-nowrap text-encre group-hover:bg-carte">
                     {formaterFcfa(s.prix)}
                   </span>
                 </Link>
@@ -122,7 +138,7 @@ function Services() {
             ))}
           </ul>
           {parametres.data?.horaires_salon && (
-            <p className="mt-5 text-sm text-ivoire-3">{parametres.data.horaires_salon}</p>
+            <p className="mt-5 text-sm text-encre-3">{parametres.data.horaires_salon}</p>
           )}
           <Link
             to={CHEMINS.rendezVous}
@@ -148,13 +164,13 @@ export function PageAccueil() {
       {/* Premier écran */}
       <section className="mx-auto grid max-w-7xl gap-8 px-4 pt-8 pb-16 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-[1fr_0.95fr] lg:items-center lg:gap-14 lg:px-10 lg:py-10">
         <div>
-          <h1 className="titre-affiche text-[56px] text-ivoire sm:text-[84px] xl:text-[96px]">
+          <h1 className="titre-affiche text-[56px] text-encre sm:text-[84px] xl:text-[96px]">
             Votre pose,
             <br />
-            <span className="italic">sublimée.</span>
+            <span className="text-or-texte">sublimée.</span>
           </h1>
           <VeineOr className="mt-7 max-w-md" />
-          <p className="mt-7 max-w-lg text-[17px] leading-relaxed text-ivoire-2">
+          <p className="mt-7 max-w-lg text-[17px] leading-relaxed text-encre-2">
             Perruques, pose de cils au salon et une gamme professionnelle pensée pour la pose, de la
             colle au shampoing anti-résidus.
           </p>
@@ -174,7 +190,7 @@ export function PageAccueil() {
           </div>
         </div>
         {vedette && (
-          <figure className="relative h-[460px] overflow-hidden rounded-panneau border border-filet sm:h-[560px] lg:h-[min(720px,calc(100svh-8rem))]">
+          <figure className="relative h-[460px] overflow-hidden rounded-panneau sm:h-[560px] lg:h-[min(720px,calc(100svh-8rem))]">
             <img
               src={vedette.grande}
               srcSet={`${vedette.petite} 800w, ${vedette.grande} 1600w`}
@@ -183,13 +199,13 @@ export function PageAccueil() {
               fetchPriority="high"
               className="absolute inset-0 size-full object-cover object-[50%_30%]"
             />
-            <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-gradient-to-t from-noir/90 to-transparent px-6 pt-20 pb-5">
-              <span className="text-sm text-ivoire-2">Lace Melting Spray</span>
+            <figcaption className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-full bg-carte/90 py-1.5 pr-1.5 pl-5 shadow-flottant backdrop-blur-md sm:inset-x-4 sm:bottom-4">
+              <span className="text-[15px] font-semibold text-encre">Lace Melting Spray</span>
               <Link
                 to={CHEMINS.produit('lace-melting-spray')}
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-or-clair no-underline hover:text-or [&_svg]:size-4"
+                aria-label="Voir le Lace Melting Spray"
+                className="grid size-10 shrink-0 place-items-center rounded-full bg-encre text-fond no-underline transition-colors duration-300 hover:bg-encre-2 [&_svg]:size-4"
               >
-                Voir le produit
                 <ArrowRight aria-hidden="true" />
               </Link>
             </figcaption>
@@ -198,12 +214,12 @@ export function PageAccueil() {
       </section>
 
       {/* Le rituel de pose */}
-      <section aria-labelledby="titre-rituel" className="border-t border-filet">
+      <section aria-labelledby="titre-rituel">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-10">
-          <h2 id="titre-rituel" className="titre-affiche text-[40px] text-ivoire sm:text-[52px]">
+          <h2 id="titre-rituel" className="titre-affiche text-[40px] text-encre sm:text-[52px]">
             Le rituel de pose
           </h2>
-          <p className="mt-4 mb-10 max-w-xl text-[17px] leading-relaxed text-ivoire-2">
+          <p className="mt-4 mb-10 max-w-xl text-[17px] leading-relaxed text-encre-2">
             Quatre gestes, quatre produits Glorious Destiny, de la pose au retrait.
           </p>
           <Rituel />
@@ -211,15 +227,15 @@ export function PageAccueil() {
       </section>
 
       {/* La gamme */}
-      <section aria-labelledby="titre-gamme" className="border-t border-filet">
+      <section aria-labelledby="titre-gamme">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-10">
           <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
-            <h2 id="titre-gamme" className="titre-affiche text-[40px] text-ivoire sm:text-[52px]">
+            <h2 id="titre-gamme" className="titre-affiche text-[40px] text-encre sm:text-[52px]">
               La gamme
             </h2>
             <Link
               to={CHEMINS.catalogue}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-or-clair no-underline hover:text-or [&_svg]:size-4"
+              className={classesBouton('secondaire', 'normal', 'no-underline')}
             >
               Tout le catalogue
               <ArrowRight aria-hidden="true" />
@@ -235,21 +251,32 @@ export function PageAccueil() {
         </div>
       </section>
 
-      <div className="border-t border-filet">
-        <Services />
-      </div>
+      <Services />
 
       {/* Clôture */}
-      <section className="border-t border-filet">
-        <div className="mx-auto flex max-w-3xl flex-col items-center px-4 py-20 text-center">
-          <h2 className="titre-affiche text-[34px] text-ivoire sm:text-[44px]">
-            Livrée chez vous, payée à la livraison
-          </h2>
-          <p className="mt-4 text-[17px] leading-relaxed text-ivoire-2">
-            Douala, Yaoundé, Garoua et Abidjan. En espèces ou par Mobile Money, à la remise de votre
-            colis.
-          </p>
-          <BoutonWhatsApp className="mt-8" />
+      <section className="mx-auto max-w-7xl px-4 pt-4 pb-20 sm:px-6 lg:px-10">
+        <div className="grid gap-8 rounded-panneau bg-menthe p-8 text-sur-menthe sm:p-12 lg:grid-cols-[1.4fr_1fr] lg:items-end">
+          <div>
+            <h2 className="titre-affiche text-[34px] sm:text-[52px]">
+              Livrée chez vous,
+              <br />
+              payée à la livraison
+            </h2>
+            <p className="mt-4 max-w-lg text-[17px] leading-relaxed">
+              En espèces ou par Mobile Money, à la remise de votre colis.
+            </p>
+            <BoutonWhatsApp variante="sur-menthe" className="mt-8" />
+          </div>
+          <ul aria-label="Villes livrées" className="flex flex-wrap gap-2 lg:justify-end">
+            {['Douala', 'Yaoundé', 'Garoua', 'Abidjan'].map((v) => (
+              <li
+                key={v}
+                className="rounded-full bg-sur-menthe/10 px-4 py-2 text-[15px] font-semibold"
+              >
+                {v}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </>

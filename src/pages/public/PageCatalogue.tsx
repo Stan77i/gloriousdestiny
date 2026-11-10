@@ -35,6 +35,7 @@ export function PageCatalogue({ gammeSeule = false }: { gammeSeule?: boolean }) 
   return (
     <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-10">
       <EnTetePage
+        teinte="sauge"
         titre={gammeSeule ? 'Produits' : 'Catalogue'}
         intro="La gamme professionnelle Glorious Destiny : pose de perruque et coiffage. Livraison à Douala, Yaoundé, Garoua et Abidjan, paiement à la livraison."
       />
@@ -51,8 +52,8 @@ export function PageCatalogue({ gammeSeule = false }: { gammeSeule?: boolean }) 
                     className={cx(
                       'inline-flex min-h-10 items-center rounded-full border px-4 text-sm whitespace-nowrap no-underline transition-colors',
                       actif
-                        ? 'border-or bg-or/12 text-or-clair'
-                        : 'border-filet-fort text-ivoire-2 hover:border-or/60 hover:text-ivoire',
+                        ? 'border-or bg-or/12 text-or-texte'
+                        : 'border-filet-fort text-encre-2 hover:border-or/60 hover:text-encre',
                     )}
                   >
                     {f.libelle}

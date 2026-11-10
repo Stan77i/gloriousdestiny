@@ -55,7 +55,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
           <div
             key={n.id}
             role={n.ton === 'erreur' ? 'alert' : 'status'}
-            className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-[14px] border border-filet-fort bg-surface-2 py-3 pr-2 pl-4 text-sm text-ivoire shadow-flottant transition-[opacity,translate] duration-300 ease-(--ease-sortie) starting:translate-y-2 starting:opacity-0"
+            className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-[14px] border border-filet-fort bg-carte-2 py-3 pr-2 pl-4 text-sm text-encre shadow-flottant transition-[opacity,translate] duration-300 ease-(--ease-sortie) starting:translate-y-2 starting:opacity-0"
           >
             <span
               aria-hidden="true"
@@ -69,7 +69,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
               onClick={() => {
                 retirer(n.id)
               }}
-              className="grid size-8 shrink-0 place-items-center rounded-full text-ivoire-3 transition-colors hover:bg-surface-3 hover:text-ivoire [&_svg]:size-4"
+              className="grid size-8 shrink-0 place-items-center rounded-full text-encre-3 transition-colors hover:bg-carte-3 hover:text-encre [&_svg]:size-4"
               aria-label="Fermer la notification"
             >
               <X />

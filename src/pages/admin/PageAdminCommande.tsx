@@ -284,7 +284,7 @@ function ModaleRetour({ commande, onFermer }: { commande: DetailCommande; onFerm
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <span className="text-sm">
                   {l.nom}
-                  <span className="chiffres block text-[13px] text-ivoire-3">
+                  <span className="chiffres block text-[13px] text-encre-3">
                     {max} retournable(s) sur {l.quantite}
                   </span>
                 </span>
@@ -341,17 +341,17 @@ function PanneauWhatsApp({ id, ouvertLe }: { id: string; ouvertLe: string | null
     >
       {message.data ? (
         <details className="group">
-          <summary className="cursor-pointer text-sm text-or-clair hover:text-or">
+          <summary className="cursor-pointer text-sm text-or-texte hover:text-or">
             Voir le message reçu
           </summary>
-          <pre className="mt-3 font-sans text-[13px] leading-relaxed whitespace-pre-wrap text-ivoire-2">
+          <pre className="mt-3 font-sans text-[13px] leading-relaxed whitespace-pre-wrap text-encre-2">
             {message.data}
           </pre>
         </details>
       ) : message.isError ? (
-        <p className="text-sm text-ivoire-3">{versErreurApp(message.error).message}</p>
+        <p className="text-sm text-encre-3">{versErreurApp(message.error).message}</p>
       ) : (
-        <p className="text-sm text-ivoire-3">Chargement…</p>
+        <p className="text-sm text-encre-3">Chargement…</p>
       )}
     </Panneau>
   )
@@ -405,7 +405,7 @@ export function PageAdminCommande() {
     <section className="flex flex-col gap-6">
       <Link
         to="/admin/commandes"
-        className="inline-flex min-h-11 items-center gap-2 self-start text-sm text-ivoire-3 no-underline hover:text-ivoire [&_svg]:size-4"
+        className="inline-flex min-h-11 items-center gap-2 self-start text-sm text-encre-3 no-underline hover:text-encre [&_svg]:size-4"
       >
         <ArrowLeft aria-hidden="true" />
         Commandes
@@ -419,9 +419,7 @@ export function PageAdminCommande() {
             <Badge ton={STATUT_PAIEMENT[c.statutPaiement].ton}>
               {STATUT_PAIEMENT[c.statutPaiement].libelle}
             </Badge>
-            <span className="text-[13px] text-ivoire-3">
-              Reçue le {formaterDateHeure(c.creeLe)}
-            </span>
+            <span className="text-[13px] text-encre-3">Reçue le {formaterDateHeure(c.creeLe)}</span>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -516,13 +514,13 @@ export function PageAdminCommande() {
                   className="flex justify-between gap-4 px-5 py-3.5 text-[15px] sm:px-6"
                 >
                   <span>
-                    {l.nom} <span className="chiffres text-ivoire-3">× {l.quantite}</span>
+                    {l.nom} <span className="chiffres text-encre-3">× {l.quantite}</span>
                     {l.quantiteRetournee > 0 && (
                       <Badge ton="danger" className="ml-2">
                         {l.quantiteRetournee} retourné(s)
                       </Badge>
                     )}
-                    <span className="chiffres block text-[13px] text-ivoire-3">
+                    <span className="chiffres block text-[13px] text-encre-3">
                       {formaterFcfa(l.prixUnitaire)} l’unité
                     </span>
                   </span>
@@ -532,18 +530,18 @@ export function PageAdminCommande() {
             </ul>
             <dl className="flex flex-col gap-1.5 border-t border-filet px-5 py-4 text-sm sm:px-6">
               <div className="flex justify-between">
-                <dt className="text-ivoire-3">Sous-total</dt>
+                <dt className="text-encre-3">Sous-total</dt>
                 <dd className="chiffres">{formaterFcfa(c.sousTotal)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-ivoire-3">Livraison</dt>
+                <dt className="text-encre-3">Livraison</dt>
                 <dd className="chiffres">{formaterFcfa(c.fraisLivraison)}</dd>
               </div>
               <div className="flex justify-between text-[17px] font-semibold">
                 <dt>Total</dt>
-                <dd className="chiffres text-or-clair">
+                <dd className="chiffres text-or-texte">
                   {formaterFcfa(c.total)}{' '}
-                  <span className="text-[13px] font-normal text-ivoire-3">{c.devise}</span>
+                  <span className="text-[13px] font-normal text-encre-3">{c.devise}</span>
                 </dd>
               </div>
             </dl>
@@ -558,8 +556,8 @@ export function PageAdminCommande() {
                     <p className="text-sm font-semibold">
                       {EVENEMENT_COMMANDE[h.evenement] ?? h.evenement}
                     </p>
-                    <p className="text-[13px] text-ivoire-3">{formaterDateHeure(h.le)}</p>
-                    {h.motif && <p className="mt-1 text-[13px] text-ivoire-2">{h.motif}</p>}
+                    <p className="text-[13px] text-encre-3">{formaterDateHeure(h.le)}</p>
+                    {h.motif && <p className="mt-1 text-[13px] text-encre-2">{h.motif}</p>}
                   </div>
                 </li>
               ))}
@@ -585,12 +583,12 @@ export function PageAdminCommande() {
             <p className="text-[17px] font-semibold">
               <Link
                 to={`/admin/clientes/${c.cliente.id}`}
-                className="text-ivoire no-underline hover:text-or-clair"
+                className="text-encre no-underline hover:text-or-texte"
               >
                 {c.cliente.nom}
               </Link>
             </p>
-            <p className="chiffres mt-1 text-sm text-ivoire-2">{c.cliente.telephone}</p>
+            <p className="chiffres mt-1 text-sm text-encre-2">{c.cliente.telephone}</p>
           </Panneau>
 
           <PanneauWhatsApp id={c.id} ouvertLe={c.whatsappOuvertLe} />
@@ -606,7 +604,7 @@ export function PageAdminCommande() {
             {c.livraison && (
               <dl className="flex flex-col gap-3 text-sm">
                 <div>
-                  <dt className="text-ivoire-3">Adresse</dt>
+                  <dt className="text-encre-3">Adresse</dt>
                   <dd className="mt-0.5">
                     {[c.livraison.adresse, c.livraison.quartier, c.ville]
                       .filter(Boolean)
@@ -614,18 +612,18 @@ export function PageAdminCommande() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-ivoire-3">Point de repère</dt>
+                  <dt className="text-encre-3">Point de repère</dt>
                   <dd className="mt-0.5">{c.livraison.pointDeRepere}</dd>
                 </div>
                 {c.livraison.expedieeLe && (
                   <div>
-                    <dt className="text-ivoire-3">Expédiée</dt>
+                    <dt className="text-encre-3">Expédiée</dt>
                     <dd className="mt-0.5">{formaterDateHeure(c.livraison.expedieeLe)}</dd>
                   </div>
                 )}
                 {c.livraison.livreeLe && (
                   <div>
-                    <dt className="text-ivoire-3">Livrée</dt>
+                    <dt className="text-encre-3">Livrée</dt>
                     <dd className="mt-0.5">{formaterDateHeure(c.livraison.livreeLe)}</dd>
                   </div>
                 )}
@@ -640,12 +638,10 @@ export function PageAdminCommande() {
                 <span className="chiffres">{formaterFcfa(c.montantEncaisse ?? 0)}</span>
               </p>
               {c.referencePaiement && (
-                <p className="chiffres mt-1 text-[13px] text-ivoire-3">
-                  Réf. {c.referencePaiement}
-                </p>
+                <p className="chiffres mt-1 text-[13px] text-encre-3">Réf. {c.referencePaiement}</p>
               )}
               {c.payeLe && (
-                <p className="mt-1 text-[13px] text-ivoire-3">{formaterDateHeure(c.payeLe)}</p>
+                <p className="mt-1 text-[13px] text-encre-3">{formaterDateHeure(c.payeLe)}</p>
               )}
             </Panneau>
           )}

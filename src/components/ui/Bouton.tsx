@@ -38,7 +38,7 @@ export function Bouton({
 
 type PropsIcone = ButtonHTMLAttributes<HTMLButtonElement> & {
   libelle: string
-  variante?: Exclude<VarianteBouton, 'danger'>
+  variante?: Exclude<VarianteBouton, 'danger' | 'sur-menthe'>
   children: ReactNode
 }
 
@@ -57,11 +57,12 @@ export function BoutonIcone({
       aria-label={libelle}
       title={libelle}
       className={cx(
-        'inline-flex size-11 shrink-0 items-center justify-center rounded-full transition-colors duration-200 disabled:opacity-45 [&_svg]:size-[18px]',
-        variante === 'principal' && 'bg-or text-sur-or hover:bg-or-clair',
+        'inline-flex size-11 shrink-0 items-center justify-center rounded-full transition-colors duration-300 disabled:opacity-45 [&_svg]:size-[18px]',
+        variante === 'principal' && 'bg-encre text-fond hover:bg-encre-2',
+        variante === 'or' && 'bg-or text-sur-or hover:bg-or-fonce',
         variante === 'secondaire' &&
-          'border border-filet-fort bg-surface-2 text-ivoire-2 hover:border-or/70 hover:text-ivoire',
-        variante === 'fantome' && 'text-ivoire-2 hover:bg-surface-2 hover:text-ivoire',
+          'bg-carte text-encre-2 shadow-[inset_0_0_0_1px_var(--color-filet-fort)] hover:bg-carte-2 hover:text-encre',
+        variante === 'fantome' && 'text-encre-2 hover:bg-carte-2 hover:text-encre',
         className,
       )}
       {...props}

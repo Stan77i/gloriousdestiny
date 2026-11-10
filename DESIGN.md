@@ -1,87 +1,102 @@
 ---
 name: Glorious Destiny
-description: L'interface est l'étiquette — noir profond, dorure rare, ivoire pour lire.
+description: Le comptoir — pierre chaude, cartes blanches, encre pour agir, or pour ce qui compte, une teinte par univers.
 colors:
-  noir: "#0d0b09"
-  surface-1: "#15120f"
-  surface-2: "#1c1814"
-  surface-3: "#262019"
-  filet: "#2e271f"
-  filet-fort: "#43392d"
-  filet-champ: "#75664f"
-  ivoire: "#f3ede2"
-  ivoire-2: "#cbc0ae"
-  ivoire-3: "#9b8f7d"
+  fond: "#ecebe7"
+  carte: "#ffffff"
+  carte-2: "#f4f3f0"
+  carte-3: "#e6e4df"
+  filet: "#1918161a"
+  filet-fort: "#1918162e"
+  filet-champ: "#8c867b"
+  encre: "#1a1816"
+  encre-2: "#3b3833"
+  encre-3: "#66625b"
   or: "#d6a756"
-  or-clair: "#ecc887"
-  or-fonce: "#9c7432"
+  or-texte: "#8a5d10"
+  or-fonce: "#b8862c"
   sur-or: "#1a1206"
-  succes: "#5fbf86"
-  alerte: "#f0b23e"
-  danger: "#ef6a5b"
-  info: "#78a6e0"
-  serie-1: "#b8862c"
-  serie-2: "#3a82d4"
-  serie-3: "#d0613a"
-  serie-4: "#24a08e"
-  voile: "rgb(5 4 3 / 0.72)"
+  menthe: "#57d9a6"
+  sur-menthe: "#0d2a1e"
+  rose: "#f8dad0"
+  lilas: "#e4ddf3"
+  sauge: "#d4eee1"
+  sable: "#f4e6c3"
+  succes: "#11744a"
+  alerte: "#8f4706"
+  danger: "#b42318"
+  info: "#1f5bbd"
+  serie-1: "#b07a1f"
+  serie-2: "#2f6fc0"
+  serie-3: "#cf5a33"
+  serie-4: "#168f80"
+  voile: "rgb(26 24 22 / 0.42)"
 typography:
   display-xxl:
-    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "96px"
-    fontWeight: 500
-    lineHeight: 1.02
-    letterSpacing: "-0.01em"
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "-0.035em"
   display-xl:
-    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "84px"
-    fontWeight: 500
-    lineHeight: 1.02
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "-0.035em"
   display:
-    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "92px"
-    fontWeight: 500
-    lineHeight: 1.02
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "-0.035em"
   display-l:
-    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "64px"
-    fontWeight: 500
-    lineHeight: 1.02
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "-0.035em"
   display-m:
-    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "56px"
-    fontWeight: 500
-    lineHeight: 1.02
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "-0.035em"
   headline-l:
-    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "52px"
-    fontWeight: 500
+    fontWeight: 600
     lineHeight: 1.05
+    letterSpacing: "-0.03em"
   headline-m:
-    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "44px"
-    fontWeight: 500
+    fontWeight: 600
     lineHeight: 1.05
+    letterSpacing: "-0.03em"
   headline:
-    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "40px"
-    fontWeight: 500
+    fontWeight: 600
     lineHeight: 1.05
+    letterSpacing: "-0.03em"
   headline-s:
-    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "34px"
-    fontWeight: 500
+    fontWeight: 600
     lineHeight: 1.1
+    letterSpacing: "-0.03em"
   headline-xs:
-    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "28px"
-    fontWeight: 500
-    lineHeight: 1.15
+    fontWeight: 600
+    lineHeight: 1.1
+    letterSpacing: "-0.03em"5
   figure:
     fontFamily: "Urbanist Variable, system-ui, sans-serif"
-    fontSize: "32px"
+    fontSize: "44px"
     fontWeight: 600
-    letterSpacing: "-0.02em"
+    letterSpacing: "-0.035em"
   price-l:
     fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "26px"
@@ -104,7 +119,7 @@ typography:
   body:
     fontFamily: "Urbanist Variable, system-ui, sans-serif"
     fontSize: "15px"
-    fontWeight: 450
+    fontWeight: 500
     lineHeight: 1.6
   label:
     fontFamily: "Urbanist Variable, system-ui, sans-serif"
@@ -119,9 +134,10 @@ typography:
 rounded:
   badge: "9999px"
   control: "9999px"
-  field: "10px"
-  alert: "12px"
-  panel: "16px"
+  field: "9999px"
+  textarea: "18px"
+  alert: "18px"
+  panel: "28px"
 spacing:
   gutter-mobile: "16px"
   gutter-tablet: "24px"
@@ -130,41 +146,55 @@ spacing:
   section-gap: "56px"
 components:
   button-primary:
-    backgroundColor: "{colors.or}"
-    textColor: "{colors.sur-or}"
+    backgroundColor: "{colors.encre}"
+    textColor: "{colors.fond}"
     rounded: "{rounded.control}"
     height: "44px"
     padding: "0 20px"
   button-primary-hover:
-    backgroundColor: "{colors.or-clair}"
+    backgroundColor: "{colors.encre-2}"
+  button-accent:
+    backgroundColor: "{colors.or}"
+    textColor: "{colors.sur-or}"
+    rounded: "{rounded.control}"
+    height: "44px"
+    padding: "0 20px"
   button-secondary:
-    backgroundColor: "{colors.surface-2}"
-    textColor: "{colors.ivoire}"
+    backgroundColor: "{colors.carte}"
+    textColor: "{colors.encre}"
     rounded: "{rounded.control}"
     height: "44px"
     padding: "0 20px"
   button-ghost:
-    textColor: "{colors.ivoire-2}"
+    textColor: "{colors.encre-2}"
     rounded: "{rounded.control}"
     height: "44px"
   input:
-    backgroundColor: "{colors.surface-1}"
-    textColor: "{colors.ivoire}"
+    backgroundColor: "{colors.carte}"
+    textColor: "{colors.encre}"
     rounded: "{rounded.field}"
     height: "48px"
-    padding: "0 14px"
+    padding: "0 16px"
   panel:
-    backgroundColor: "{colors.surface-1}"
+    backgroundColor: "{colors.carte}"
     rounded: "{rounded.panel}"
     padding: "{spacing.panel-padding}"
-  nav-pill-active:
+  tile-done:
+    backgroundColor: "{colors.menthe}"
+    textColor: "{colors.sur-menthe}"
+    rounded: "{rounded.panel}"
+  tile-todo:
     backgroundColor: "{colors.or}"
     textColor: "{colors.sur-or}"
+    rounded: "{rounded.panel}"
+  nav-pill-active:
+    backgroundColor: "{colors.encre}"
+    textColor: "{colors.fond}"
     rounded: "{rounded.control}"
     height: "40px"
   badge:
-    backgroundColor: "{colors.surface-3}"
-    textColor: "{colors.ivoire-2}"
+    backgroundColor: "{colors.carte-3}"
+    textColor: "{colors.encre-2}"
     rounded: "{rounded.badge}"
     height: "24px"
 ---
@@ -173,90 +203,92 @@ components:
 
 ## Overview
 
-**Étoile polaire : « l'étiquette dorée ».** Le site et l'administration parlent la langue des emballages Glorious Destiny : marbre noir, veine d'or, lettrage clair. Le noir est chaud (brun-noir, jamais bleu-noir). L'or s'emploie comme une dorure à chaud : rare, fin, posé sur ce qui compte (l'action principale, l'état actif, le focus, un prix). L'ivoire sert à lire.
+**Étoile polaire : « le comptoir ».** Version 2, adoptée après l'étude du tableau de bord de référence Kavora (extraction Dembrandt de ses jetons, captures clair et sombre). On en garde la philosophie : un fond de pierre chaude, des cartes blanches très arrondies posées dessus, tout le reste en pilules ; l'encre (presque noire) pour agir ; un seul accent vif pour ce qui compte ; des tuiles pleines de couleur pour ce qui demande ou mérite l'attention ; une seule famille de caractères, semi-grasse et serrée en grand.
 
-Deux registres partagent ce monde. Le **site public** (Persuade) est éditorial : grands titres en didone, vrais visuels produits, beaucoup d'air. L'**administration** (Operate) reprend la grammaire du tableau de bord de référence donné par le client (Caelo) : navigation en pilules, panneaux sombres, chiffres nets ; la précision passe avant l'effet.
+Glorious Destiny y met sa marque : l'**or** de ses étiquettes tient le rôle de l'accent, la **veine d'or** reste la signature, et chaque **univers** reçoit une teinte douce (perruques rose poudré, cils lilas, produits de pose sauge, salon sable). La **menthe** dit « fait, livré, disponible ».
 
-Anti-références : le salon de coiffure rose et pailleté, les écritures manuscrites, le tableau de bord SaaS sombre à néon, le texte en dégradé.
+Deux thèmes : **clair par défaut** (la marque se présente ainsi), **sombre** au choix de la visiteuse (bouton lune/soleil, mémorisé sur l'appareil, appliqué avant le premier rendu). Le site public (Persuade) et l'administration (Operate) partagent exactement les mêmes composants.
 
-Source de vérité : `src/index.css` (jetons `@theme`), composants dans `src/components/`, vitrine vivante sur `/systeme-design` (développement) et `/admin/systeme-design` (personnel).
+Anti-références : le salon rose pailleté, les écritures manuscrites, le néon, le texte en dégradé, le gris froid bleuté.
+
+Source de vérité : `src/index.css` (variables `--gd-*` par thème, jetons `@theme`), `src/domain/univers.ts` (teintes par univers), composants dans `src/components/`, vitrine vivante sur `/systeme-design` (développement) et `/admin/systeme-design` (personnel).
 
 ## Colors
 
-Stratégie **retenue (Restrained)** : neutres teintés du monde (brun-noir) + un accent, l'or.
+Stratégie **neutres chauds + un accent + teintes de rôle**. Chaque jeton a deux valeurs (clair · sombre) ; les noms disent le rôle, pas la couleur.
 
-- **Fonds** : `noir` (page) puis quatre marches `surface-1` → `surface-3` pour la profondeur (panneau, contrôle, survol).
-- **Filets** : `filet` (séparateurs 1 px), `filet-fort` (bords de contrôles secondaires), `filet-champ` (bords des champs, ≥ 3:1 pour l'accessibilité).
-- **Texte** : `ivoire` (principal, ≥ 13,8:1), `ivoire-2` (secondaire, ≥ 8,9:1), `ivoire-3` (discret, ≥ 5:1). Jamais de gris neutre : toujours teinté chaud.
-- **Or** : `or` (action principale, actif, focus, ≥ 7,3:1 en texte), `or-clair` (survol, prix), `or-fonce` (appui), `sur-or` (texte posé sur l'or, 8,4:1).
-- **États** (réservés, jamais décoratifs, toujours accompagnés d'une icône ou d'un mot) : `succes`, `alerte`, `danger`, `info`.
-- **Séries de graphiques** : `serie-1` à `serie-4` en ordre fixe (Douala, Yaoundé, Garoua, Abidjan). Validées par le validateur dataviz sur `surface-1` (bande de luminance, chroma, séparation daltonisme, contraste). Une 5e série se replie en « Autres ».
+- **Fonds** : `fond` (page, pierre chaude #ecebe7 · #111110), `carte` (blanc · #1b1a19), `carte-2` (survol, pastilles), `carte-3` (pistes de jauges, badges neutres).
+- **Filets** : `filet` (séparateurs), `filet-fort` (contour des pilules secondaires, en ombre interne 1 px), `filet-champ` (bord des champs, ≥ 3:1).
+- **Encre** : `encre` (texte et fond de l'action principale ; s'inverse en sombre), `encre-2` (secondaire), `encre-3` (discret, ≥ 4,7:1 sur toutes les cartes).
+- **Or** : `or` (fond : point actif, compteur du panier, tuile « à traiter », bouton d'accent `or`), `or-texte` (or lisible en texte : prix, mot d'accent du titre ; 4,5:1 minimum), `or-fonce` (appui), `sur-or` (texte sur l'or, 8,4:1).
+- **Menthe** : `menthe` + `sur-menthe` : tuile pleine « fait / disponible / livré » et bloc livraison.
+- **Teintes d'univers** : `rose` (perruques), `lilas` (cils), `sauge` (produits de pose), `sable` (salon, services). Fonds uniquement, texte toujours en encre dessus (≥ 4,6:1 même pour `encre-3`). Correspondance en code : `TEINTE_TYPE_PRODUIT`, `TEINTE_SALON`.
+- **États** (réservés, toujours avec un mot ou une icône) : `succes`, `alerte`, `danger`, `info`, utilisés en texte et en fond à 12 %.
+- **Séries de graphiques** : `serie-1` à `serie-4` en ordre fixe (Douala, Yaoundé, Garoua, Abidjan), une valeur par thème.
 
 ## Typography
 
-Deux voix, jamais mélangées dans un même rôle.
+**Une seule voix : Urbanist** (auto-hébergée, variable). C'est la police de la marque de référence ; Bodoni Moda est retirée.
 
-- **Bodoni Moda** (didone des magazines de mode, auto-hébergée) : `display` et `headline`, **site public et titres de sections de la vitrine uniquement**. Classe utilitaire `.titre-affiche`. L'italique est permis pour une seule ligne d'accent.
-- **Urbanist** (géométrique, auto-hébergée) : tout le reste — interface, formulaires, prix, chiffres, administration. Graisse de lecture 450 (la 400 est trop fine sur fond noir au soleil).
-- Les grands chiffres (tuiles) restent en Urbanist, chiffres proportionnels. Les colonnes de tableaux et les axes utilisent `.chiffres` (chiffres tabulaires).
-- Pas de sur-titre (« eyebrow ») au-dessus d'un titre : le titre porte seul son poids. Les métadonnées passent sous le titre.
-- **Échelle** : affiche didone 96 / 92 / 84 / 64 / 56 px (premier écran, réduite sur mobile), titres didone 52 / 44 / 40 / 34 / 28 px, interface Urbanist 26 (prix) / 21 / 19 / 17 / 15 / 13 / 11 px, chiffre clé 32 px. Aucune autre taille.
-- Titres en `text-wrap: balance`, paragraphes en `pretty`, mesure ≤ 75 caractères.
+- **Affiche** (`.titre-affiche`) : graisse 600, approche −0,035 em, interligne 1. Un mot peut passer en `or-texte` pour l'accent (jamais d'italique : Urbanist n'en a pas de vrai).
+- **Interface** : graisse 500 pour le texte courant, 600 pour titres, libellés et chiffres.
+- **Chiffre clé** (tuiles) : 44 px, 600, −0,035 em. Colonnes et axes en `.chiffres` (tabulaires).
+- **Échelle** : affiche 96 / 92 / 84 / 64 / 56 px, titres 52 / 44 / 40 / 34 / 28 px, interface 26 / 21 / 19 / 17 / 15 / 13 / 11 px. Aucune autre taille.
+- En-têtes de tableaux en casse normale, 13 px, `encre-3` (plus de petites capitales espacées).
+- Pas de sur-titre au-dessus d'un titre.
 
 ## Layout
 
-- Mobile d'abord : gouttières 16 px (mobile), 24 px (tablette), 40 px (bureau) ; conteneur `max-w-7xl` public, 1440 px admin.
-- Sections publiques séparées par un filet et 56 px d'air ; plus d'espace au-dessus d'un titre qu'en dessous.
-- Grilles fluides (`grid-cols-2` → 3 → 4 pour le catalogue) ; aucune largeur fixe en pixels qui déborde.
-- Tableaux : sous 640 px, chaque ligne devient une fiche empilée (libellé + valeur), sans défilement horizontal.
+- Mobile d'abord : gouttières 16 / 24 / 40 px ; conteneur `max-w-7xl` public, 1440 px admin.
+- Les sections ne sont plus séparées par des filets : ce sont les cartes et les tuiles colorées qui découpent la page.
+- Grilles fluides ; tableaux en fiches empilées sous 640 px ; la colonne d'actions passe en pleine largeur (`pleineLargeur`).
 - Cibles tactiles ≥ 44 px (champs 48 px).
 
 ## Elevation & Depth
 
-Profondeur **par étagement tonal**, pas par ombres décoratives : chaque niveau monte d'une marche de surface. Trois ombres seulement, toujours décalées et floues :
+Profondeur par **contraste carte/fond** : la carte blanche sur la pierre suffit. Deux ombres, une valeur par thème :
 
-- `panneau` : reflet interne de 1 px + ombre basse diffuse (panneaux, cartes).
-- `flottant` : modales, tiroirs, notifications, info-bulles.
-- `or` : halo doré décalé sous l'action principale et la pilule active (la dorure qui accroche la lumière).
+- `panneau` : 1 px très doux en clair ; ombre basse diffuse en sombre.
+- `flottant` : modales, tiroirs, survol des cartes produit, légende flottante du premier écran.
 
-Le fond des modales est le `voile` (noir à 72 %) avec un léger flou (2 px).
+Le voile des modales est l'encre à 42 % (clair) ou le noir à 62 % (sombre), flou 3 px.
 
 ## Shapes
 
-- Contrôles (boutons, pilules de navigation, badges, compteurs) : **pilule** complète.
-- Champs : 10 px. Alertes : 12 px. Panneaux, cartes, modales : 16 px.
-- Filets de 1 px partout ; aucune bordure latérale colorée épaisse.
-- Signature : **la veine d'or** (`VeineOr`), un filet organique tracé en SVG d'après le marbre des étiquettes, utilisé seul comme séparateur ou soulignement d'un grand titre. Jamais plus d'une veine par écran.
+- Contrôles, champs d'une ligne, sélecteurs, badges, navigation : **pilule** complète.
+- Zones de texte, alertes, vignettes internes : 18 à 22 px.
+- Cartes, panneaux, tuiles, modales : **28 px**. Une carte produit a 8 px de marge intérieure : la vignette teintée s'y loge en 22 px.
+- Signature : la **veine d'or** (`VeineOr`), une seule par écran. Logo provisoire : pastille d'encre frappée d'un « G » d'or + nom en Urbanist 600 (`Signature`).
+
+## Motion
+
+Une courbe : `cubic-bezier(0.22, 1, 0.36, 1)` (`--ease-sortie`), 300 ms pour les couleurs et les survols, soulèvement de 4 px des cartes au survol. Le thème bascule avec une transition de fond de 320 ms. Tout est neutralisé par `prefers-reduced-motion`.
 
 ## Components
 
-- **Bouton** (`Bouton`, `classesBouton`) : principal (or, reflet au survol), secondaire (surface + filet, bord doré au survol), fantôme, danger (contour). Tailles petit 36 px / normal 44 px / grand 52 px. État « en cours » : indicateur + désactivé + `aria-busy`. **Un seul bouton principal doré par écran.** `BoutonIcone` exige un libellé.
-- **Champs** (`Champ` + `Saisie`, `ZoneTexte`, `Selection`, `CaseACocher`, `Interrupteur`) : libellé au-dessus, aide ou erreur dessous reliées en ARIA ; focus = bord or + halo doré 3 px ; erreur = bord danger + message qui dit comment corriger.
-- **Badge** et **Compteur** : pastille de couleur + mot ; jamais la couleur seule.
-- **Alerte** : message dans la page, icône + titre + texte + actions ; teinte de fond à 8 %.
-- **Panneau** et **TuileChiffre** : surface de base de l'admin ; la tuile donne libellé, valeur, variation signée et période nommée (couleur = favorable ou non, flèche = sens).
-- **Navigation** : `NavPilules` (barre en pilules avec compteurs, actif doré) ; `Onglets` (motif WAI-ARIA, flèches, filet or sous l'actif).
-- **Modale** (`<dialog>` natif) : `centre` pour une décision, `tiroir` pour un détail ; focus piégé, Échap, retour du focus. À réserver aux tâches qui exigent une interruption.
-- **Tableau** : en-têtes en petites capitales espacées, chiffres alignés à droite, fiches empilées sur mobile.
-- **Graphiques** : `GraphiqueColonnes` (colonnes ≤ 24 px, bout arrondi 4 px, base carrée, période en cours en or, info-bulle, tableau équivalent pour lecteurs d'écran, une étiquette sur deux sur mobile) ; `BarreRepartition` (barre segmentée 28 px, part écrite si elle tient, légende).
-- **États** : `EtatChargement`, `EtatVide` (icône, titre, explication, action), `EtatErreur` (message + Réessayer), `Squelette`.
-- **Notifications** : toasts en bas à droite, icône + message ; erreurs persistantes jusqu'à fermeture.
-- **CarteProduit** : produit détouré sur socle noir chaud ; photo d'usage au survol (souris seulement) ; prix en or clair ou « Prix sur demande » ; bouton « Ajouter » discret (secondaire), empilé sous le prix sur mobile.
-- **Signature** : nom de marque en didone espacée, à remplacer par le logo officiel dès réception.
+- **Bouton** : `principal` (pilule d'encre, **une par écran**), `or` (accent, rare), `secondaire` (carte blanche + contour interne 1 px), `fantome`, `danger`, `sur-menthe` (sur une tuile menthe). Tailles 36 / 44 / 52 px.
+- **Champs** : pilules de 48 px (zone de texte 18 px) ; focus = bord encre + halo doré 4 px ; case cochée en encre, interrupteur actif en menthe.
+- **Navigation** : barre de pilules blanche, actif en encre plein (inversé en sombre), au public comme en admin. `Onglets` : filet d'encre sous l'actif.
+- **TuileChiffre** : fond `carte`, `or` (à traiter : commandes à confirmer), `menthe` (disponible, fait) ou une teinte (stock bas = sable, épuisé = rose, à expédier = sauge). La couleur ne s'allume que si la valeur l'exige.
+- **CarteProduit** : vignette teintée selon l'univers, prix en `or-texte`, bouton « Ajouter » secondaire.
+- **EnTetePage** : avec `teinte`, l'en-tête devient une grande carte à la couleur de l'univers (Perruques, Cils, Catalogue, Services, Rendez-vous).
+- **Premier écran** : titre en affiche, un mot en or ; photo en carte 28 px avec légende en pilule flottante et flèche d'encre.
+- **Rituel de pose** : quatre cartes teintées, numéro en pastille blanche.
+- **Bloc livraison** : grande tuile menthe, villes en pastilles.
+- **Badge**, **Alerte**, **Modale**, **Tableau**, **États**, **Notifications** : inchangés dans leur rôle, redessinés aux nouveaux jetons.
 
 ## Do's and Don'ts
 
 **À faire**
-- Garder l'or rare : action principale, actif, focus, prix.
-- Utiliser les vrais visuels fournis (détourés et photos d'usage) ; marquer « Données d'exemple » toute donnée de démonstration.
-- Doubler chaque état d'une icône ou d'un mot.
-- Respecter `prefers-reduced-motion` : la veine apparaît déjà tracée, les transitions sont neutralisées.
-- Tester à 390 px et 1440 px avant de livrer.
+- Une seule pilule d'encre pleine par écran ; l'or plein reste rare et signifiant.
+- Colorer une tuile seulement quand sa valeur appelle une action ou dit une réussite.
+- Garder la correspondance univers → teinte partout (carte produit, en-tête, rituel).
+- Vérifier chaque écran dans les deux thèmes, à 390 px et 1440 px.
+- Utiliser les vrais visuels ; marquer « Données d'exemple » toute démonstration.
 
 **À ne pas faire**
-- Plusieurs boutons dorés pleins côte à côte (par exemple « Ajouter » doré sur chaque carte).
-- Texte en dégradé, verre décoratif, néon, ombres dures décalées.
-- Rose pailleté, typographies manuscrites, clichés de salon.
-- Sur-titres au-dessus des titres, numéros de sections décoratifs.
-- Couleurs d'état employées comme couleurs de séries, ou séries recyclées.
+- Mettre du texte en or plein (`or`) : utiliser `or-texte`.
+- Employer une teinte d'univers comme couleur d'état, ou une couleur d'état comme série.
+- Faux italique, deuxième police, texte en dégradé, néon, verre décoratif.
+- Remettre des filets entre les sections du site public.
 - Inventer un prix, un avis, un chiffre ou un produit.

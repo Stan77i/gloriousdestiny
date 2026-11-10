@@ -58,8 +58,8 @@ export function PageConnexion() {
   return (
     <section className="mx-auto flex max-w-sm flex-col gap-7 px-4 py-16 sm:py-24">
       <div>
-        <h1 className="titre-affiche text-[44px] text-ivoire">Connexion</h1>
-        <p className="mt-2 text-sm text-ivoire-3">Espace réservé à l’équipe Glorious Destiny.</p>
+        <h1 className="titre-affiche text-[44px] text-encre">Connexion</h1>
+        <p className="mt-2 text-sm text-encre-3">Espace réservé à l’équipe Glorious Destiny.</p>
       </div>
       {auth.statut === 'connecte' && !auth.profil && (
         <Alerte ton="alerte" titre="Ce compte n'a pas accès à l'administration." />

@@ -69,7 +69,7 @@ export function PageProduit() {
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
       <Link
         to={retour}
-        className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm text-ivoire-3 no-underline hover:text-ivoire [&_svg]:size-4"
+        className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm text-encre-3 no-underline hover:text-encre [&_svg]:size-4"
       >
         <ArrowLeft aria-hidden="true" />
         {p.type === 'perruque' ? 'Perruques' : 'Catalogue'}
@@ -78,7 +78,7 @@ export function PageProduit() {
       <div className="grid gap-10 pt-4 pb-16 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
         {/* Visuels */}
         <div className="flex flex-col gap-3">
-          <div className="relative aspect-square overflow-hidden rounded-panneau border border-filet bg-[radial-gradient(120%_80%_at_50%_100%,var(--color-surface-3),var(--color-noir)_70%)]">
+          <div className="relative aspect-square overflow-hidden rounded-panneau border border-filet bg-[radial-gradient(120%_80%_at_50%_100%,var(--color-carte-3),var(--color-fond)_70%)]">
             {vue === 'usage' && visuel.photo ? (
               <img
                 src={visuel.photo.grande}
@@ -114,7 +114,7 @@ export function PageProduit() {
                     setVue(id)
                   }}
                   className={cx(
-                    'relative size-20 overflow-hidden rounded-[12px] border bg-surface-1 transition-colors',
+                    'relative size-20 overflow-hidden rounded-[12px] border bg-carte transition-colors',
                     vue === id ? 'border-or' : 'border-filet hover:border-filet-fort',
                   )}
                 >
@@ -135,21 +135,21 @@ export function PageProduit() {
 
         {/* Informations et achat */}
         <div className="flex flex-col">
-          <h1 className="titre-affiche text-[40px] text-ivoire sm:text-[56px]">{p.nom}</h1>
-          <p className="mt-2 text-sm text-ivoire-3">{p.categorie.nom}</p>
+          <h1 className="titre-affiche text-[40px] text-encre sm:text-[56px]">{p.nom}</h1>
+          <p className="mt-2 text-sm text-encre-3">{p.categorie.nom}</p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
-            <p className="text-[26px] font-semibold text-or-clair">
+            <p className="text-[26px] font-semibold text-or-texte">
               {formaterFcfa(variante?.prix ?? p.prix)}
             </p>
             {variante && variante.libelle !== 'Format standard' && (
-              <span className="text-ivoire-3">· {variante.libelle}</span>
+              <span className="text-encre-3">· {variante.libelle}</span>
             )}
             {statut === 'disponible' && <Badge ton="succes">En stock</Badge>}
             {statut === 'bientot_epuise' && <Badge ton="alerte">Bientôt épuisé</Badge>}
             {statut === 'epuise' && <Badge>Épuisé</Badge>}
           </div>
           {p.description && (
-            <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-ivoire-2">
+            <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-encre-2">
               {p.description}
             </p>
           )}
@@ -182,7 +182,7 @@ export function PageProduit() {
             message={`Bonjour, j'ai une question sur ${p.nom}.`}
           />
 
-          <ul className="mt-10 flex flex-col gap-4 border-t border-filet pt-8 text-sm text-ivoire-2">
+          <ul className="mt-10 flex flex-col gap-4 border-t border-filet pt-8 text-sm text-encre-2">
             <li className="flex gap-3 [&_svg]:size-5 [&_svg]:shrink-0 [&_svg]:text-or">
               <Truck aria-hidden="true" />
               Livraison à Douala, Yaoundé, Garoua et Abidjan.
@@ -197,7 +197,7 @@ export function PageProduit() {
 
       {similaires && similaires.length > 0 && (
         <section aria-labelledby="titre-similaires" className="border-t border-filet py-16">
-          <h2 id="titre-similaires" className="titre-affiche mb-8 text-[34px] text-ivoire">
+          <h2 id="titre-similaires" className="titre-affiche mb-8 text-[34px] text-encre">
             Dans la même gamme
           </h2>
           <GrilleProduits

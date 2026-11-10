@@ -32,7 +32,7 @@ export function BarreRepartition({
               key={p.libelle}
               title={`${p.libelle} · ${formater(p.valeur)} · ${pourcent(p.valeur)} %`}
               className={cx(
-                'flex items-center overflow-hidden rounded-[4px] px-2 text-xs font-semibold text-noir',
+                'flex items-center overflow-hidden rounded-[4px] px-2 text-xs font-semibold text-fond',
                 COULEURS_SERIES[i],
               )}
               style={{ flexGrow: p.valeur, flexBasis: 0 }}
@@ -42,7 +42,7 @@ export function BarreRepartition({
           ) : null,
         )}
       </div>
-      <ul className="flex flex-wrap gap-x-5 gap-y-1.5 text-[13px] text-ivoire-2" aria-hidden="true">
+      <ul className="flex flex-wrap gap-x-5 gap-y-1.5 text-[13px] text-encre-2" aria-hidden="true">
         {visibles.map((p, i) => (
           <li key={p.libelle} className="inline-flex items-center gap-2">
             <span className={cx('size-2.5 rounded-[3px]', COULEURS_SERIES[i])} />

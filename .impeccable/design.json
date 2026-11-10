@@ -1,38 +1,139 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-10T18:00:00Z",
+  "generatedAt": "2026-11-10T21:00:00Z",
   "title": "Design System: Glorious Destiny",
   "extensions": {
     "colorMeta": {
-      "noir": { "role": "neutral", "displayName": "Noir d'étiquette" },
-      "surface-1": { "role": "neutral", "displayName": "Marbre sombre" },
-      "ivoire": { "role": "neutral", "displayName": "Ivoire" },
-      "or": { "role": "primary", "displayName": "Dorure", "tonalRamp": ["#9c7432", "#d6a756", "#ecc887"] },
-      "succes": { "role": "status", "displayName": "Succès" },
-      "alerte": { "role": "status", "displayName": "Alerte" },
-      "danger": { "role": "status", "displayName": "Danger" },
-      "info": { "role": "status", "displayName": "Info" }
+      "fond": {
+        "role": "neutral",
+        "displayName": "Pierre chaude"
+      },
+      "carte": {
+        "role": "neutral",
+        "displayName": "Carte"
+      },
+      "encre": {
+        "role": "primary",
+        "displayName": "Encre",
+        "purpose": "Texte et action principale"
+      },
+      "or": {
+        "role": "accent",
+        "displayName": "Or",
+        "tonalRamp": [
+          "#b8862c",
+          "#d6a756",
+          "#8a5d10"
+        ]
+      },
+      "menthe": {
+        "role": "accent",
+        "displayName": "Menthe",
+        "purpose": "Fait, livré, disponible"
+      },
+      "rose": {
+        "role": "category",
+        "displayName": "Rose poudré",
+        "purpose": "Univers perruques"
+      },
+      "lilas": {
+        "role": "category",
+        "displayName": "Lilas",
+        "purpose": "Univers cils"
+      },
+      "sauge": {
+        "role": "category",
+        "displayName": "Sauge",
+        "purpose": "Univers produits de pose"
+      },
+      "sable": {
+        "role": "category",
+        "displayName": "Sable",
+        "purpose": "Univers salon"
+      },
+      "succes": {
+        "role": "status",
+        "displayName": "Succès"
+      },
+      "alerte": {
+        "role": "status",
+        "displayName": "Alerte"
+      },
+      "danger": {
+        "role": "status",
+        "displayName": "Danger"
+      },
+      "info": {
+        "role": "status",
+        "displayName": "Info"
+      }
     },
+    "themes": [
+      {
+        "name": "clair",
+        "default": true,
+        "selector": ":root"
+      },
+      {
+        "name": "sombre",
+        "selector": ":root[data-theme='sombre']"
+      }
+    ],
     "typographyMeta": {
-      "display": { "displayName": "Affiche didone", "purpose": "Grands titres du site public uniquement." },
-      "body": { "displayName": "Texte Urbanist", "purpose": "Interface, formulaires, administration ; graisse 450." },
-      "figure": { "displayName": "Chiffre clé", "purpose": "Valeurs des tuiles ; chiffres proportionnels." }
+      "display": {
+        "displayName": "Affiche Urbanist",
+        "purpose": "Grands titres : 600, approche −0,035 em."
+      },
+      "body": {
+        "displayName": "Texte Urbanist",
+        "purpose": "Interface et lecture ; graisse 500."
+      },
+      "figure": {
+        "displayName": "Chiffre clé",
+        "purpose": "Valeurs des tuiles, 44 px."
+      }
     },
     "shadows": [
-      { "name": "panneau", "value": "0 1px 0 0 rgb(255 255 255 / 0.03) inset, 0 18px 40px -24px rgb(0 0 0 / 0.9)", "purpose": "Panneaux et cartes." },
-      { "name": "flottant", "value": "0 24px 60px -20px rgb(0 0 0 / 0.85), 0 2px 8px -2px rgb(0 0 0 / 0.6)", "purpose": "Modales, tiroirs, toasts, info-bulles." },
-      { "name": "or", "value": "0 10px 22px -12px rgb(214 167 86 / 0.65)", "purpose": "Sous l'action principale et la pilule active." }
+      {
+        "name": "panneau",
+        "value": "0 1px 2px #14120c0a",
+        "purpose": "Cartes et panneaux (thème clair)."
+      },
+      {
+        "name": "flottant",
+        "value": "0 2px 6px #14120c14, 0 34px 70px -26px #14120c59",
+        "purpose": "Modales, tiroirs, survol des cartes."
+      }
     ],
     "motion": [
-      { "name": "ease-sortie", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Entrées, survols, modales." },
-      { "name": "reflet", "value": "1.1s ease-sortie", "purpose": "Reflet doré qui traverse le bouton principal au survol." },
-      { "name": "veine", "value": "1.6s ease-sortie (pathLength 0 → 1)", "purpose": "La veine d'or se dessine à l'apparition ; déjà tracée si mouvement réduit." }
+      {
+        "name": "ease-sortie",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Survols, entrées, modales (300 ms)."
+      },
+      {
+        "name": "veine",
+        "value": "1.6s ease-sortie (pathLength 0 → 1)",
+        "purpose": "La veine d'or se dessine ; déjà tracée si mouvement réduit."
+      }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "640px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1024px" },
-      { "name": "xl", "value": "1280px" }
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
     ]
   },
   "components": [
@@ -40,84 +141,69 @@
       "name": "Bouton principal",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "L'unique action dorée d'un écran.",
-      "html": "<button class=\"ds-btn-principal\">Commander sur WhatsApp</button>",
-      "css": ".ds-btn-principal { display:inline-flex; align-items:center; min-height:44px; padding:0 20px; border:none; border-radius:9999px; background:#d6a756; color:#1a1206; font:600 14px/1 'Urbanist Variable', system-ui, sans-serif; box-shadow:0 10px 22px -12px rgb(214 167 86 / 0.65); cursor:pointer; transition:background-color .2s; } .ds-btn-principal:hover { background:#ecc887; } .ds-btn-principal:active { background:#9c7432; } .ds-btn-principal:focus-visible { outline:2px solid #d6a756; outline-offset:3px; }"
+      "description": "La pilule d'encre : l'action attendue, une par écran.",
+      "html": "<button class=\"ds-btn-principal\">Découvrir la gamme</button>",
+      "css": ".ds-btn-principal{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border:none;border-radius:9999px;background:#1a1816;color:#ecebe7;font:600 14px/1 'Urbanist Variable', system-ui, sans-serif;cursor:pointer;transition:background-color .3s cubic-bezier(.22,1,.36,1)}.ds-btn-principal:hover{background:#3b3833}.ds-btn-principal:focus-visible{outline:2px solid #1a1816;outline-offset:3px}"
     },
     {
       "name": "Bouton secondaire",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "Actions de second rang, dont « Ajouter » sur les cartes produits.",
+      "description": "Carte blanche en pilule, contour interne 1 px.",
       "html": "<button class=\"ds-btn-secondaire\">Prendre rendez-vous</button>",
-      "css": ".ds-btn-secondaire { display:inline-flex; align-items:center; min-height:44px; padding:0 20px; border:1px solid #43392d; border-radius:9999px; background:#1c1814; color:#f3ede2; font:600 14px/1 'Urbanist Variable', system-ui, sans-serif; cursor:pointer; transition:border-color .2s, background-color .2s; } .ds-btn-secondaire:hover { border-color:rgb(214 167 86 / 0.7); background:#262019; } .ds-btn-secondaire:focus-visible { outline:2px solid #d6a756; outline-offset:3px; }"
+      "css": ".ds-btn-secondaire{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border:none;border-radius:9999px;background:#fff;color:#1a1816;box-shadow:inset 0 0 0 1px #1918162e;font:600 14px/1 'Urbanist Variable', system-ui, sans-serif;cursor:pointer}.ds-btn-secondaire:hover{background:#f4f3f0}"
     },
     {
       "name": "Champ",
       "kind": "input",
       "refersTo": "input",
-      "description": "Champ de 48 px, bord lisible, focus doré.",
-      "html": "<label class=\"ds-champ\"><span>Quartier</span><input placeholder=\"Bonapriso\" /></label>",
-      "css": ".ds-champ { display:flex; flex-direction:column; gap:6px; font:600 13px 'Urbanist Variable', sans-serif; color:#cbc0ae; } .ds-champ input { min-height:48px; padding:0 14px; border:1px solid #75664f; border-radius:10px; background:#15120f; color:#f3ede2; font:450 15px 'Urbanist Variable', sans-serif; } .ds-champ input::placeholder { color:#9b8f7d; } .ds-champ input:focus { outline:none; border-color:#d6a756; box-shadow:0 0 0 3px rgb(214 167 86 / 0.18); }"
+      "description": "Pilule de 48 px, focus bord encre + halo doré.",
+      "html": "<input class=\"ds-champ\" placeholder=\"Votre nom\">",
+      "css": ".ds-champ{min-height:48px;padding:0 16px;border:1px solid #8c867b;border-radius:9999px;background:#fff;color:#1a1816;font:500 15px 'Urbanist Variable',system-ui,sans-serif}.ds-champ:focus{outline:none;border-color:#1a1816;box-shadow:0 0 0 4px rgb(214 167 86/.28)}"
     },
     {
       "name": "Navigation en pilules",
-      "kind": "nav",
+      "kind": "navigation",
       "refersTo": "nav-pill-active",
-      "description": "Barre de modules de l'administration, élément actif doré.",
-      "html": "<nav class=\"ds-nav\"><a class=\"ds-actif\">Commandes <b>4</b></a><a>Stock</a><a>Livraisons</a></nav>",
-      "css": ".ds-nav { display:inline-flex; gap:4px; padding:4px; border:1px solid #2e271f; border-radius:9999px; background:#15120f; font:500 14px 'Urbanist Variable', sans-serif; } .ds-nav a { display:inline-flex; align-items:center; gap:8px; min-height:40px; padding:0 16px; border-radius:9999px; color:#cbc0ae; cursor:pointer; } .ds-nav a:hover { background:#1c1814; color:#f3ede2; } .ds-nav a.ds-actif { background:#d6a756; color:#1a1206; box-shadow:0 10px 22px -12px rgb(214 167 86 / 0.65); } .ds-nav b { font-size:11px; padding:2px 6px; border-radius:9999px; background:rgb(26 18 6 / 0.15); }"
+      "description": "Barre blanche, actif en encre plein.",
+      "html": "<nav class=\"ds-nav\"><a class=\"actif\">Stock</a><a>Commandes</a></nav>",
+      "css": ".ds-nav{display:inline-flex;gap:4px;padding:4px;border-radius:9999px;background:#fff}.ds-nav a{min-height:40px;display:inline-flex;align-items:center;padding:0 16px;border-radius:9999px;color:#3b3833;font:500 14px 'Urbanist Variable',sans-serif}.ds-nav a.actif{background:#1a1816;color:#ecebe7}"
     },
     {
-      "name": "Badge d'état",
-      "kind": "chip",
-      "refersTo": "badge",
-      "description": "Point coloré + mot ; jamais la couleur seule.",
-      "html": "<span class=\"ds-badge\"><i></i>À confirmer</span>",
-      "css": ".ds-badge { display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 10px; border-radius:9999px; background:rgb(240 178 62 / 0.12); color:#f0b23e; font:600 12px 'Urbanist Variable', sans-serif; } .ds-badge i { width:6px; height:6px; border-radius:9999px; background:#f0b23e; }"
+      "name": "Tuile menthe",
+      "kind": "card",
+      "refersTo": "tile-done",
+      "description": "Ce qui est fait ou disponible.",
+      "html": "<div class=\"ds-tuile\"><p>Unités disponibles</p><strong>47</strong></div>",
+      "css": ".ds-tuile{padding:20px;border-radius:28px;background:#57d9a6;color:#0d2a1e;font-family:'Urbanist Variable',sans-serif}.ds-tuile strong{display:block;font-size:44px;font-weight:600;letter-spacing:-.035em}"
     },
     {
       "name": "Panneau",
       "kind": "card",
       "refersTo": "panel",
-      "description": "Surface de base de l'administration.",
-      "html": "<section class=\"ds-panneau\"><h3>Livraisons en cours</h3><p>7 colis, dont 2 à Abidjan.</p></section>",
-      "css": ".ds-panneau { padding:24px; border:1px solid #2e271f; border-radius:16px; background:#15120f; box-shadow:0 1px 0 0 rgb(255 255 255 / 0.03) inset, 0 18px 40px -24px rgb(0 0 0 / 0.9); color:#f3ede2; font-family:'Urbanist Variable', sans-serif; } .ds-panneau h3 { margin:0; font-size:17px; font-weight:600; } .ds-panneau p { margin:6px 0 0; font-size:13px; color:#9b8f7d; }"
+      "description": "Carte blanche 28 px sur la pierre.",
+      "html": "<section class=\"ds-panneau\"><h3>Stock à surveiller</h3></section>",
+      "css": ".ds-panneau{padding:24px;border-radius:28px;background:#fff;box-shadow:0 1px 2px #14120c0a}"
     },
     {
       "name": "Veine d'or",
-      "kind": "custom",
-      "refersTo": "veine-or",
-      "description": "Signature : filet organique tiré du marbre des étiquettes.",
-      "html": "<svg class=\"ds-veine\" viewBox=\"0 0 640 40\" preserveAspectRatio=\"none\"><path d=\"M0 24 C 70 22, 110 30, 168 23 S 262 9, 318 17 S 396 33, 452 25 C 498 19, 530 11, 571 15 S 622 22, 640 18\" /><path d=\"M318 17 C 340 12, 352 4, 378 3\" opacity=\"0.55\" /></svg>",
-      "css": ".ds-veine { width:320px; height:20px; overflow:visible; } .ds-veine path { fill:none; stroke:#d6a756; stroke-width:1.25; stroke-linecap:round; vector-effect:non-scaling-stroke; }"
+      "kind": "ornament",
+      "description": "Filet organique en SVG, une seule par écran.",
+      "html": "<svg viewBox=\"0 0 640 40\" width=\"240\" height=\"20\"><path d=\"M0 24 C 70 22, 110 30, 168 23 S 262 9, 318 17 S 396 33, 452 25 C 498 19, 530 11, 571 15 S 622 22, 640 18\" fill=\"none\" stroke=\"#d6a756\" stroke-width=\"1.25\"/></svg>",
+      "css": ""
     }
   ],
   "narrative": {
-    "northStar": "L'étiquette dorée",
-    "overview": "Le site parle la langue des emballages Glorious Destiny : marbre noir, veine d'or, lettrage clair. L'or est une dorure, rare et précise ; le noir est chaud ; l'ivoire sert à lire. Le public est éditorial (didone, vrais visuels), l'administration est précise (pilules, panneaux, chiffres nets).",
+    "northStar": "Le comptoir",
+    "overview": "Philosophie empruntée au tableau de bord Kavora et mise à la marque : pierre chaude, cartes blanches très arrondies, pilules, encre pour agir, or des étiquettes pour l'accent, menthe pour ce qui est fait, une teinte douce par univers. Urbanist seule. Clair par défaut, sombre au choix.",
     "keyCharacteristics": [
-      "Noir chaud étagé en quatre surfaces",
-      "Or réservé à l'action principale, à l'actif, au focus et aux prix",
-      "Bodoni Moda pour l'affiche, Urbanist pour tout le reste",
-      "Veine d'or tracée en SVG comme unique ornement",
-      "Vrais visuels produits fournis par le client"
-    ],
-    "rules": [
-      { "name": "Une seule dorure", "body": "Un seul bouton doré plein par écran.", "section": "colors" },
-      { "name": "Deux voix", "body": "La didone ne sert jamais aux interfaces, aux chiffres ni à l'administration.", "section": "typography" },
-      { "name": "Profondeur tonale", "body": "La hauteur se lit par marches de surface ; trois ombres seulement.", "section": "elevation" }
-    ],
-    "dos": [
-      "Garder l'or rare",
-      "Marquer « Données d'exemple » toute donnée de démonstration",
-      "Doubler chaque état d'une icône ou d'un mot"
-    ],
-    "donts": [
-      "Plusieurs boutons dorés côte à côte",
-      "Rose pailleté, manuscrit, clichés de salon",
-      "Dégradés de texte, néon, verre décoratif",
-      "Inventer un prix, un avis ou un produit"
+      "Fond pierre chaude, cartes blanches 28 px",
+      "Encre pour l'action principale, inversée en sombre",
+      "Or : prix, à traiter, sélection",
+      "Menthe : fait, livré, disponible",
+      "Rose / lilas / sauge / sable : perruques, cils, produits, salon",
+      "Urbanist seule, 600 serrée en affiche",
+      "Veine d'or comme unique ornement"
     ]
   }
 }

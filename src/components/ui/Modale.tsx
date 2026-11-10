@@ -49,7 +49,7 @@ export function Modale({
         if (e.target === e.currentTarget) onFermer()
       }}
       className={cx(
-        'm-0 border border-filet-fort bg-surface-1 p-0 text-ivoire shadow-flottant backdrop:transition-opacity open:flex',
+        'm-0 bg-carte p-0 text-encre shadow-flottant backdrop:transition-opacity open:flex',
         forme === 'centre' &&
           'inset-x-4 top-1/2 mx-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg -translate-y-1/2 rounded-panneau transition-[opacity,translate] duration-300 ease-(--ease-sortie) starting:open:translate-y-[-46%] starting:open:opacity-0',
         forme === 'tiroir' &&
@@ -59,11 +59,11 @@ export function Modale({
       <div className="flex max-h-[inherit] w-full flex-col">
         <header className="flex items-start justify-between gap-4 border-b border-filet px-6 py-5">
           <div>
-            <h2 id={`${id}-titre`} className="text-lg font-semibold">
+            <h2 id={`${id}-titre`} className="text-[21px] font-semibold tracking-[-0.02em]">
               {titre}
             </h2>
             {description && (
-              <p id={`${id}-description`} className="mt-1 text-sm text-ivoire-3">
+              <p id={`${id}-description`} className="mt-1 text-sm text-encre-3">
                 {description}
               </p>
             )}
@@ -77,7 +77,7 @@ export function Modale({
             <X />
           </BoutonIcone>
         </header>
-        <div className="flex-1 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-ivoire-2">
+        <div className="flex-1 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-encre-2">
           {children}
         </div>
         {pied && (

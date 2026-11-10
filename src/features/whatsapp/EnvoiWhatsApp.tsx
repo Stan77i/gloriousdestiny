@@ -38,15 +38,15 @@ export function EnvoiWhatsApp({ commande }: { commande: ResumeCommande }) {
   return (
     <section
       aria-labelledby="titre-envoi-whatsapp"
-      className="flex flex-col gap-5 rounded-panneau border border-or/40 bg-surface-1 p-5 shadow-panneau sm:p-6"
+      className="flex flex-col gap-5 rounded-panneau border border-or/40 bg-carte p-5 shadow-panneau sm:p-6"
     >
       <div>
-        <h2 id="titre-envoi-whatsapp" className="text-[19px] font-semibold text-ivoire">
+        <h2 id="titre-envoi-whatsapp" className="text-[19px] font-semibold text-encre">
           {ouvert
             ? 'Votre commande est prête sur WhatsApp'
             : 'Dernière étape : envoyez votre commande'}
         </h2>
-        <p className="mt-1.5 text-[15px] leading-relaxed text-ivoire-2">
+        <p className="mt-1.5 text-[15px] leading-relaxed text-encre-2">
           {!lien
             ? 'Copiez votre commande et envoyez-la à Glorious Destiny sur WhatsApp.'
             : lien.preRempli
@@ -84,16 +84,16 @@ export function EnvoiWhatsApp({ commande }: { commande: ResumeCommande }) {
         </p>
       )}
 
-      <details className="group rounded-[12px] border border-filet bg-noir/40" open={!lien}>
-        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm text-ivoire-2 hover:text-ivoire">
+      <details className="group rounded-[12px] border border-filet bg-fond/40" open={!lien}>
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm text-encre-2 hover:text-encre">
           Voir le message
           <ChevronDown
             aria-hidden="true"
-            className="size-4 text-ivoire-3 transition-transform group-open:rotate-180"
+            className="size-4 text-encre-3 transition-transform group-open:rotate-180"
           />
         </summary>
         <div className="flex flex-col gap-3 border-t border-filet px-4 py-4">
-          <pre className="font-sans text-[15px] leading-relaxed whitespace-pre-wrap text-ivoire select-all">
+          <pre className="font-sans text-[15px] leading-relaxed whitespace-pre-wrap text-encre select-all">
             {message}
           </pre>
           <Bouton

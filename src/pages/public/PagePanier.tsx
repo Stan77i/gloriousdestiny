@@ -81,7 +81,7 @@ export function PagePanier() {
                       <Squelette className="h-20 w-full" />
                     ) : (
                       <>
-                        <p className="text-sm text-ivoire-3">Cet article n’est plus proposé.</p>
+                        <p className="text-sm text-encre-3">Cet article n’est plus proposé.</p>
                         <Bouton
                           variante="fantome"
                           taille="petit"
@@ -105,7 +105,7 @@ export function PagePanier() {
                 >
                   <Link
                     to={lienProduit(produit)}
-                    className="relative aspect-square overflow-hidden rounded-[12px] border border-filet bg-surface-1"
+                    className="relative aspect-square overflow-hidden rounded-[12px] border border-filet bg-carte"
                     aria-label={produit.nom}
                   >
                     {visuel.detoure ? (
@@ -117,11 +117,11 @@ export function PagePanier() {
                   <div className="min-w-0">
                     <Link
                       to={lienProduit(produit)}
-                      className="text-[17px] font-semibold text-ivoire no-underline hover:text-or-clair"
+                      className="text-[17px] font-semibold text-encre no-underline hover:text-or-texte"
                     >
                       {produit.nom}
                     </Link>
-                    <p className="mt-0.5 text-[13px] text-ivoire-3">
+                    <p className="mt-0.5 text-[13px] text-encre-3">
                       {variante.libelle !== 'Format standard' ? `${variante.libelle} · ` : ''}
                       {formaterFcfa(variante.prix)} l’unité
                     </p>
@@ -129,7 +129,7 @@ export function PagePanier() {
                       {statut === 'bientot_epuise' && <Badge ton="alerte">Bientôt épuisé</Badge>}
                       {statut === 'epuise' && <Badge ton="danger">Épuisé : à retirer</Badge>}
                     </div>
-                    <p className="chiffres mt-2 text-[15px] font-semibold text-ivoire sm:hidden">
+                    <p className="chiffres mt-2 text-[15px] font-semibold text-encre sm:hidden">
                       {formaterFcfa(variante.prix * l.quantite)}
                     </p>
                     <div className="mt-3 flex items-center gap-2 sm:hidden">
@@ -153,7 +153,7 @@ export function PagePanier() {
                     </div>
                   </div>
                   <div className="hidden flex-col items-end justify-between gap-3 sm:flex">
-                    <p className="chiffres text-[17px] font-semibold text-ivoire">
+                    <p className="chiffres text-[17px] font-semibold text-encre">
                       {formaterFcfa(variante.prix * l.quantite)}
                     </p>
                     <div className="flex items-center gap-2">
@@ -183,14 +183,14 @@ export function PagePanier() {
 
           <aside
             aria-labelledby="titre-recap"
-            className="flex flex-col gap-5 self-start rounded-panneau border border-filet bg-surface-1 p-6 lg:sticky lg:top-24"
+            className="flex flex-col gap-5 self-start rounded-panneau border border-filet bg-carte p-6 lg:sticky lg:top-24"
           >
             <h2 id="titre-recap" className="text-[17px] font-semibold">
               Récapitulatif
             </h2>
             <dl className="flex flex-col gap-3 text-sm">
               <div className="flex justify-between gap-4">
-                <dt className="text-ivoire-2">
+                <dt className="text-encre-2">
                   Sous-total ({panier.nombreArticles} article{panier.nombreArticles > 1 ? 's' : ''})
                 </dt>
                 <dd className="chiffres font-semibold">
@@ -198,11 +198,11 @@ export function PagePanier() {
                 </dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-ivoire-2">Livraison</dt>
-                <dd className="text-right text-ivoire-3">Convenue sur WhatsApp</dd>
+                <dt className="text-encre-2">Livraison</dt>
+                <dd className="text-right text-encre-3">Convenue sur WhatsApp</dd>
               </div>
             </dl>
-            <p className="text-[13px] leading-relaxed text-ivoire-3">
+            <p className="text-[13px] leading-relaxed text-encre-3">
               Paiement à la livraison, en espèces ou par Mobile Money.
             </p>
             {indisponibles > 0 && (

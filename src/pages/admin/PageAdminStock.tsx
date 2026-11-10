@@ -68,7 +68,7 @@ function Jauge({ ligne }: { ligne: LigneStock }) {
   const part = Math.min(100, (ligne.disponible / reference) * 100)
   const seuil = Math.min(100, (ligne.seuilAlerte / reference) * 100)
   return (
-    <span aria-hidden="true" className="relative mt-1.5 block h-1 w-24 rounded-full bg-surface-3">
+    <span aria-hidden="true" className="relative mt-1.5 block h-1 w-24 rounded-full bg-carte-3">
       <span
         className={cx(
           'absolute inset-y-0 left-0 rounded-full',
@@ -81,7 +81,7 @@ function Jauge({ ligne }: { ligne: LigneStock }) {
         style={{ width: `${String(part)}%` }}
       />
       <span
-        className="absolute -inset-y-0.5 w-px bg-ivoire-3"
+        className="absolute -inset-y-0.5 w-px bg-encre-3"
         style={{ left: `${String(seuil)}%` }}
       />
     </span>
@@ -108,8 +108,8 @@ function VueInventaire({
       entete: 'Article',
       cellule: (l) => (
         <span>
-          <span className="block text-ivoire">{nomArticle(l)}</span>
-          <span className="chiffres text-[13px] font-normal text-ivoire-3">
+          <span className="block text-encre">{nomArticle(l)}</span>
+          <span className="chiffres text-[13px] font-normal text-encre-3">
             {l.sku}
             {!l.publie && ' · non publié'}
           </span>
@@ -129,7 +129,7 @@ function VueInventaire({
       numerique: true,
       cellule: (l) => (
         <span className="inline-flex flex-col items-start sm:items-end">
-          <span className="text-[17px] font-semibold text-ivoire">{l.disponible}</span>
+          <span className="text-[17px] font-semibold text-encre">{l.disponible}</span>
           <Jauge ligne={l} />
         </span>
       ),
@@ -196,6 +196,7 @@ function VueInventaire({
     <div className="flex flex-col gap-5">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <TuileChiffre
+          fond="menthe"
           libelle="Unités disponibles"
           valeur={String(unites)}
           complement={`${String(reserves)} réservée(s)`}
@@ -207,12 +208,14 @@ function VueInventaire({
           icone={<ClipboardCheck />}
         />
         <TuileChiffre
+          fond={bas > 0 ? 'sable' : 'carte'}
           libelle="Stock bas"
           valeur={String(bas)}
           complement="sous le seuil"
           icone={<TriangleAlert />}
         />
         <TuileChiffre
+          fond={epuises > 0 ? 'rose' : 'carte'}
           libelle="Épuisées"
           valeur={String(epuises)}
           complement="plus vendables"
@@ -238,8 +241,8 @@ function VueInventaire({
               className={cx(
                 'inline-flex min-h-10 items-center rounded-full border px-4 text-sm whitespace-nowrap transition-colors',
                 filtre === v
-                  ? 'border-ivoire-2 bg-surface-3 text-ivoire'
-                  : 'border-filet-fort text-ivoire-2 hover:text-ivoire',
+                  ? 'border-encre-2 bg-carte-3 text-encre'
+                  : 'border-filet-fort text-encre-2 hover:text-encre',
               )}
             >
               {libelle}
@@ -262,7 +265,7 @@ function VueInventaire({
         lignes={lignes}
         cle={(l) => l.varianteId}
         vide={
-          <div className="rounded-panneau border border-filet bg-surface-1">
+          <div className="rounded-panneau border border-filet bg-carte">
             <EtatVide
               titre={filtre === 'alertes' ? 'Aucun article à réapprovisionner' : 'Aucun article'}
             >
@@ -273,7 +276,7 @@ function VueInventaire({
           </div>
         }
       />
-      <p className="text-[13px] text-ivoire-3">
+      <p className="text-[13px] text-encre-3">
         Disponible = en rayon − réservé pour des commandes en cours. Le trait sur la jauge marque le
         seuil d’alerte.
       </p>
@@ -296,7 +299,7 @@ function Delta({ valeur }: { valeur: number }) {
     <span
       className={cx(
         'chiffres',
-        valeur > 0 ? 'text-succes' : valeur < 0 ? 'text-danger' : 'text-ivoire-3',
+        valeur > 0 ? 'text-succes' : valeur < 0 ? 'text-danger' : 'text-encre-3',
       )}
     >
       {signe(valeur)}
@@ -324,8 +327,8 @@ function VueMouvements({ stock }: { stock: LigneStock[] }) {
       entete: 'Article',
       cellule: (m) => (
         <span>
-          <span className="block text-ivoire">{nomArticle(m)}</span>
-          <span className="text-[13px] font-normal text-ivoire-3">{formaterDateHeure(m.le)}</span>
+          <span className="block text-encre">{nomArticle(m)}</span>
+          <span className="text-[13px] font-normal text-encre-3">{formaterDateHeure(m.le)}</span>
         </span>
       ),
     },
@@ -356,7 +359,7 @@ function VueMouvements({ stock }: { stock: LigneStock[] }) {
           {m.referenceType === 'commande' && m.referenceId ? (
             <Link
               to={`/admin/commandes/${m.referenceId}`}
-              className="chiffres text-or-clair hover:text-or"
+              className="chiffres text-or-texte hover:text-or"
             >
               {m.commande ?? 'Commande'}
             </Link>
@@ -366,9 +369,7 @@ function VueMouvements({ stock }: { stock: LigneStock[] }) {
             '—'
           )}
           {m.motif && (
-            <span className={cx('block text-ivoire-3', m.referenceType && 'mt-0.5')}>
-              {m.motif}
-            </span>
+            <span className={cx('block text-encre-3', m.referenceType && 'mt-0.5')}>{m.motif}</span>
           )}
         </span>
       ),
@@ -431,7 +432,7 @@ function VueMouvements({ stock }: { stock: LigneStock[] }) {
           lignes={mouvements.data}
           cle={(m) => String(m.id)}
           vide={
-            <div className="rounded-panneau border border-filet bg-surface-1">
+            <div className="rounded-panneau border border-filet bg-carte">
               <EtatVide titre="Aucun mouvement">
                 Aucune opération ne correspond à ces filtres.
               </EtatVide>
@@ -439,7 +440,7 @@ function VueMouvements({ stock }: { stock: LigneStock[] }) {
           }
         />
       )}
-      <p className="text-[13px] text-ivoire-3">
+      <p className="text-[13px] text-encre-3">
         Le journal est inaltérable : chaque quantité modifiée y laisse une ligne. Les 150 dernières
         opérations sont affichées.
       </p>
@@ -470,7 +471,7 @@ function VueReceptions({ ouvrir }: { ouvrir: (m: ModaleOuverte) => void }) {
         Nouvelle réception
       </Bouton>
       {receptions.data.length === 0 ? (
-        <div className="rounded-panneau border border-filet bg-surface-1">
+        <div className="rounded-panneau border border-filet bg-carte">
           <EtatVide titre="Aucune réception enregistrée">
             Chaque livraison d’un fournisseur s’enregistre ici : le stock augmente et la trace
             reste.
@@ -495,22 +496,22 @@ function VueReceptions({ ouvrir }: { ouvrir: (m: ModaleOuverte) => void }) {
                     .join(' · ')}
                   action={<span className="chiffres text-[15px] font-semibold">{unites} u.</span>}
                 >
-                  <ul className="flex flex-col gap-1.5 text-sm text-ivoire-2">
+                  <ul className="flex flex-col gap-1.5 text-sm text-encre-2">
                     {r.lignes.map((l, i) => (
                       <li key={i} className="flex justify-between gap-4">
                         <span>{l.produit}</span>
                         <span className="chiffres">
                           × {l.quantite}
                           {l.coutUnitaire !== null && (
-                            <span className="text-ivoire-3"> · {formaterFcfa(l.coutUnitaire)}</span>
+                            <span className="text-encre-3"> · {formaterFcfa(l.coutUnitaire)}</span>
                           )}
                         </span>
                       </li>
                     ))}
                   </ul>
                   {cout !== null && (
-                    <p className="mt-3 border-t border-filet pt-3 text-right text-[13px] text-ivoire-3">
-                      Coût total <span className="chiffres text-ivoire">{formaterFcfa(cout)}</span>
+                    <p className="mt-3 border-t border-filet pt-3 text-right text-[13px] text-encre-3">
+                      Coût total <span className="chiffres text-encre">{formaterFcfa(cout)}</span>
                     </p>
                   )}
                 </Panneau>
@@ -584,7 +585,7 @@ function VueFournisseurs({ ouvrir }: { ouvrir: (m: ModaleOuverte) => void }) {
         lignes={fournisseurs.data}
         cle={(f) => f.id}
         vide={
-          <div className="rounded-panneau border border-filet bg-surface-1">
+          <div className="rounded-panneau border border-filet bg-carte">
             <EtatVide titre="Aucun fournisseur">
               Ajoutez vos fournisseurs pour les retrouver lors des réceptions.
             </EtatVide>

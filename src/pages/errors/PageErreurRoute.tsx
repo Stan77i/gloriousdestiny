@@ -13,8 +13,8 @@ export function PageErreurRoute() {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-5 px-4 text-center">
-      <h1 className="titre-affiche text-[40px] text-ivoire">Un problème est survenu.</h1>
-      <p className="text-sm leading-relaxed text-ivoire-2">{message}</p>
+      <h1 className="titre-affiche text-[40px] text-encre">Un problème est survenu.</h1>
+      <p className="text-sm leading-relaxed text-encre-2">{message}</p>
       <Bouton
         variante="secondaire"
         onClick={() => {

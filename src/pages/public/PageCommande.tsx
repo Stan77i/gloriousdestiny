@@ -148,7 +148,7 @@ export function PageCommande() {
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-10">
       <Link
         to={CHEMINS.panier}
-        className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm text-ivoire-3 no-underline hover:text-ivoire [&_svg]:size-4"
+        className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm text-encre-3 no-underline hover:text-encre [&_svg]:size-4"
       >
         <ArrowLeft aria-hidden="true" />
         Panier
@@ -165,7 +165,7 @@ export function PageCommande() {
       >
         <div className="flex flex-col gap-10">
           <fieldset className="grid gap-5 sm:grid-cols-2">
-            <legend className="mb-5 text-[19px] font-semibold text-ivoire">Vos coordonnées</legend>
+            <legend className="mb-5 text-[19px] font-semibold text-encre">Vos coordonnées</legend>
             <Champ
               libelle="Nom complet"
               obligatoire
@@ -198,7 +198,7 @@ export function PageCommande() {
             >
               {(a) => (
                 <div className="flex">
-                  <span className="inline-flex min-h-12 items-center rounded-l-champ border border-r-0 border-filet-champ bg-surface-2 px-3 text-[15px] text-ivoire-2">
+                  <span className="inline-flex min-h-12 items-center rounded-l-champ border border-r-0 border-filet-champ bg-carte-2 px-3 text-[15px] text-encre-2">
                     {ville?.indicatif ?? '+…'}
                   </span>
                   <Saisie
@@ -222,7 +222,7 @@ export function PageCommande() {
           </fieldset>
 
           <fieldset className="grid gap-5 sm:grid-cols-2">
-            <legend className="mb-5 text-[19px] font-semibold text-ivoire">
+            <legend className="mb-5 text-[19px] font-semibold text-encre">
               Adresse de livraison
             </legend>
             <Champ libelle="Quartier" obligatoire erreur={errors.quartier?.message}>
@@ -258,7 +258,7 @@ export function PageCommande() {
 
         <aside
           aria-labelledby="titre-recap-commande"
-          className="flex flex-col gap-5 self-start rounded-panneau border border-filet bg-surface-1 p-6 lg:sticky lg:top-24"
+          className="flex flex-col gap-5 self-start rounded-panneau border border-filet bg-carte p-6 lg:sticky lg:top-24"
         >
           <h2 id="titre-recap-commande" className="text-[17px] font-semibold">
             Votre commande
@@ -266,9 +266,9 @@ export function PageCommande() {
           <ul className="flex flex-col gap-3 text-sm">
             {lignes.map((l) => (
               <li key={l.varianteId} className="flex justify-between gap-4">
-                <span className="text-ivoire-2">
+                <span className="text-encre-2">
                   {l.ref?.produit.nom ?? 'Article indisponible'}{' '}
-                  <span className="chiffres text-ivoire-3">× {l.quantite}</span>
+                  <span className="chiffres text-encre-3">× {l.quantite}</span>
                 </span>
                 <span className="chiffres whitespace-nowrap">
                   {l.ref ? formaterFcfa(l.ref.variante.prix * l.quantite) : '—'}
@@ -278,12 +278,12 @@ export function PageCommande() {
           </ul>
           <dl className="flex flex-col gap-2 border-t border-filet pt-4 text-sm">
             <div className="flex justify-between gap-4">
-              <dt className="text-ivoire-2">Livraison</dt>
-              <dd className="text-ivoire-3">Convenue avec vous</dd>
+              <dt className="text-encre-2">Livraison</dt>
+              <dd className="text-encre-3">Convenue avec vous</dd>
             </div>
             <div className="flex justify-between gap-4 text-[17px] font-semibold">
               <dt>Total</dt>
-              <dd className="chiffres text-or-clair">{formaterFcfa(total)}</dd>
+              <dd className="chiffres text-or-texte">{formaterFcfa(total)}</dd>
             </div>
           </dl>
           {bloquantes.length > 0 && (
@@ -301,7 +301,7 @@ export function PageCommande() {
           >
             Valider ma commande
           </Bouton>
-          <p className="flex gap-2 text-[13px] leading-relaxed text-ivoire-3 [&_svg]:mt-0.5 [&_svg]:size-4 [&_svg]:shrink-0">
+          <p className="flex gap-2 text-[13px] leading-relaxed text-encre-3 [&_svg]:mt-0.5 [&_svg]:size-4 [&_svg]:shrink-0">
             <Lock aria-hidden="true" />
             Aucun paiement maintenant. Notre équipe vous contacte pour confirmer la commande et la
             livraison.

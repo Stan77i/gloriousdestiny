@@ -20,9 +20,9 @@ function Ligne({
         <span aria-hidden="true" className="row-span-2 mt-0.5">
           {icone}
         </span>
-        <span className="font-semibold text-ivoire">{titre}</span>
+        <span className="font-semibold text-encre">{titre}</span>
       </dt>
-      <dd className="col-start-2 mt-1 text-[15px] leading-relaxed text-ivoire-2">{children}</dd>
+      <dd className="col-start-2 mt-1 text-[15px] leading-relaxed text-encre-2">{children}</dd>
     </div>
   )
 }

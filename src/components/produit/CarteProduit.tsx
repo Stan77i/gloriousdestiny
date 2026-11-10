@@ -2,6 +2,7 @@ import { Plus } from 'lucide-react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/Badge'
 import { Bouton } from '@/components/ui/Bouton'
+import { FOND_TEINTE, type Teinte } from '@/domain/univers'
 import { cx } from '@/lib/cx'
 import type { Disponibilite } from '@/services/catalogue.service'
 import { Monogramme } from './Monogramme'
@@ -9,7 +10,7 @@ import { Monogramme } from './Monogramme'
 export type { Disponibilite }
 
 /**
- * Carte produit du catalogue. Le produit détouré repose sur un socle noir chaud,
+ * Carte produit du catalogue. Le produit détouré repose sur un socle teinté selon son univers,
  * la photo d'usage apparaît au survol (souris) quand elle existe.
  * Toute la carte mène à la fiche (lien étiré sur le nom) ; le bouton reste indépendant.
  */
@@ -24,6 +25,7 @@ export function CarteProduit({
   vers,
   onAjouter,
   enCours = false,
+  teinte = 'sauge',
 }: {
   nom: string
   format: string | null
@@ -35,11 +37,14 @@ export function CarteProduit({
   vers?: string
   onAjouter?: () => void
   enCours?: boolean
+  teinte?: Teinte
 }) {
   const epuise = disponibilite === 'epuise'
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-panneau border border-filet bg-surface-1 transition-[border-color,transform] duration-300 ease-(--ease-sortie) focus-within:border-or/45 hover:-translate-y-0.5 hover:border-or/45">
-      <div className="relative aspect-[4/5] overflow-hidden bg-[radial-gradient(120%_80%_at_50%_100%,var(--color-surface-3),var(--color-noir)_70%)]">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-panneau bg-carte p-2 shadow-panneau transition-[box-shadow,transform] duration-300 ease-(--ease-sortie) focus-within:shadow-flottant hover:-translate-y-1 hover:shadow-flottant">
+      <div
+        className={cx('relative aspect-[4/5] overflow-hidden rounded-[22px]', FOND_TEINTE[teinte])}
+      >
         {detoure ? (
           <img
             src={detoure}
@@ -65,8 +70,8 @@ export function CarteProduit({
           {epuise && <Badge ton="neutre">Épuisé</Badge>}
         </div>
       </div>
-      <div className="flex flex-1 flex-col gap-1 p-4">
-        <h3 className="text-[17px] leading-snug font-semibold text-ivoire">
+      <div className="flex flex-1 flex-col gap-1 px-3 pt-4 pb-3">
+        <h3 className="text-[17px] leading-snug font-semibold text-encre">
           {vers ? (
             <Link
               to={vers}
@@ -78,16 +83,16 @@ export function CarteProduit({
             nom
           )}
         </h3>
-        <p className="text-[13px] text-ivoire-3">
+        <p className="text-[13px] text-encre-3">
           {format ? `${categorie} · ${format}` : categorie}
         </p>
         {/* Sur mobile (2 colonnes étroites) : prix au-dessus, bouton pleine largeur. */}
         <div className="mt-auto flex flex-col items-stretch gap-2.5 pt-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-          <p className={cx('text-[15px] font-semibold', prix ? 'text-or-clair' : 'text-ivoire-3')}>
+          <p className={cx('text-[15px] font-semibold', prix ? 'text-or-texte' : 'text-encre-3')}>
             {prix ?? 'Prix sur demande'}
           </p>
           {onAjouter && (
-            // Variante discrète : l'or plein reste réservé à l'action principale de la page.
+            // Variante discrète : l'encre pleine reste réservée à l'action principale de la page.
             // `relative z-10` : reste cliquable au-dessus du lien étiré.
             <Bouton
               taille="petit"

@@ -35,7 +35,7 @@ const COLONNES: Colonne<CommandeListe>[] = [
     cellule: (c) => (
       <Link
         to={`/admin/commandes/${c.id}`}
-        className="chiffres text-ivoire no-underline after:absolute after:inset-0 hover:text-or-clair"
+        className="chiffres text-encre no-underline after:absolute after:inset-0 hover:text-or-texte"
       >
         {c.reference}
       </Link>
@@ -46,8 +46,8 @@ const COLONNES: Colonne<CommandeListe>[] = [
     entete: 'Cliente',
     cellule: (c) => (
       <span>
-        <span className="block text-ivoire">{c.cliente.nom}</span>
-        <span className="chiffres text-[13px] text-ivoire-3">{c.cliente.telephone}</span>
+        <span className="block text-encre">{c.cliente.nom}</span>
+        <span className="chiffres text-[13px] text-encre-3">{c.cliente.telephone}</span>
       </span>
     ),
   },
@@ -107,7 +107,7 @@ export function PageAdminCommandes() {
           <span className="sr-only">Rechercher une commande</span>
           <Search
             aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ivoire-3"
+            className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-encre-3"
           />
           <Saisie
             type="search"
@@ -138,8 +138,8 @@ export function PageAdminCommandes() {
                     className={cx(
                       'inline-flex min-h-10 items-center gap-2 rounded-full border px-4 text-sm whitespace-nowrap transition-colors',
                       actif
-                        ? 'border-or bg-or text-sur-or'
-                        : 'border-filet-fort text-ivoire-2 hover:border-or/60 hover:text-ivoire',
+                        ? 'border-encre bg-encre text-fond'
+                        : 'border-transparent bg-carte text-encre-2 hover:text-encre',
                     )}
                   >
                     {o.libelle}
@@ -170,7 +170,7 @@ export function PageAdminCommandes() {
           lignes={commandes.data}
           cle={(c) => c.id}
           vide={
-            <div className="rounded-panneau border border-filet bg-surface-1">
+            <div className="rounded-panneau border border-filet bg-carte">
               <EtatVide
                 titre={recherche ? 'Aucune commande trouvée' : 'Aucune commande dans cette file'}
               >

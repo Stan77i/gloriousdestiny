@@ -16,7 +16,7 @@ function Lien({ vers, children }: { vers: string; children: string }) {
   return (
     <Link
       to={vers}
-      className="inline-flex min-h-11 items-center gap-1.5 text-sm text-or-clair no-underline hover:text-or [&_svg]:size-4"
+      className="inline-flex min-h-11 items-center gap-1.5 text-sm text-or-texte no-underline hover:text-or [&_svg]:size-4"
     >
       {children}
       <ArrowRight aria-hidden="true" />
@@ -38,12 +38,14 @@ function ResumeCommandes() {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <TuileChiffre
+        fond={compteurs.data.nouvelle > 0 ? 'or' : 'carte'}
         libelle="À confirmer"
         valeur={String(compteurs.data.nouvelle)}
         complement="commandes du site en attente"
         icone={<Inbox />}
       />
       <TuileChiffre
+        fond="sauge"
         libelle="À expédier"
         valeur={String(compteurs.data.confirmee)}
         complement={`${String(compteurs.data.expediee)} en cours de livraison`}
@@ -78,7 +80,7 @@ function ResumeStock() {
       action={<Lien vers="/admin/stock">Ouvrir le stock</Lien>}
     >
       {alertes.length === 0 ? (
-        <p className="flex items-center gap-2 text-sm text-ivoire-2 [&_svg]:size-4 [&_svg]:text-succes">
+        <p className="flex items-center gap-2 text-sm text-encre-2 [&_svg]:size-4 [&_svg]:text-succes">
           <Boxes aria-hidden="true" />
           {stock.data.reduce((s, l) => s + l.disponible, 0)} unités disponibles à la vente.
         </p>
@@ -91,7 +93,7 @@ function ResumeStock() {
             >
               <span className="min-w-0 truncate">{l.produit}</span>
               <span className="flex shrink-0 items-center gap-3">
-                <span className="chiffres text-ivoire-2">
+                <span className="chiffres text-encre-2">
                   {l.disponible} / seuil {l.seuilAlerte}
                 </span>
                 <Badge ton={STATUT_STOCK[l.statut].ton}>{STATUT_STOCK[l.statut].libelle}</Badge>
@@ -130,7 +132,7 @@ export function PageAdminAccueil() {
       {stock && <ResumeStock />}
       {!commandes && !stock && (
         <Panneau titre="Bienvenue">
-          <p className="flex items-center gap-2 text-sm text-ivoire-2 [&_svg]:size-4">
+          <p className="flex items-center gap-2 text-sm text-encre-2 [&_svg]:size-4">
             <TriangleAlert aria-hidden="true" />
             Aucun module n’est encore ouvert à votre rôle.
           </p>

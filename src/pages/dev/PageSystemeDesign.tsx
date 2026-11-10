@@ -54,14 +54,38 @@ const SECTIONS = [
 ] as const
 
 const COULEURS: { nom: string; classe: string; valeur: string; usage: string }[] = [
-  { nom: 'Noir', classe: 'bg-noir', valeur: '#0d0b09', usage: 'Fond de page' },
-  { nom: 'Surface 1', classe: 'bg-surface-1', valeur: '#15120f', usage: 'Panneaux' },
-  { nom: 'Surface 2', classe: 'bg-surface-2', valeur: '#1c1814', usage: 'Contrôles' },
-  { nom: 'Surface 3', classe: 'bg-surface-3', valeur: '#262019', usage: 'Survol, pastilles' },
-  { nom: 'Or', classe: 'bg-or', valeur: '#d6a756', usage: 'Action principale, actif' },
-  { nom: 'Or clair', classe: 'bg-or-clair', valeur: '#ecc887', usage: 'Survol, prix' },
-  { nom: 'Ivoire', classe: 'bg-ivoire', valeur: '#f3ede2', usage: 'Texte principal' },
-  { nom: 'Ivoire 3', classe: 'bg-ivoire-3', valeur: '#9b8f7d', usage: 'Texte discret' },
+  {
+    nom: 'Fond',
+    classe: 'bg-fond',
+    valeur: '#ecebe7 · #111110',
+    usage: 'Fond de page (pierre chaude)',
+  },
+  { nom: 'Carte', classe: 'bg-carte', valeur: '#ffffff · #1b1a19', usage: 'Cartes, panneaux' },
+  { nom: 'Carte 2', classe: 'bg-carte-2', valeur: '#f4f3f0 · #242322', usage: 'Survol, pastilles' },
+  {
+    nom: 'Encre',
+    classe: 'bg-encre',
+    valeur: '#1a1816 · #f2f0ec',
+    usage: 'Texte, action principale',
+  },
+  { nom: 'Encre 3', classe: 'bg-encre-3', valeur: '#66625b · #a29f98', usage: 'Texte discret' },
+  { nom: 'Or', classe: 'bg-or', valeur: '#d6a756', usage: 'Accent : prix, à traiter, sélection' },
+  {
+    nom: 'Or texte',
+    classe: 'bg-or-texte',
+    valeur: '#8a5d10 · #ecc887',
+    usage: 'Or lisible en texte',
+  },
+  {
+    nom: 'Menthe',
+    classe: 'bg-menthe',
+    valeur: '#57d9a6 · #17402f',
+    usage: 'Fait, livré, disponible',
+  },
+  { nom: 'Rose', classe: 'bg-rose', valeur: '#f8dad0', usage: 'Univers perruques' },
+  { nom: 'Lilas', classe: 'bg-lilas', valeur: '#e4ddf3', usage: 'Univers cils' },
+  { nom: 'Sauge', classe: 'bg-sauge', valeur: '#d4eee1', usage: 'Univers produits de pose' },
+  { nom: 'Sable', classe: 'bg-sable', valeur: '#f4e6c3', usage: 'Univers salon, services' },
 ]
 
 const ETATS: { nom: string; classe: string; usage: string }[] = [
@@ -165,10 +189,10 @@ function Section({
       className="scroll-mt-24 border-t border-filet pt-14 pb-6"
     >
       <div className="mb-9 max-w-2xl">
-        <h2 id={`${id}-titre`} className="titre-affiche text-[34px] text-ivoire sm:text-[40px]">
+        <h2 id={`${id}-titre`} className="titre-affiche text-[34px] text-encre sm:text-[40px]">
           {titre}
         </h2>
-        <p className="mt-3 text-[15px] leading-relaxed text-ivoire-3">{intro}</p>
+        <p className="mt-3 text-[15px] leading-relaxed text-encre-3">{intro}</p>
       </div>
       {children}
     </section>
@@ -193,15 +217,16 @@ export function PageSystemeDesign() {
       {/* Premier écran : le titre et l'étiquette réelle */}
       <header className="grid items-stretch gap-8 py-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14 lg:py-16">
         <div className="flex flex-col justify-center">
-          <h1 className="titre-affiche text-[52px] text-ivoire sm:text-[84px] lg:text-[92px]">
+          <h1 className="titre-affiche text-[52px] text-encre sm:text-[84px] lg:text-[92px]">
             Système
             <br />
             de design
           </h1>
           <VeineOr className="mt-6 max-w-md" />
-          <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-ivoire-2">
-            Le langage visuel de Glorious Destiny, pris sur ses propres étiquettes : un noir
-            profond, l’or employé comme une dorure, rare et précis, et l’ivoire pour lire.
+          <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-encre-2">
+            Le langage visuel de Glorious Destiny : un comptoir clair en pierre chaude, des cartes
+            blanches, l’encre pour agir, l’or pour ce qui compte et une teinte douce par univers. Le
+            thème sombre en est le reflet exact.
           </p>
           <nav aria-label="Sections du système de design" className="mt-8">
             <ul className="flex flex-wrap gap-2">
@@ -209,7 +234,7 @@ export function PageSystemeDesign() {
                 <li key={s.id}>
                   <a
                     href={`#${s.id}`}
-                    className="inline-flex min-h-10 items-center rounded-full border border-filet-fort px-4 text-sm text-ivoire-2 no-underline transition-colors hover:border-or/70 hover:text-ivoire"
+                    className="inline-flex min-h-10 items-center rounded-full bg-carte px-4 text-sm text-encre-2 no-underline shadow-panneau transition-colors hover:bg-carte-2 hover:text-encre"
                   >
                     {s.libelle}
                   </a>
@@ -228,7 +253,7 @@ export function PageSystemeDesign() {
               fetchPriority="high"
               className="absolute inset-0 size-full object-cover object-[50%_30%]"
             />
-            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-noir/90 to-transparent px-6 pt-16 pb-5 text-sm text-ivoire-2">
+            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-fond/90 to-transparent px-6 pt-16 pb-5 text-sm text-encre-2">
               {vedette.nom}
             </figcaption>
           </figure>
@@ -244,13 +269,13 @@ export function PageSystemeDesign() {
           {COULEURS.map((c) => (
             <li
               key={c.nom}
-              className="overflow-hidden rounded-panneau border border-filet bg-surface-1"
+              className="overflow-hidden rounded-panneau border border-filet bg-carte"
             >
               <span className={`block h-20 ${c.classe}`} />
               <div className="p-3.5">
                 <p className="text-sm font-semibold">{c.nom}</p>
-                <p className="chiffres text-xs text-ivoire-3">{c.valeur}</p>
-                <p className="mt-1 text-xs text-ivoire-3">{c.usage}</p>
+                <p className="chiffres text-xs text-encre-3">{c.valeur}</p>
+                <p className="mt-1 text-xs text-encre-3">{c.usage}</p>
               </div>
             </li>
           ))}
@@ -259,12 +284,12 @@ export function PageSystemeDesign() {
           {ETATS.map((c) => (
             <li
               key={c.nom}
-              className="flex items-center gap-3 rounded-panneau border border-filet bg-surface-1 p-3.5"
+              className="flex items-center gap-3 rounded-panneau border border-filet bg-carte p-3.5"
             >
               <span className={`size-8 shrink-0 rounded-full ${c.classe}`} />
               <div>
                 <p className="text-sm font-semibold">{c.nom}</p>
-                <p className="text-xs text-ivoire-3">{c.usage}</p>
+                <p className="text-xs text-encre-3">{c.usage}</p>
               </div>
             </li>
           ))}
@@ -274,12 +299,12 @@ export function PageSystemeDesign() {
       <Section
         id="typographie"
         titre="Typographie"
-        intro="Deux voix. Bodoni Moda, la didone des magazines de mode, pour l’affiche du site public. Urbanist, géométrique et nette, pour tout le reste : interface, prix, chiffres."
+        intro="Une seule voix : Urbanist, géométrique et nette. Semi-grasse et serrée pour l’affiche, posée pour l’interface, les prix et les chiffres."
       >
         <div className="grid gap-4 lg:grid-cols-2">
-          <Panneau titre="Bodoni Moda" sousTitre="Affiche : titres du site public uniquement">
-            <p className="titre-affiche text-[56px] text-ivoire">Glorious</p>
-            <p className="titre-affiche mt-1 text-[32px] text-ivoire-2 italic">la pose parfaite</p>
+          <Panneau titre="Urbanist, affiche" sousTitre="Grands titres : 600, approche −0,035 em">
+            <p className="titre-affiche text-[56px] text-encre">Glorious</p>
+            <p className="titre-affiche mt-1 text-[34px] text-or-texte">la pose parfaite</p>
           </Panneau>
           <Panneau titre="Urbanist" sousTitre="Interface, prix, administration">
             <dl className="flex flex-col gap-3">
@@ -288,14 +313,14 @@ export function PageSystemeDesign() {
                 ['Sous-titre', 'text-[17px] font-semibold', 'Livraisons en cours'],
                 [
                   'Texte',
-                  'text-[15px] text-ivoire-2',
+                  'text-[15px] text-encre-2',
                   'La commande est enregistrée avant l’ouverture de WhatsApp.',
                 ],
-                ['Petit', 'text-[13px] text-ivoire-3', 'Mis à jour il y a 2 minutes'],
-                ['Prix', 'text-[21px] font-semibold text-or-clair', formaterFcfa(12500)],
+                ['Petit', 'text-[13px] text-encre-3', 'Mis à jour il y a 2 minutes'],
+                ['Prix', 'text-[21px] font-semibold text-or-texte', formaterFcfa(12500)],
               ].map(([nom, classe, texte]) => (
                 <div key={nom} className="grid grid-cols-[80px_1fr] items-baseline gap-3">
-                  <dt className="text-xs text-ivoire-3">{nom}</dt>
+                  <dt className="text-xs text-encre-3">{nom}</dt>
                   <dd className={classe}>{texte}</dd>
                 </div>
               ))}
@@ -307,11 +332,11 @@ export function PageSystemeDesign() {
       <Section
         id="actions"
         titre="Actions"
-        intro="Un seul bouton doré par écran : l’action qu’on attend. Le reflet qui le traverse au survol est la dorure qui accroche la lumière."
+        intro="Une seule pilule d’encre par écran : l’action qu’on attend. L’or plein reste rare, pour ce que la cliente doit remarquer."
       >
         <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
           <Panneau
-            titre="Un écran, une action dorée"
+            titre="Un écran, une action principale"
             sousTitre="Hiérarchie telle qu’elle apparaît sur une page"
           >
             <div className="flex flex-wrap items-center gap-3">
@@ -341,11 +366,11 @@ export function PageSystemeDesign() {
             sousTitre="Ses tailles et ses états, jamais côte à côte en usage"
           >
             <dl className="grid grid-cols-[90px_1fr] items-center gap-x-4 gap-y-3 text-[13px]">
-              <dt className="text-ivoire-3">Grand</dt>
+              <dt className="text-encre-3">Grand</dt>
               <dd>
                 <Bouton taille="grand">Ajouter au panier</Bouton>
               </dd>
-              <dt className="text-ivoire-3">En cours</dt>
+              <dt className="text-encre-3">En cours</dt>
               <dd>
                 <Bouton
                   enCours={envoi}
@@ -360,7 +385,7 @@ export function PageSystemeDesign() {
                   Confirmer
                 </Bouton>
               </dd>
-              <dt className="text-ivoire-3">Désactivé</dt>
+              <dt className="text-encre-3">Désactivé</dt>
               <dd>
                 <Bouton disabled>Indisponible</Bouton>
               </dd>
@@ -513,7 +538,7 @@ export function PageSystemeDesign() {
       <Section
         id="produits"
         titre="Produits"
-        intro="La gamme officielle, dans ses vrais visuels. Le produit détouré repose sur un socle sombre ; au survol, la photo d’usage le montre en situation. Les prix viendront de la base."
+        intro="La gamme officielle, dans ses vrais visuels. Le produit détouré repose sur un socle à la teinte de son univers ; au survol, la photo d’usage le montre en situation. Les prix viendront de la base."
       >
         <ul className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
           {GAMME.map((p, i) => (
@@ -533,7 +558,7 @@ export function PageSystemeDesign() {
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-[13px] text-ivoire-3">
+        <p className="mt-4 text-[13px] text-encre-3">
           Disponibilités « Bientôt épuisé » et « Épuisé » montrées à titre d’exemple.
         </p>
       </Section>
@@ -541,7 +566,7 @@ export function PageSystemeDesign() {
       <Section
         id="administration"
         titre="Administration"
-        intro="Le centre de contrôle reprend la grammaire du tableau de bord de référence : navigation en pilules, panneaux sombres, chiffres nets. Ici, la précision passe avant l’effet."
+        intro="Le centre de contrôle reprend la grammaire du tableau de bord de référence : navigation en pilules, cartes très arrondies, tuiles colorées pour ce qui demande une action. Ici, la précision passe avant l’effet."
       >
         <div className="flex flex-col gap-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -671,7 +696,7 @@ export function PageSystemeDesign() {
               <Squelette className="h-3 w-1/2" />
               <Squelette className="h-3 w-2/3" />
             </div>
-            <p className="mt-2 text-xs text-ivoire-3">
+            <p className="mt-2 text-xs text-encre-3">
               Squelette : forme d’un contenu en cours de chargement.
             </p>
           </Panneau>
@@ -680,7 +705,7 @@ export function PageSystemeDesign() {
 
       <footer className="flex flex-col items-center gap-4 border-t border-filet py-14 text-center">
         <VeineOr className="max-w-xs" />
-        <p className="titre-affiche text-[28px] text-ivoire">Glorious Destiny</p>
+        <p className="titre-affiche text-[28px] text-encre">Glorious Destiny</p>
       </footer>
 
       <Modale
@@ -735,15 +760,15 @@ export function PageSystemeDesign() {
         }
       >
         <dl className="grid grid-cols-[110px_1fr] gap-y-3 text-sm">
-          <dt className="text-ivoire-3">Cliente</dt>
+          <dt className="text-encre-3">Cliente</dt>
           <dd>Cliente B.</dd>
-          <dt className="text-ivoire-3">Ville</dt>
+          <dt className="text-encre-3">Ville</dt>
           <dd>Yaoundé</dd>
-          <dt className="text-ivoire-3">Statut</dt>
+          <dt className="text-encre-3">Statut</dt>
           <dd>
             <Badge ton="info">Expédiée</Badge>
           </dd>
-          <dt className="text-ivoire-3">Total</dt>
+          <dt className="text-encre-3">Total</dt>
           <dd className="chiffres">{formaterFcfa(14_000)}</dd>
         </dl>
       </Modale>

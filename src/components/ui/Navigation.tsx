@@ -23,7 +23,7 @@ export function NavPilules({
 }) {
   return (
     <nav aria-label={libelle} className={cx('max-w-full overflow-x-auto', className)}>
-      <ul className="inline-flex items-center gap-1 rounded-full border border-filet bg-surface-1 p-1">
+      <ul className="inline-flex items-center gap-1 rounded-full bg-carte p-1 shadow-panneau">
         {elements.map((el) => {
           const estActif = el.id === actif
           return (
@@ -37,8 +37,8 @@ export function NavPilules({
                 className={cx(
                   'inline-flex min-h-10 items-center gap-2 rounded-full px-4 text-sm font-medium whitespace-nowrap transition-colors duration-200',
                   estActif
-                    ? 'bg-or text-sur-or shadow-or'
-                    : 'text-ivoire-2 hover:bg-surface-2 hover:text-ivoire',
+                    ? 'bg-encre text-fond'
+                    : 'text-encre-2 hover:bg-carte-2 hover:text-encre',
                 )}
               >
                 {el.libelle}
@@ -117,8 +117,8 @@ export function Onglets({
               className={cx(
                 'relative -mb-px inline-flex min-h-11 items-center gap-2 border-b-2 text-sm font-medium whitespace-nowrap transition-colors',
                 estActif
-                  ? 'border-or text-ivoire'
-                  : 'border-transparent text-ivoire-3 hover:text-ivoire-2',
+                  ? 'border-encre text-encre'
+                  : 'border-transparent text-encre-3 hover:text-encre-2',
               )}
             >
               {o.libelle}

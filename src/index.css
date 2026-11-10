@@ -1,69 +1,145 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/urbanist';
-@import '@fontsource-variable/bodoni-moda';
 
 /*
- * Système de design Glorious Destiny — « l'interface est l'étiquette ».
- * Noir chaud des étiquettes, or employé comme une dorure à chaud (rare et fin), texte ivoire.
- * Contrastes vérifiés (WCAG) : ivoire 16:1, ivoire-2 10:1, ivoire-3 ≥ 5:1, or ≥ 7:1 sur toutes les surfaces.
+ * Système de design Glorious Destiny, v2 : « le comptoir ».
+ * Une seule famille (Urbanist), un fond pierre chaude, des cartes blanches très arrondies,
+ * l'encre pour agir, l'or pour ce qui compte (prix, nouveauté, sélection), la menthe pour
+ * ce qui est fait, et une teinte douce par univers : perruques, cils, produits, services.
+ * Deux thèmes, clair par défaut, sombre au choix (attribut data-theme sur <html>).
+ * Contrastes vérifiés (WCAG) dans les deux thèmes : texte ≥ 4,5:1, bords de champs ≥ 3:1.
  * Référence complète : DESIGN.md.
  */
-@theme {
-  /* Fonds, du plus profond au plus élevé */
-  --color-noir: #0d0b09;
-  --color-surface-1: #15120f;
-  --color-surface-2: #1c1814;
-  --color-surface-3: #262019;
+
+:root {
+  color-scheme: light;
+  --gd-fond: #ecebe7;
+  --gd-carte: #ffffff;
+  --gd-carte-2: #f4f3f0;
+  --gd-carte-3: #e6e4df;
+  --gd-filet: #1918161a;
+  --gd-filet-fort: #1918162e;
+  --gd-filet-champ: #8c867b;
+  --gd-encre: #1a1816;
+  --gd-encre-2: #3b3833;
+  --gd-encre-3: #66625b;
+  --gd-or: #d6a756;
+  --gd-or-texte: #8a5d10;
+  --gd-or-fonce: #b8862c;
+  --gd-sur-or: #1a1206;
+  --gd-menthe: #57d9a6;
+  --gd-sur-menthe: #0d2a1e;
+  --gd-rose: #f8dad0;
+  --gd-lilas: #e4ddf3;
+  --gd-sauge: #d4eee1;
+  --gd-sable: #f4e6c3;
+  --gd-succes: #11744a;
+  --gd-alerte: #8f4706;
+  --gd-danger: #b42318;
+  --gd-info: #1f5bbd;
+  --gd-serie-1: #b07a1f;
+  --gd-serie-2: #2f6fc0;
+  --gd-serie-3: #cf5a33;
+  --gd-serie-4: #168f80;
+  --gd-ombre: 0 1px 2px #14120c0a;
+  --gd-ombre-flottant: 0 2px 6px #14120c14, 0 34px 70px -26px #14120c59;
+  --gd-voile: rgb(26 24 22 / 0.42);
+}
+
+:root[data-theme='sombre'] {
+  color-scheme: dark;
+  --gd-fond: #111110;
+  --gd-carte: #1b1a19;
+  --gd-carte-2: #242322;
+  --gd-carte-3: #2e2d2b;
+  --gd-filet: #ffffff14;
+  --gd-filet-fort: #ffffff26;
+  --gd-filet-champ: #77736b;
+  --gd-encre: #f2f0ec;
+  --gd-encre-2: #d5d2cb;
+  --gd-encre-3: #a29f98;
+  --gd-or: #dcae5f;
+  --gd-or-texte: #ecc887;
+  --gd-or-fonce: #b8862c;
+  --gd-sur-or: #1a1206;
+  --gd-menthe: #17402f;
+  --gd-sur-menthe: #c9f5e1;
+  --gd-rose: #3a2620;
+  --gd-lilas: #2a2640;
+  --gd-sauge: #1b2f27;
+  --gd-sable: #352d1b;
+  --gd-succes: #5cd69a;
+  --gd-alerte: #f3a850;
+  --gd-danger: #ff7b6e;
+  --gd-info: #7fb0ff;
+  --gd-serie-1: #b8862c;
+  --gd-serie-2: #3a82d4;
+  --gd-serie-3: #d0613a;
+  --gd-serie-4: #24a08e;
+  --gd-ombre: 0 1px 2px #00000059, 0 14px 30px -20px #000000cc;
+  --gd-ombre-flottant: 0 2px 6px #00000073, 0 40px 80px -28px #000000e6;
+  --gd-voile: rgb(0 0 0 / 0.62);
+}
+
+@theme inline {
+  /* Fonds, du plus bas au plus élevé */
+  --color-fond: var(--gd-fond);
+  --color-carte: var(--gd-carte);
+  --color-carte-2: var(--gd-carte-2);
+  --color-carte-3: var(--gd-carte-3);
 
   /* Filets (séparateurs) et bord des champs (≥ 3:1 pour les contrôles) */
-  --color-filet: #2e271f;
-  --color-filet-fort: #43392d;
-  --color-filet-champ: #75664f;
+  --color-filet: var(--gd-filet);
+  --color-filet-fort: var(--gd-filet-fort);
+  --color-filet-champ: var(--gd-filet-champ);
 
-  /* Texte */
-  --color-ivoire: #f3ede2;
-  --color-ivoire-2: #cbc0ae;
-  --color-ivoire-3: #9b8f7d;
+  /* Encre : texte, et fond des actions principales (inversé en thème sombre) */
+  --color-encre: var(--gd-encre);
+  --color-encre-2: var(--gd-encre-2);
+  --color-encre-3: var(--gd-encre-3);
 
-  /* Or : action principale, état actif, focus */
-  --color-or: #d6a756;
-  --color-or-clair: #ecc887;
-  --color-or-fonce: #9c7432;
-  --color-sur-or: #1a1206;
+  /* Or : l'accent de la marque (prix, nouveauté, sélection, point actif). Texte : or-texte. */
+  --color-or: var(--gd-or);
+  --color-or-texte: var(--gd-or-texte);
+  --color-or-fonce: var(--gd-or-fonce);
+  --color-sur-or: var(--gd-sur-or);
+
+  /* Menthe : ce qui est fait, livré, réussi (tuile pleine) */
+  --color-menthe: var(--gd-menthe);
+  --color-sur-menthe: var(--gd-sur-menthe);
+
+  /* Teintes d'univers (fonds doux, texte encre dessus) */
+  --color-rose: var(--gd-rose);
+  --color-lilas: var(--gd-lilas);
+  --color-sauge: var(--gd-sauge);
+  --color-sable: var(--gd-sable);
 
   /* États (réservés, jamais utilisés comme couleur de série) */
-  --color-succes: #5fbf86;
-  --color-alerte: #f0b23e;
-  --color-danger: #ef6a5b;
-  --color-info: #78a6e0;
+  --color-succes: var(--gd-succes);
+  --color-alerte: var(--gd-alerte);
+  --color-danger: var(--gd-danger);
+  --color-info: var(--gd-info);
 
-  /* Séries de graphiques (validées daltonisme sur surface-1) : Douala, Yaoundé, Garoua, Abidjan */
-  --color-serie-1: #b8862c;
-  --color-serie-2: #3a82d4;
-  --color-serie-3: #d0613a;
-  --color-serie-4: #24a08e;
+  /* Séries de graphiques (validées daltonisme) : Douala, Yaoundé, Garoua, Abidjan */
+  --color-serie-1: var(--gd-serie-1);
+  --color-serie-2: var(--gd-serie-2);
+  --color-serie-3: var(--gd-serie-3);
+  --color-serie-4: var(--gd-serie-4);
 
+  --shadow-panneau: var(--gd-ombre);
+  --shadow-flottant: var(--gd-ombre-flottant);
+}
+
+@theme {
   --font-sans: 'Urbanist Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Bodoni Moda Variable', 'Didot', 'Bodoni 72', serif;
+  --font-display: 'Urbanist Variable', ui-sans-serif, system-ui, sans-serif;
 
-  --radius-champ: 10px;
-  --radius-panneau: 16px;
+  --radius-champ: 999px;
+  --radius-bloc: 18px;
+  --radius-panneau: 28px;
 
-  --shadow-panneau: 0 1px 0 0 rgb(255 255 255 / 0.03) inset, 0 18px 40px -24px rgb(0 0 0 / 0.9);
-  --shadow-flottant: 0 24px 60px -20px rgb(0 0 0 / 0.85), 0 2px 8px -2px rgb(0 0 0 / 0.6);
-  --shadow-or: 0 10px 22px -12px rgb(214 167 86 / 0.65);
+  --ease-sortie: cubic-bezier(0.22, 1, 0.36, 1);
 
-  --ease-sortie: cubic-bezier(0.16, 1, 0.3, 1);
-
-  --animate-reflet: reflet 1.1s var(--ease-sortie);
-  @keyframes reflet {
-    from {
-      background-position: 120% 0;
-    }
-    to {
-      background-position: -20% 0;
-    }
-  }
   --animate-pulse-doux: pulse-doux 1.6s ease-in-out infinite;
   @keyframes pulse-doux {
     50% {
@@ -74,28 +150,26 @@
 
 @layer base {
   html {
-    color-scheme: dark;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
-    scrollbar-color: var(--color-filet-fort) var(--color-noir);
+    scrollbar-color: var(--color-filet-fort) var(--color-fond);
     scrollbar-width: thin;
   }
 
   body {
-    @apply bg-noir font-sans text-ivoire antialiased;
-    /* Urbanist est fine en 400 sur fond noir : 450 pour la lecture au soleil. */
-    font-weight: 450;
-    font-feature-settings: 'ss01' on;
-    caret-color: var(--color-or);
+    @apply bg-fond font-sans text-encre antialiased;
+    font-weight: 500;
+    caret-color: var(--color-or-fonce);
+    transition: background-color 0.32s var(--ease-sortie);
   }
 
   ::selection {
     background: rgb(214 167 86 / 0.35);
-    color: var(--color-ivoire);
+    color: var(--color-encre);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-or);
+    outline: 2px solid var(--color-encre);
     outline-offset: 3px;
   }
 
@@ -115,8 +189,8 @@
   }
 
   dialog::backdrop {
-    background: rgb(5 4 3 / 0.72);
-    backdrop-filter: blur(2px);
+    background: var(--gd-voile);
+    backdrop-filter: blur(3px);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -149,11 +223,11 @@
       stroke-dashoffset: 0;
     }
   }
-  /* Titre d'affichage didone (site public) */
+  /* Grand titre : Urbanist semi-gras, approche serrée (comme les titres d'affiche de la marque) */
   .titre-affiche {
     font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    line-height: 1.02;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1;
   }
 }

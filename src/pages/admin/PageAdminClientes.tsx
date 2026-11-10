@@ -31,7 +31,7 @@ const COLONNES: Colonne<ClienteListe>[] = [
     cellule: (c) => (
       <Link
         to={`/admin/clientes/${c.id}`}
-        className="text-ivoire no-underline after:absolute after:inset-0 hover:text-or-clair"
+        className="text-encre no-underline after:absolute after:inset-0 hover:text-or-texte"
       >
         {c.nom}
       </Link>
@@ -82,7 +82,7 @@ export function PageAdminClientes() {
           <span className="sr-only">Rechercher une cliente</span>
           <Search
             aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ivoire-3"
+            className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-encre-3"
           />
           <Saisie
             type="search"
@@ -113,7 +113,7 @@ export function PageAdminClientes() {
           lignes={clientes.data}
           cle={(c) => c.id}
           vide={
-            <div className="rounded-panneau border border-filet bg-surface-1">
+            <div className="rounded-panneau border border-filet bg-carte">
               <EtatVide
                 titre={recherche ? 'Aucune cliente trouvée' : 'Aucune cliente pour le moment'}
               >
@@ -136,7 +136,7 @@ const COLONNES_COMMANDES: Colonne<CommandeListe>[] = [
     cellule: (c) => (
       <Link
         to={`/admin/commandes/${c.id}`}
-        className="chiffres text-ivoire no-underline after:absolute after:inset-0 hover:text-or-clair"
+        className="chiffres text-encre no-underline after:absolute after:inset-0 hover:text-or-texte"
       >
         {c.reference}
       </Link>
@@ -179,14 +179,14 @@ export function PageAdminCliente() {
     <section className="flex flex-col gap-6">
       <Link
         to="/admin/clientes"
-        className="inline-flex min-h-11 items-center gap-2 self-start text-sm text-ivoire-3 no-underline hover:text-ivoire [&_svg]:size-4"
+        className="inline-flex min-h-11 items-center gap-2 self-start text-sm text-encre-3 no-underline hover:text-encre [&_svg]:size-4"
       >
         <ArrowLeft aria-hidden="true" />
         Clientes
       </Link>
       <header>
         <h1 className="text-[28px] font-semibold">{c.nom}</h1>
-        <p className="chiffres mt-1 text-ivoire-2">
+        <p className="chiffres mt-1 text-encre-2">
           {c.telephone}
           {c.email ? ` · ${c.email}` : ''}
         </p>
@@ -219,7 +219,7 @@ export function PageAdminCliente() {
               {c.adresses.map((a) => (
                 <li key={a.id}>
                   <p>{[a.adresse, a.quartier, a.ville].filter(Boolean).join(', ')}</p>
-                  <p className="text-[13px] text-ivoire-3">{a.pointDeRepere}</p>
+                  <p className="text-[13px] text-encre-3">{a.pointDeRepere}</p>
                 </li>
               ))}
             </ul>

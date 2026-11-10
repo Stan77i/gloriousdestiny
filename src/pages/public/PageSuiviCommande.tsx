@@ -35,11 +35,11 @@ function Frise({ statut }: { statut: ResumeCommande['statut'] }) {
             aria-current={i === atteinte ? 'step' : undefined}
             className="flex flex-col gap-2"
           >
-            <span className={cx('h-1 rounded-full', fait ? 'bg-or' : 'bg-surface-3')} />
+            <span className={cx('h-1 rounded-full', fait ? 'bg-or' : 'bg-carte-3')} />
             <span
               className={cx(
                 'flex items-center gap-1 text-[13px]',
-                fait ? 'text-ivoire' : 'text-ivoire-3',
+                fait ? 'text-encre' : 'text-encre-3',
               )}
             >
               {fait && <Check aria-hidden="true" className="size-3.5 text-or" />}
@@ -68,9 +68,7 @@ function Detail({ c, nouvelle }: { c: ResumeCommande; nouvelle: boolean }) {
             Avancement
           </h2>
           <Frise statut={c.statut} />
-          <p className="text-[13px] text-ivoire-3">
-            Commandée le {formaterDateHeure(c.created_at)}
-          </p>
+          <p className="text-[13px] text-encre-3">Commandée le {formaterDateHeure(c.created_at)}</p>
         </section>
         <section aria-labelledby="titre-articles">
           <h2 id="titre-articles" className="mb-3 text-[19px] font-semibold">
@@ -80,7 +78,7 @@ function Detail({ c, nouvelle }: { c: ResumeCommande; nouvelle: boolean }) {
             {c.lignes.map((l) => (
               <li key={l.variante_id} className="flex justify-between gap-4 py-4 text-[15px]">
                 <span>
-                  {l.nom} <span className="chiffres text-ivoire-3">× {l.quantite}</span>
+                  {l.nom} <span className="chiffres text-encre-3">× {l.quantite}</span>
                 </span>
                 <span className="chiffres">{formaterFcfa(l.total_fcfa)}</span>
               </li>
@@ -88,35 +86,35 @@ function Detail({ c, nouvelle }: { c: ResumeCommande; nouvelle: boolean }) {
           </ul>
           <p className="mt-4 flex justify-between text-[17px] font-semibold">
             <span>Total</span>
-            <span className="chiffres text-or-clair">{formaterFcfa(c.total_fcfa)}</span>
+            <span className="chiffres text-or-texte">{formaterFcfa(c.total_fcfa)}</span>
           </p>
         </section>
       </div>
-      <aside className="flex flex-col gap-5 self-start rounded-panneau border border-filet bg-surface-1 p-6">
+      <aside className="flex flex-col gap-5 self-start rounded-panneau border border-filet bg-carte p-6">
         <h2 className="text-[17px] font-semibold">Livraison</h2>
         {c.livraison && (
           <dl className="flex flex-col gap-3 text-sm">
             <div>
-              <dt className="text-ivoire-3">Adresse</dt>
-              <dd className="mt-0.5 text-ivoire-2">
+              <dt className="text-encre-3">Adresse</dt>
+              <dd className="mt-0.5 text-encre-2">
                 {[c.livraison.adresse, c.livraison.quartier, c.livraison.ville]
                   .filter(Boolean)
                   .join(', ')}
               </dd>
             </div>
             <div>
-              <dt className="text-ivoire-3">Point de repère</dt>
-              <dd className="mt-0.5 text-ivoire-2">{c.livraison.point_de_repere}</dd>
+              <dt className="text-encre-3">Point de repère</dt>
+              <dd className="mt-0.5 text-encre-2">{c.livraison.point_de_repere}</dd>
             </div>
             <div>
-              <dt className="text-ivoire-3">État</dt>
-              <dd className="mt-0.5 text-ivoire-2">
+              <dt className="text-encre-3">État</dt>
+              <dd className="mt-0.5 text-encre-2">
                 {STATUT_LIVRAISON[c.livraison.statut as keyof typeof STATUT_LIVRAISON]}
               </dd>
             </div>
           </dl>
         )}
-        <p className="text-[13px] leading-relaxed text-ivoire-3">
+        <p className="text-[13px] leading-relaxed text-encre-3">
           Paiement à la livraison, en espèces ou par Mobile Money.
         </p>
         <BoutonWhatsApp
@@ -124,7 +122,7 @@ function Detail({ c, nouvelle }: { c: ResumeCommande; nouvelle: boolean }) {
           message={`Bonjour, je vous écris au sujet de ma commande ${c.reference}.`}
           className="w-full"
         />
-        <p className="text-[13px] text-ivoire-3">Indiquez votre référence {c.reference}.</p>
+        <p className="text-[13px] text-encre-3">Indiquez votre référence {c.reference}.</p>
       </aside>
     </div>
   )
@@ -163,7 +161,7 @@ export function PageSuiviCommande() {
         titre={nouvelle ? 'Merci !' : 'Suivi de commande'}
         intro={
           <>
-            Référence <span className="chiffres font-semibold text-ivoire">{ref}</span>
+            Référence <span className="chiffres font-semibold text-encre">{ref}</span>
           </>
         }
       />

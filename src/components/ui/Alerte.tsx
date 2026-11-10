@@ -34,8 +34,8 @@ export function Alerte({
         {TONS[ton].icone}
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <p className="text-sm font-semibold text-ivoire">{titre}</p>
-        {children && <div className="text-sm leading-relaxed text-ivoire-2">{children}</div>}
+        <p className="text-sm font-semibold text-encre">{titre}</p>
+        {children && <div className="text-sm leading-relaxed text-encre-2">{children}</div>}
         {actions && <div className="mt-2 flex flex-wrap gap-2">{actions}</div>}
       </div>
     </div>

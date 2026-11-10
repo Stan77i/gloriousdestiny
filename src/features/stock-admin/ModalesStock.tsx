@@ -394,7 +394,7 @@ export function ModaleReception({
           </Champ>
         </div>
         <fieldset className="flex flex-col gap-3">
-          <legend className="mb-2 text-[13px] font-semibold text-ivoire-2">Articles reçus</legend>
+          <legend className="mb-2 text-[13px] font-semibold text-encre-2">Articles reçus</legend>
           {lignes.map((l, i) => (
             <div
               key={l.cle}
