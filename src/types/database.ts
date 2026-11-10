@@ -1021,7 +1021,7 @@ export type Database = {
       disponibilite_variantes: {
         Args: { p_variante_ids: string[] }
         Returns: {
-          disponible: boolean
+          statut: string
           variante_id: string
         }[]
       }

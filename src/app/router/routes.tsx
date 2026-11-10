@@ -4,7 +4,15 @@ import { LayoutPublic } from '@/layouts/LayoutPublic'
 import { PageErreurRoute } from '@/pages/errors/PageErreurRoute'
 import { PageIntrouvable } from '@/pages/errors/PageIntrouvable'
 import { PageAccueil } from '@/pages/public/PageAccueil'
+import { PageCatalogue } from '@/pages/public/PageCatalogue'
+import { PageCils } from '@/pages/public/PageCils'
 import { PageConnexion } from '@/pages/public/PageConnexion'
+import { PageContact } from '@/pages/public/PageContact'
+import { PagePanier } from '@/pages/public/PagePanier'
+import { PagePerruques } from '@/pages/public/PagePerruques'
+import { PageProduit } from '@/pages/public/PageProduit'
+import { PageRendezVous } from '@/pages/public/PageRendezVous'
+import { PageService, PageServices } from '@/pages/public/PageServices'
 import { CHEMINS } from './chemins'
 import { RequireStaff } from './RequireStaff'
 
@@ -29,6 +37,17 @@ export const routes: RouteObject[] = [
         element: <LayoutPublic />,
         children: [
           { path: CHEMINS.accueil, element: <PageAccueil /> },
+          { path: CHEMINS.catalogue, element: <PageCatalogue /> },
+          { path: CHEMINS.produits, element: <PageCatalogue gammeSeule /> },
+          { path: `${CHEMINS.produits}/:slug`, element: <PageProduit /> },
+          { path: CHEMINS.perruques, element: <PagePerruques /> },
+          { path: `${CHEMINS.perruques}/:slug`, element: <PageProduit /> },
+          { path: CHEMINS.cils, element: <PageCils /> },
+          { path: CHEMINS.services, element: <PageServices /> },
+          { path: `${CHEMINS.services}/:slug`, element: <PageService /> },
+          { path: CHEMINS.rendezVous, element: <PageRendezVous /> },
+          { path: CHEMINS.contact, element: <PageContact /> },
+          { path: CHEMINS.panier, element: <PagePanier /> },
           { path: CHEMINS.connexion, element: <PageConnexion /> },
           // En développement uniquement : en production, la vitrine est réservée au personnel.
           ...(import.meta.env.DEV ? [{ ...routeSystemeDesign, path: CHEMINS.systemeDesign }] : []),

@@ -5,12 +5,25 @@ import { createMemoryRouter } from 'react-router'
 import { RouterProvider } from 'react-router/dom'
 import { NotificationsProvider } from '@/components/feedback/notifications/NotificationsProvider'
 import { AuthContext, type EtatAuth, type ValeurAuth } from '@/features/auth/AuthContext'
+import { PanierProvider } from '@/features/panier/PanierProvider'
 import { routes } from './routes'
 
 vi.mock('@/services/parametres.service', () => ({
   lireParametresPublics: vi.fn(() =>
-    Promise.resolve({ whatsapp_lien: null, whatsapp_numero: null }),
+    Promise.resolve({
+      whatsapp_lien: null,
+      whatsapp_numero: null,
+      ville_salon: 'Douala, Cameroun',
+      horaires_salon: null,
+    }),
   ),
+}))
+vi.mock('@/services/catalogue.service', () => ({
+  listerProduits: vi.fn(() => Promise.resolve([])),
+  listerServices: vi.fn(() => Promise.resolve([])),
+  produitParSlug: vi.fn(() => Promise.resolve(null)),
+  serviceParSlug: vi.fn(() => Promise.resolve(null)),
+  disponibilites: vi.fn(() => Promise.resolve(new Map())),
 }))
 vi.mock('@/services/supabase/sante', () => ({
   verifierConnexionBase: vi.fn(() => Promise.resolve({ villes: 4 })),
@@ -23,7 +36,9 @@ function rendre(chemin: string, etat: EtatAuth) {
   const Envelopper = ({ children }: { children: ReactNode }) => (
     <QueryClientProvider client={client}>
       <AuthContext value={auth}>
-        <NotificationsProvider>{children}</NotificationsProvider>
+        <PanierProvider>
+          <NotificationsProvider>{children}</NotificationsProvider>
+        </PanierProvider>
       </AuthContext>
     </QueryClientProvider>
   )
@@ -39,7 +54,17 @@ const sessionFactice = { user: { id: 'u1' } } as unknown as Extract<
 describe('routes', () => {
   it("affiche l'accueil", async () => {
     rendre('/', { statut: 'anonyme' })
-    expect(await screen.findByRole('heading', { name: 'Glorious Destiny' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: /Votre pose/ })).toBeInTheDocument()
+  })
+
+  it('affiche une fiche produit inexistante en 404', async () => {
+    rendre('/produits/inconnu', { statut: 'anonyme' })
+    expect(await screen.findByText("Cette page n'existe pas.")).toBeInTheDocument()
+  })
+
+  it('affiche le panier vide', async () => {
+    rendre('/panier', { statut: 'anonyme' })
+    expect(await screen.findByText('Votre panier est vide')).toBeInTheDocument()
   })
 
   it('affiche la 404 pour une page inconnue', async () => {

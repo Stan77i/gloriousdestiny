@@ -1,14 +1,17 @@
 import { Plus } from 'lucide-react'
+import { Link } from 'react-router'
 import { Badge } from '@/components/ui/Badge'
 import { Bouton } from '@/components/ui/Bouton'
 import { cx } from '@/lib/cx'
+import type { Disponibilite } from '@/services/catalogue.service'
+import { Monogramme } from './Monogramme'
 
-export type Disponibilite = 'disponible' | 'bientot_epuise' | 'epuise'
+export type { Disponibilite }
 
 /**
  * Carte produit du catalogue. Le produit détouré repose sur un socle noir chaud,
  * la photo d'usage apparaît au survol (souris) quand elle existe.
- * Le prix est fourni par la base ; sans prix, « Prix sur demande ».
+ * Toute la carte mène à la fiche (lien étiré sur le nom) ; le bouton reste indépendant.
  */
 export function CarteProduit({
   nom,
@@ -18,28 +21,36 @@ export function CarteProduit({
   photo,
   prix,
   disponibilite,
+  vers,
   onAjouter,
+  enCours = false,
 }: {
   nom: string
   format: string | null
   categorie: string
-  detoure: string
+  detoure: string | null
   photo?: string | undefined
   prix: string | null
-  disponibilite: Disponibilite
+  disponibilite: Disponibilite | undefined
+  vers?: string
   onAjouter?: () => void
+  enCours?: boolean
 }) {
   const epuise = disponibilite === 'epuise'
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-panneau border border-filet bg-surface-1 transition-[border-color,transform] duration-300 ease-(--ease-sortie) hover:-translate-y-0.5 hover:border-or/45">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-panneau border border-filet bg-surface-1 transition-[border-color,transform] duration-300 ease-(--ease-sortie) focus-within:border-or/45 hover:-translate-y-0.5 hover:border-or/45">
       <div className="relative aspect-[4/5] overflow-hidden bg-[radial-gradient(120%_80%_at_50%_100%,var(--color-surface-3),var(--color-noir)_70%)]">
-        <img
-          src={detoure}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 size-full object-contain p-[6%] transition-transform duration-700 ease-(--ease-sortie) group-hover:scale-[1.04]"
-        />
+        {detoure ? (
+          <img
+            src={detoure}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 size-full object-contain p-[6%] transition-transform duration-700 ease-(--ease-sortie) group-hover:scale-[1.04]"
+          />
+        ) : (
+          <Monogramme nom={nom} />
+        )}
         {photo && (
           <img
             src={photo}
@@ -55,7 +66,18 @@ export function CarteProduit({
         </div>
       </div>
       <div className="flex flex-1 flex-col gap-1 p-4">
-        <h3 className="text-[17px] leading-snug font-semibold text-ivoire">{nom}</h3>
+        <h3 className="text-[17px] leading-snug font-semibold text-ivoire">
+          {vers ? (
+            <Link
+              to={vers}
+              className="no-underline after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+            >
+              {nom}
+            </Link>
+          ) : (
+            nom
+          )}
+        </h3>
         <p className="text-[13px] text-ivoire-3">
           {format ? `${categorie} · ${format}` : categorie}
         </p>
@@ -66,15 +88,18 @@ export function CarteProduit({
           </p>
           {onAjouter && (
             // Variante discrète : l'or plein reste réservé à l'action principale de la page.
+            // `relative z-10` : reste cliquable au-dessus du lien étiré.
             <Bouton
               taille="petit"
               variante="secondaire"
-              disabled={epuise}
+              disabled={epuise || disponibilite === undefined}
+              enCours={enCours}
               onClick={onAjouter}
               icone={<Plus />}
               aria-label={`Ajouter ${nom} au panier`}
+              className="relative z-10"
             >
-              Ajouter
+              {epuise ? 'Épuisé' : 'Ajouter'}
             </Bouton>
           )}
         </div>

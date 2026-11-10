@@ -24,38 +24,98 @@ colors:
   serie-2: "#3a82d4"
   serie-3: "#d0613a"
   serie-4: "#24a08e"
+  voile: "rgb(5 4 3 / 0.72)"
 typography:
-  display:
-    fontFamily: "Bodoni Moda Variable, Didot, Bodoni 72, serif"
-    fontSize: "clamp(3.25rem, 7vw, 5.75rem)"
+  display-xxl:
+    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontSize: "96px"
     fontWeight: 500
     lineHeight: 1.02
     letterSpacing: "-0.01em"
-  headline:
+  display-xl:
     fontFamily: "Bodoni Moda Variable, Didot, serif"
-    fontSize: "2.625rem"
+    fontSize: "84px"
+    fontWeight: 500
+    lineHeight: 1.02
+  display:
+    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontSize: "92px"
+    fontWeight: 500
+    lineHeight: 1.02
+  display-l:
+    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontSize: "64px"
+    fontWeight: 500
+    lineHeight: 1.02
+  display-m:
+    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontSize: "56px"
+    fontWeight: 500
+    lineHeight: 1.02
+  headline-l:
+    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontSize: "52px"
     fontWeight: 500
     lineHeight: 1.05
+  headline-m:
+    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontSize: "44px"
+    fontWeight: 500
+    lineHeight: 1.05
+  headline:
+    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontSize: "40px"
+    fontWeight: 500
+    lineHeight: 1.05
+  headline-s:
+    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontSize: "34px"
+    fontWeight: 500
+    lineHeight: 1.1
+  headline-xs:
+    fontFamily: "Bodoni Moda Variable, Didot, serif"
+    fontSize: "28px"
+    fontWeight: 500
+    lineHeight: 1.15
+  figure:
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
+    fontSize: "32px"
+    fontWeight: 600
+    letterSpacing: "-0.02em"
+  price-l:
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
+    fontSize: "26px"
+    fontWeight: 600
+  title-l:
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
+    fontSize: "21px"
+    fontWeight: 600
+    lineHeight: 1.3
+  title-m:
+    fontFamily: "Urbanist Variable, system-ui, sans-serif"
+    fontSize: "19px"
+    fontWeight: 600
+    lineHeight: 1.3
   title:
     fontFamily: "Urbanist Variable, system-ui, sans-serif"
-    fontSize: "1.0625rem"
+    fontSize: "17px"
     fontWeight: 600
     lineHeight: 1.35
   body:
     fontFamily: "Urbanist Variable, system-ui, sans-serif"
-    fontSize: "0.9375rem"
+    fontSize: "15px"
     fontWeight: 450
     lineHeight: 1.6
   label:
     fontFamily: "Urbanist Variable, system-ui, sans-serif"
-    fontSize: "0.8125rem"
+    fontSize: "13px"
     fontWeight: 600
     letterSpacing: "0.02em"
-  figure:
+  micro:
     fontFamily: "Urbanist Variable, system-ui, sans-serif"
-    fontSize: "2rem"
+    fontSize: "11px"
     fontWeight: 600
-    letterSpacing: "-0.02em"
+    letterSpacing: "0.04em"
 rounded:
   badge: "9999px"
   control: "9999px"
@@ -140,6 +200,7 @@ Deux voix, jamais mélangées dans un même rôle.
 - **Urbanist** (géométrique, auto-hébergée) : tout le reste — interface, formulaires, prix, chiffres, administration. Graisse de lecture 450 (la 400 est trop fine sur fond noir au soleil).
 - Les grands chiffres (tuiles) restent en Urbanist, chiffres proportionnels. Les colonnes de tableaux et les axes utilisent `.chiffres` (chiffres tabulaires).
 - Pas de sur-titre (« eyebrow ») au-dessus d'un titre : le titre porte seul son poids. Les métadonnées passent sous le titre.
+- **Échelle** : affiche didone 96 / 92 / 84 / 64 / 56 px (premier écran, réduite sur mobile), titres didone 52 / 44 / 40 / 34 / 28 px, interface Urbanist 26 (prix) / 21 / 19 / 17 / 15 / 13 / 11 px, chiffre clé 32 px. Aucune autre taille.
 - Titres en `text-wrap: balance`, paragraphes en `pretty`, mesure ≤ 75 caractères.
 
 ## Layout
@@ -158,7 +219,7 @@ Profondeur **par étagement tonal**, pas par ombres décoratives : chaque niveau
 - `flottant` : modales, tiroirs, notifications, info-bulles.
 - `or` : halo doré décalé sous l'action principale et la pilule active (la dorure qui accroche la lumière).
 
-Le fond des modales est un voile noir à 72 % avec un léger flou (2 px).
+Le fond des modales est le `voile` (noir à 72 %) avec un léger flou (2 px).
 
 ## Shapes
 

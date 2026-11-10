@@ -84,13 +84,13 @@ select pg_temp.attendre_erreur($q$delete from public.produits$q$, 'HISTORIQUE_IM
 set local role anon;
 set local request.jwt.claim.sub = '';
 do $$ begin
-  assert (select count(*) from public.produits) = 1, 'anon doit voir 1 produit';
-  assert (select count(*) from public.variantes) = 1, 'anon doit voir 1 variante';
+  assert (select count(*) from public.produits where sku like 'TEST-%') = 1, 'anon doit voir 1 produit de test';
+  assert (select count(*) from public.variantes where sku like 'TEST-%') = 1, 'anon doit voir 1 variante de test';
 end $$;
 select pg_temp.attendre_erreur($q$select * from public.stocks$q$, 'permission denied');
 select pg_temp.attendre_erreur($q$select * from public.commandes$q$, 'permission denied');
 do $$ begin
-  assert (select disponible from public.disponibilite_variantes(array['30000000-0000-0000-0000-000000000001'::uuid])) = true, 'variante disponible';
+  assert (select statut from public.disponibilite_variantes(array['30000000-0000-0000-0000-000000000001'::uuid])) = 'bientot_epuise', 'variante au seuil : bientôt épuisée (2 ≤ seuil 5)';
   assert (select count(*) from public.disponibilite_variantes(array['30000000-0000-0000-0000-000000000002'::uuid])) = 0, 'brouillon invisible';
   assert (select count(*) from public.parametres where cle = 'delai_expiration_reservation_heures') = 0, 'paramètre privé invisible';
   assert (select count(*) from public.parametres where cle = 'whatsapp_lien') = 1, 'paramètre public visible';
@@ -157,6 +157,13 @@ update public.produits set prix_fcfa = 1 where id = '20000000-0000-0000-0000-000
 reset role;
 do $$ begin
   assert (select prix_fcfa from public.produits where id = '20000000-0000-0000-0000-000000000001') = 1500, 'ventes ne modifie pas les prix';
+end $$;
+
+-- 21. La gamme officielle compte exactement 7 produits, sans Silkening Mist.
+do $$ begin
+  assert (select count(*) from public.produits where sku like 'GD-%') = 7, 'exactement 7 produits officiels';
+  assert not exists (select 1 from public.produits where nom ilike '%silkening%'), 'pas de Silkening Mist';
+  assert (select count(*) from public.mouvements_stock where cle_idempotence like 'stock-initial-%') = 7, 'stock initial par mouvements';
 end $$;
 
 select 'TOUS LES TESTS SQL SONT PASSÉS' as resultat;

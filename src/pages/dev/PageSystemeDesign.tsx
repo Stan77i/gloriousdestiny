@@ -165,7 +165,7 @@ function Section({
       className="scroll-mt-24 border-t border-filet pt-14 pb-6"
     >
       <div className="mb-9 max-w-2xl">
-        <h2 id={`${id}-titre`} className="titre-affiche text-[34px] text-ivoire sm:text-[42px]">
+        <h2 id={`${id}-titre`} className="titre-affiche text-[34px] text-ivoire sm:text-[40px]">
           {titre}
         </h2>
         <p className="mt-3 text-[15px] leading-relaxed text-ivoire-3">{intro}</p>
@@ -193,7 +193,7 @@ export function PageSystemeDesign() {
       {/* Premier écran : le titre et l'étiquette réelle */}
       <header className="grid items-stretch gap-8 py-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14 lg:py-16">
         <div className="flex flex-col justify-center">
-          <h1 className="titre-affiche text-[52px] text-ivoire sm:text-[76px] lg:text-[92px]">
+          <h1 className="titre-affiche text-[52px] text-ivoire sm:text-[84px] lg:text-[92px]">
             Système
             <br />
             de design
@@ -292,7 +292,7 @@ export function PageSystemeDesign() {
                   'La commande est enregistrée avant l’ouverture de WhatsApp.',
                 ],
                 ['Petit', 'text-[13px] text-ivoire-3', 'Mis à jour il y a 2 minutes'],
-                ['Prix', 'text-[22px] font-semibold text-or-clair', formaterFcfa(12500)],
+                ['Prix', 'text-[21px] font-semibold text-or-clair', formaterFcfa(12500)],
               ].map(([nom, classe, texte]) => (
                 <div key={nom} className="grid grid-cols-[80px_1fr] items-baseline gap-3">
                   <dt className="text-xs text-ivoire-3">{nom}</dt>
