@@ -18,6 +18,8 @@ const schemaResume = z.object({
   total_fcfa: z.number().int(),
   created_at: z.string(),
   reservation_expire_at: z.string().nullable(),
+  message_whatsapp: z.string(),
+  message_whatsapp_ouvert_at: z.string().nullable(),
   cliente: z.object({ nom: z.string(), telephone: z.string() }),
   livraison: z
     .object({
@@ -91,6 +93,18 @@ export async function suivreCommande(
   })
   if (error) throw versErreurApp(error)
   return data === null ? null : schemaResume.parse(data)
+}
+
+/** Trace l'ouverture de WhatsApp par la cliente (sans bloquer : best effort). */
+export async function signalerOuvertureWhatsapp(
+  reference: string,
+  telephone: string,
+): Promise<void> {
+  const { error } = await supabase().rpc('signaler_ouverture_whatsapp', {
+    p_reference: reference,
+    p_telephone: telephone,
+  })
+  if (error) throw versErreurApp(error)
 }
 
 // ---------------------------------------------------------------------------
@@ -202,6 +216,7 @@ export type DetailCommande = CommandeListe & {
   referencePaiement: string | null
   payeLe: string | null
   notesInternes: string | null
+  whatsappOuvertLe: string | null
   lignes: { id: string; nom: string; quantite: number; prixUnitaire: number; total: number }[]
   livraison: {
     quartier: string
@@ -235,6 +250,7 @@ type LigneDetail = LigneListe & {
   reference_paiement: string | null
   paye_at: string | null
   notes_internes: string | null
+  message_whatsapp_ouvert_at: string | null
   lignes: {
     id: string
     nom_snapshot: string
@@ -263,12 +279,19 @@ type LigneDetail = LigneListe & {
   }[]
 }
 
+/** Message WhatsApp exact de la commande, tel que la cliente l'a reçu à envoyer. */
+export async function messageWhatsappCommande(id: string): Promise<string> {
+  const { data, error } = await supabase().rpc('message_whatsapp_commande', { p_id: id })
+  if (error) throw versErreurApp(error)
+  return data
+}
+
 export async function detailCommande(id: string): Promise<DetailCommande | null> {
   const { data, error } = await supabase()
     .from('commandes')
     .select(
       `${CHAMPS_LISTE}, devise, sous_total_fcfa, frais_livraison_fcfa, confirmee_at, annulee_at, motif_annulation,
-       mode_paiement, montant_encaisse_fcfa, reference_paiement, paye_at, notes_internes,
+       mode_paiement, montant_encaisse_fcfa, reference_paiement, paye_at, notes_internes, message_whatsapp_ouvert_at,
        lignes:commande_lignes(id, nom_snapshot, quantite, prix_unitaire_snapshot_fcfa, total_ligne_fcfa),
        livraisons(quartier, adresse, point_de_repere, telephone, statut, motif_echec, expediee_at, livree_at, created_at),
        historique:commande_historique(id, evenement, statut_avant, statut_apres, motif, created_at)`,
@@ -292,6 +315,7 @@ export async function detailCommande(id: string): Promise<DetailCommande | null>
     referencePaiement: data.reference_paiement,
     payeLe: data.paye_at,
     notesInternes: data.notes_internes,
+    whatsappOuvertLe: data.message_whatsapp_ouvert_at,
     lignes: data.lignes.map((l) => ({
       id: l.id,
       nom: l.nom_snapshot,

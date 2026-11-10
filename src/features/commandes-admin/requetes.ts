@@ -5,6 +5,7 @@ import {
   compterCommandes,
   detailCommande,
   listerCommandes,
+  messageWhatsappCommande,
   type StatutCommande,
 } from '@/services/commandes.service'
 
@@ -28,6 +29,14 @@ export function useCompteurs() {
 
 export function useCommande(id: string) {
   return useQuery({ queryKey: ['admin', 'commande', id], queryFn: () => detailCommande(id) })
+}
+
+export function useMessageWhatsapp(id: string) {
+  return useQuery({
+    queryKey: ['admin', 'message-whatsapp', id],
+    queryFn: () => messageWhatsappCommande(id),
+    staleTime: Infinity,
+  })
 }
 
 export function useCommandesCliente(clienteId: string) {

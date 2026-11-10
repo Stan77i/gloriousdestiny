@@ -19,7 +19,11 @@ import {
 } from '@/domain/libelles'
 import { aRole } from '@/domain/roles'
 import { useAuth } from '@/features/auth/useAuth'
-import { useActionCommande, useCommande } from '@/features/commandes-admin/requetes'
+import {
+  useActionCommande,
+  useCommande,
+  useMessageWhatsapp,
+} from '@/features/commandes-admin/requetes'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterDateHeure } from '@/lib/format/date'
@@ -181,6 +185,35 @@ function ModalePaiement({
         )}
       </div>
     </Modale>
+  )
+}
+
+function PanneauWhatsApp({ id, ouvertLe }: { id: string; ouvertLe: string | null }) {
+  const message = useMessageWhatsapp(id)
+  return (
+    <Panneau
+      titre="Message WhatsApp"
+      sousTitre={
+        ouvertLe
+          ? `Ouvert par la cliente le ${formaterDateHeure(ouvertLe)}`
+          : 'Pas encore ouvert par la cliente'
+      }
+    >
+      {message.data ? (
+        <details className="group">
+          <summary className="cursor-pointer text-sm text-or-clair hover:text-or">
+            Voir le message reçu
+          </summary>
+          <pre className="mt-3 font-sans text-[13px] leading-relaxed whitespace-pre-wrap text-ivoire-2">
+            {message.data}
+          </pre>
+        </details>
+      ) : message.isError ? (
+        <p className="text-sm text-ivoire-3">{versErreurApp(message.error).message}</p>
+      ) : (
+        <p className="text-sm text-ivoire-3">Chargement…</p>
+      )}
+    </Panneau>
   )
 }
 
@@ -400,6 +433,8 @@ export function PageAdminCommande() {
             </p>
             <p className="chiffres mt-1 text-sm text-ivoire-2">{c.cliente.telephone}</p>
           </Panneau>
+
+          <PanneauWhatsApp id={c.id} ouvertLe={c.whatsappOuvertLe} />
 
           <Panneau
             titre="Livraison"

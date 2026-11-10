@@ -11,6 +11,7 @@ import { EnTetePage } from '@/components/ui/EnTetePage'
 import { ETAPES_COMMANDE, STATUT_COMMANDE, STATUT_LIVRAISON } from '@/domain/libelles'
 import { telephoneMemorise } from '@/features/commande/cleCommande'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
+import { EnvoiWhatsApp } from '@/features/whatsapp/EnvoiWhatsApp'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { cx } from '@/lib/cx'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
@@ -57,10 +58,11 @@ function Detail({ c, nouvelle }: { c: ResumeCommande; nouvelle: boolean }) {
       <div className="flex flex-col gap-8">
         {nouvelle && (
           <Alerte ton="succes" titre={`Commande ${c.reference} enregistrée`}>
-            Notre équipe vous contacte pour la confirmer et convenir de la livraison. Gardez votre
-            référence : elle permet de suivre votre commande ici.
+            Vos articles sont réservés pour vous. Gardez votre référence : elle permet de suivre
+            votre commande ici.
           </Alerte>
         )}
+        {c.statut === 'nouvelle' && <EnvoiWhatsApp commande={c} />}
         <section aria-labelledby="titre-avancement" className="flex flex-col gap-4">
           <h2 id="titre-avancement" className="text-[19px] font-semibold">
             Avancement

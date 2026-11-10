@@ -1101,6 +1101,11 @@ export type Database = {
       }
       expedier_commande: { Args: { p_id: string }; Returns: Json }
       livrer_commande: { Args: { p_id: string }; Returns: Json }
+      message_whatsapp_commande: { Args: { p_id: string }; Returns: string }
+      signaler_ouverture_whatsapp: {
+        Args: { p_reference: string; p_telephone: string }
+        Returns: boolean
+      }
       suivre_commande: {
         Args: { p_reference: string; p_telephone: string }
         Returns: Json
