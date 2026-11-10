@@ -45,7 +45,7 @@ Choix techniques proposés (à valider) :
 | Logique critique | Fonctions SQL (RPC) `SECURITY DEFINER` | Atomicité, pas de contournement depuis le navigateur |
 | Tâches planifiées | pg_cron + Edge Function si besoin | Expiration des réservations, recalcul des prévisions |
 | Tests | Vitest + Testing Library (front), Playwright (parcours), pgTAP (base) | Couvre UI, parcours réels et règles de stock |
-| Paiement en ligne | **Non prévu en V1** | Le flux actuel est WhatsApp ; à décider |
+| Paiement | **Aucun paiement sur le site** (validé) | Commande finalisée sur WhatsApp ; paiement à la livraison en espèces ou Mobile Money, enregistré dans l'admin |
 | WhatsApp | **Lien `wa.me` en V1**, pas d'API WhatsApp Business | Pas de coût ni de vérification ; l'API pourra venir après |
 
 ---
@@ -354,7 +354,9 @@ Extensions : `btree_gist` (contrainte d'exclusion sur les créneaux), `pgcrypto`
 ### F16. `commandes`
 - Colonnes : `id`, `reference` (unique, lisible, ex. `GD-2611-0042`), `cliente_id`, `canal` (`web` | `whatsapp`), `statut`, `sous_total_fcfa`, `frais_livraison_fcfa`, `total_fcfa`, `cle_idempotence` (unique), `reservation_expire_at`, `message_whatsapp_genere_at`, `message_whatsapp_ouvert_at`, `confirmee_at`, `annulee_at`, `motif_annulation`, `notes_internes`, `created_at`, `updated_at`.
 - Statuts : `nouvelle` → `confirmee` → `expediee` → `livree` ; `annulee` possible depuis `nouvelle` ou `confirmee` ; `retournee` possible après `livree` (partielle ou totale).
-- Contraintes : `total_fcfa = sous_total_fcfa + frais_livraison_fcfa` (`CHECK`) ; montants ≥ 0.
+- Devise : `devise` (`XAF` pour le Cameroun, `XOF` pour Abidjan), déduite de la ville de livraison. Affichage « FCFA » partout, montants identiques.
+- Paiement (à la livraison, aucun paiement en ligne) : `statut_paiement` (`non_paye` | `paye` | `rembourse`), `mode_paiement` (`especes` | `mobile_money`, nullable tant que non payé), `montant_encaisse_fcfa`, `reference_paiement` (numéro de transaction Mobile Money, nullable), `paye_at`, `encaisse_par`. Champs sur la commande et non table séparée : un seul encaissement par commande en V1.
+- Contraintes : `total_fcfa = sous_total_fcfa + frais_livraison_fcfa` (`CHECK`) ; montants ≥ 0 ; `statut_paiement = 'paye'` exige `mode_paiement` et `paye_at`.
 - Index : `(statut, created_at)`, `(cliente_id)`, `(reservation_expire_at) WHERE statut = 'nouvelle'`.
 
 ### F17. `commande_lignes` — lignes figées
@@ -639,6 +641,13 @@ Règle de séquence : on ne saute pas de phase. Une décision qui touche plusieu
 
 Ces points changent le modèle ou le travail. Merci de répondre avant la Phase 2.
 
+**Réponses déjà reçues (10/11/2026)**
+- **Devise** : FCFA. XAF pour le Cameroun ; Abidjan est en zone XOF (même valeur, 1:1) : affichage « FCFA » sans distinction, devise réelle conservée sur chaque commande.
+- **Villes desservies** : Douala, Yaoundé, Garoua (les trois plus grandes villes du Cameroun ; Garoua peut être remplacée par Bafoussam ou Bamenda), et Abidjan (Côte d'Ivoire, indicatif +225, fuseau UTC+0).
+- **Paiement** : aucun paiement sur le site ni l'application. La cliente est dirigée vers WhatsApp et paie **à la livraison**, en **espèces** ou par **Mobile Money**. L'équipe enregistre l'encaissement dans l'admin.
+- **Rendez-vous** : un seul salon, dans une seule ville (ville à préciser).
+- **Lien WhatsApp fourni** : `https://wa.me/message/…` est un lien court de WhatsApp Business. Ce type de lien **ne permet pas de pré-remplir le message de la commande**. Il faut le **numéro de téléphone** de la boutique (format `wa.me/237XXXXXXXXX?text=…`) pour respecter la règle « la cliente ne recopie jamais sa commande ». Le lien court reste utilisable pour le bouton « Nous écrire » général.
+
 **Décisions d'architecture proposées**
 1. **Logique métier dans PostgreSQL (RPC)** plutôt que dans le navigateur. Recommandé : oui.
 2. **Pas d'API WhatsApp Business en V1** ; lien `wa.me` seulement. Recommandé : oui.
@@ -658,15 +667,15 @@ Ces points changent le modèle ou le travail. Merci de répondre avant la Phase 
 
 **Informations manquantes (bloquantes pour la Phase 2)**
 14. **Prix officiels** des 7 produits et des services. Aucun prix n'est fourni dans le brief ; je ne les inventerai pas.
-15. **Devise** : FCFA (XAF) supposé. Confirmer, et confirmer la TVA.
+15. ~~Devise~~ : réglé (FCFA, voir plus haut). Reste à confirmer : TVA applicable ou non.
 16. **Quantités de stock initiales** pour chaque produit, et formats (ex. 200 ml, 250 g) et conditionnements.
-17. **Villes et quartiers desservis**, et frais de livraison par zone.
-18. **Numéro WhatsApp** de la boutique et **horaires** d'ouverture.
+17. ~~Villes~~ : réglé. Restent : **quartiers** desservis dans chaque ville, **frais de livraison** par ville, délai et mode d'envoi vers **Abidjan** (envoi international).
+18. **Numéro WhatsApp** de la boutique (numéro complet, pas le lien court), **horaires** d'ouverture, **ville du salon**.
 19. **Catégorisation** : les produits Lace Glue, Lace Melting Spray et Lace Glue Remover sont-ils destinés à la pose de perruque ou à celle de cils ? Le brief les place sous « cils » mais leur usage semble être la perruque.
 20. **Ajout de variantes** : les 7 produits existent-ils en plusieurs formats ou couleurs, ou un seul format chacun ?
 21. **Perruques** : liste des attributs à gérer (longueur, couleur, texture, densité, type de dentelle, taille) et nombre de références prévues.
 22. **Fournisseurs** : nombre, et délai habituel d'approvisionnement.
-23. **Paiement** : confirmer qu'il n'y a aucun paiement en ligne en V1 (paiement à la livraison, mobile money à l'extérieur du système, ou autre ?). Ce point modifie la logique de commande.
+23. ~~Paiement~~ : réglé (à la livraison, espèces ou Mobile Money, aucun paiement en ligne).
 24. **Hébergeur et domaine** du site, et qui a accès au compte Supabase.
 25. **Langue** : français seul en V1 ou aussi anglais ?
 
