@@ -8,6 +8,7 @@ import { VeineOr } from '@/components/marque/VeineOr'
 import { BoutonIcone } from '@/components/ui/Bouton'
 import { Modale } from '@/components/ui/Modale'
 import { SITE } from '@/config/site'
+import { useAuth } from '@/features/auth/useAuth'
 import { useParametresPublics } from '@/features/catalogue/requetes'
 import { usePanier } from '@/features/panier/usePanier'
 import { BoutonTheme } from '@/features/theme/BoutonTheme'
@@ -76,8 +77,13 @@ function PiedDePage() {
           </p>
         </div>
       </div>
-      <div className="border-t border-filet px-4 py-6 text-center text-[13px] text-encre-3">
-        © {new Date().getFullYear()} {SITE.nom}
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-t border-filet px-4 py-6 text-[13px] text-encre-3">
+        <span>
+          © {new Date().getFullYear()} {SITE.nom}
+        </span>
+        <Link to={CHEMINS.connexion} className="text-encre-3 hover:text-encre">
+          Espace équipe
+        </Link>
       </div>
     </footer>
   )
@@ -86,6 +92,8 @@ function PiedDePage() {
 /** Gabarit du site public : en-tête, menu mobile, pied de page. */
 export function LayoutPublic() {
   const [menu, setMenu] = useState(false)
+  const auth = useAuth()
+  const membreEquipe = auth.statut === 'connecte' && auth.profil !== null
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -120,6 +128,14 @@ export function LayoutPublic() {
             >
               Rendez-vous
             </Link>
+            {membreEquipe && (
+              <Link
+                to={CHEMINS.admin}
+                className="inline-flex min-h-11 items-center rounded-full bg-or px-4 text-sm font-semibold text-sur-or no-underline transition-colors duration-300 hover:bg-or-fonce"
+              >
+                Administration
+              </Link>
+            )}
             <BoutonTheme className="hidden sm:inline-flex" />
             <LienPanier />
             <BoutonIcone

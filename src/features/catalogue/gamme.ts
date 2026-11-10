@@ -37,7 +37,7 @@ export const GAMME: ProduitGamme[] = [
   {
     slug: 'hair-curl-mousse',
     nom: 'Hair Curl Mousse',
-    format: '200 ml',
+    format: '250 ml',
     categorie: 'Coiffage',
     detoure: hairCurlMousse,
     photo: null,
@@ -45,7 +45,7 @@ export const GAMME: ProduitGamme[] = [
   {
     slug: 'glue-residue-remover-shampoo',
     nom: 'Glue Residue Remover Shampoo',
-    format: '245 ml',
+    format: '300 ml',
     categorie: 'Pose de perruque',
     detoure: shampoo,
     photo: {
