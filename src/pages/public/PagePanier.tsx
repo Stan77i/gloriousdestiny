@@ -210,14 +210,23 @@ export function PagePanier() {
                 Retirez-les pour continuer.
               </Alerte>
             )}
-            <Bouton taille="grand" disabled className="w-full">
-              Commander
-            </Bouton>
-            <p className="text-[13px] leading-relaxed text-ivoire-3">
-              La commande en ligne ouvre très prochainement. En attendant, envoyez-nous votre panier
-              sur WhatsApp.
-            </p>
-            <BoutonWhatsApp className="w-full" />
+            {indisponibles > 0 || produits.isPending ? (
+              <Bouton taille="grand" disabled className="w-full">
+                Commander
+              </Bouton>
+            ) : (
+              <Link
+                to={CHEMINS.commande}
+                className={classesBouton('principal', 'grand', 'w-full no-underline')}
+              >
+                Commander
+              </Link>
+            )}
+            <BoutonWhatsApp
+              libelle="Une question ? WhatsApp"
+              variante="fantome"
+              className="w-full"
+            />
           </aside>
         </div>
       )}

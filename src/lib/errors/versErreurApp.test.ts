@@ -31,3 +31,20 @@ describe('versErreurApp', () => {
     expect(erreur.detail).toContain('secret')
   })
 })
+
+describe('erreurs du commerce', () => {
+  it('reconnaît les refus métier de la commande', () => {
+    expect(versErreurApp({ message: 'TROP_DE_COMMANDES', code: 'P0001' }).code).toBe(
+      'trop_de_commandes',
+    )
+    expect(versErreurApp({ message: 'TRANSITION_IMPOSSIBLE: x', code: 'P0001' }).code).toBe(
+      'transition',
+    )
+    expect(versErreurApp({ message: 'VALIDATION: telephone', code: '22023' }).code).toBe(
+      'validation',
+    )
+    const e = versErreurApp({ message: 'STOCK_INSUFFISANT: Lace Glue', code: 'P0001' })
+    expect(e.code).toBe('stock_insuffisant')
+    expect(e.detail).toContain('Lace Glue')
+  })
+})

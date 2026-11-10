@@ -173,6 +173,47 @@ export type Database = {
           },
         ]
       }
+      commande_historique: {
+        Row: {
+          auteur_id: string | null
+          commande_id: string
+          created_at: string
+          evenement: string
+          id: number
+          motif: string | null
+          statut_apres: string
+          statut_avant: string | null
+        }
+        Insert: {
+          auteur_id?: string | null
+          commande_id: string
+          created_at?: string
+          evenement: string
+          id?: never
+          motif?: string | null
+          statut_apres: string
+          statut_avant?: string | null
+        }
+        Update: {
+          auteur_id?: string | null
+          commande_id?: string
+          created_at?: string
+          evenement?: string
+          id?: never
+          motif?: string | null
+          statut_apres?: string
+          statut_avant?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commande_historique_commande_id_fkey"
+            columns: ["commande_id"]
+            isOneToOne: false
+            referencedRelation: "commandes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       commande_lignes: {
         Row: {
           commande_id: string
@@ -1018,6 +1059,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      annoter_cliente: {
+        Args: { p_id: string; p_notes: string }
+        Returns: undefined
+      }
+      annoter_commande: {
+        Args: { p_id: string; p_notes: string }
+        Returns: undefined
+      }
+      annuler_commande: {
+        Args: { p_id: string; p_motif: string }
+        Returns: Json
+      }
+      confirmer_commande: { Args: { p_id: string }; Returns: Json }
+      creer_commande: { Args: { p_commande: Json }; Returns: Json }
       disponibilite_variantes: {
         Args: { p_variante_ids: string[] }
         Returns: {
@@ -1034,6 +1089,21 @@ export type Database = {
           p_variante_id: string
         }
         Returns: number
+      }
+      enregistrer_paiement: {
+        Args: {
+          p_id: string
+          p_mode: string
+          p_montant_fcfa: number
+          p_reference?: string
+        }
+        Returns: Json
+      }
+      expedier_commande: { Args: { p_id: string }; Returns: Json }
+      livrer_commande: { Args: { p_id: string }; Returns: Json }
+      suivre_commande: {
+        Args: { p_reference: string; p_telephone: string }
+        Returns: Json
       }
     }
     Enums: {

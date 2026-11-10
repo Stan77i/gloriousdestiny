@@ -20,4 +20,6 @@ for f in "$ROOT"/supabase/migrations/*.sql; do
   "${PSQL[@]}" -f "$f"
 done
 "${PSQL[@]}" -f "$ROOT/supabase/seed.sql"
-"${PSQL[@]}" -f "$ROOT/supabase/tests/regles_metier.test.sql"
+for t in "$ROOT"/supabase/tests/*.test.sql; do echo "tests: $(basename "$t")"; "${PSQL[@]}" -f "$t"; done
+echo "tests: concurrence.sh"
+bash "$ROOT/supabase/tests/concurrence.sh" "${PSQL[@]}"

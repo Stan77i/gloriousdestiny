@@ -55,7 +55,7 @@ export function Tableau<T>({
           {lignes.map((ligne) => (
             <tr
               key={cle(ligne)}
-              className="grid grid-cols-2 gap-x-4 gap-y-2 px-5 py-4 transition-colors hover:bg-surface-2/50 sm:table-row sm:p-0"
+              className="relative grid grid-cols-2 gap-x-4 gap-y-2 px-5 py-4 transition-colors hover:bg-surface-2/50 sm:table-row sm:p-0"
             >
               {colonnes.map((c, i) => (
                 <td

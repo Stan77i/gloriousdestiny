@@ -7,6 +7,8 @@ export type CodeErreur =
   | 'validation'
   | 'conflit'
   | 'stock_insuffisant'
+  | 'trop_de_commandes'
+  | 'transition'
   | 'configuration'
   | 'inconnue'
 
@@ -31,6 +33,9 @@ export const MESSAGES: Record<CodeErreur, string> = {
   validation: 'Certaines informations sont invalides. Vérifiez le formulaire.',
   conflit: 'Cette opération a déjà été enregistrée ou entre en conflit avec une autre.',
   stock_insuffisant: "Stock insuffisant pour l'un des articles.",
+  trop_de_commandes:
+    'Vous avez déjà plusieurs commandes en attente de confirmation. Notre équipe vous contacte : vous pourrez commander à nouveau ensuite.',
+  transition: "Cette action n'est plus possible : la commande a changé d'état. Actualisez la page.",
   configuration: "L'application est mal configurée. Contactez l'équipe Glorious Destiny.",
   inconnue: 'Une erreur inattendue est survenue. Réessayez dans un instant.',
 }

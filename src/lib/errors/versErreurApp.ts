@@ -6,6 +6,12 @@ type ErreurPostgrest = { code?: string; message?: string; details?: string | nul
 /** Préfixes levés par les fonctions SQL (voir supabase/migrations). */
 const PREFIXES_METIER: [string, CodeErreur][] = [
   ['STOCK_INSUFFISANT', 'stock_insuffisant'],
+  ['TROP_DE_COMMANDES', 'trop_de_commandes'],
+  ['TRANSITION_IMPOSSIBLE', 'transition'],
+  ['PRODUIT_INDISPONIBLE', 'introuvable'],
+  ['COMMANDE_INTROUVABLE', 'introuvable'],
+  ['CLIENTE_INTROUVABLE', 'introuvable'],
+  ['VALIDATION', 'validation'],
   ['ACCES_REFUSE', 'acces_refuse'],
   ['QUANTITE_INVALIDE', 'validation'],
   ['VARIANTE_INCONNUE', 'introuvable'],

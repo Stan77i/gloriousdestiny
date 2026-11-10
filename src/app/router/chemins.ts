@@ -12,6 +12,8 @@ export const CHEMINS = {
   rendezVous: '/rendez-vous',
   contact: '/contact',
   panier: '/panier',
+  commande: '/commande',
+  suiviCommande: (reference: string) => `/commande/${reference}`,
   connexion: '/connexion',
   admin: '/admin',
   systemeDesign: '/systeme-design',

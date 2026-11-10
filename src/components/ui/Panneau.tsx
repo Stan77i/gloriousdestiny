@@ -11,8 +11,8 @@ export function Panneau({
   className,
   corpsClassName,
 }: {
-  titre?: string
-  sousTitre?: string
+  titre?: string | undefined
+  sousTitre?: string | undefined
   action?: ReactNode
   children: ReactNode
   className?: string
