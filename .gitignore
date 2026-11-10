@@ -10,7 +10,13 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+coverage
 *.local
+
+# Variables d'environnement : seules les valeurs d'exemple sont versionnées
+.env
+.env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*

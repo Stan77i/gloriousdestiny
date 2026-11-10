@@ -1,1 +1,40 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/*
+ * Jetons de marque provisoires (Phase 2). Le design system complet
+ * (typographies, échelles, composants) est construit en Phase 3.
+ */
+@theme {
+  --color-noir: #0b0a09;
+  --color-noir-doux: #171512;
+  --color-or: #c9a227;
+  --color-or-clair: #e2c56b;
+  --color-ivoire: #f6f1e7;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-noir text-ivoire antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-or);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

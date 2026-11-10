@@ -1,0 +1,33 @@
+import { ConfigurationError } from '@/config/env'
+import { MESSAGES } from './ErreurApp'
+import { versErreurApp } from './versErreurApp'
+
+describe('versErreurApp', () => {
+  it('reconnaît les erreurs métier levées par les fonctions SQL', () => {
+    expect(versErreurApp({ message: 'STOCK_INSUFFISANT: variante x', code: 'P0001' }).code).toBe(
+      'stock_insuffisant',
+    )
+    expect(versErreurApp({ message: 'ACCES_REFUSE', code: '42501' }).code).toBe('acces_refuse')
+  })
+
+  it('traduit les codes SQL courants', () => {
+    expect(versErreurApp({ code: '23505', message: 'duplicate key' }).code).toBe('conflit')
+    expect(versErreurApp({ code: '23P01', message: 'exclusion' }).code).toBe('conflit')
+    expect(versErreurApp({ code: '23514', message: 'check' }).code).toBe('validation')
+    expect(versErreurApp({ code: 'PGRST116', message: 'no rows' }).code).toBe('introuvable')
+  })
+
+  it('détecte les coupures réseau', () => {
+    expect(versErreurApp(new TypeError('Failed to fetch')).code).toBe('reseau')
+  })
+
+  it('reconnaît une configuration invalide', () => {
+    expect(versErreurApp(new ConfigurationError('x')).code).toBe('configuration')
+  })
+
+  it("n'expose jamais le message technique", () => {
+    const erreur = versErreurApp({ code: 'XX000', message: 'relation "secret" does not exist' })
+    expect(erreur.message).toBe(MESSAGES.inconnue)
+    expect(erreur.detail).toContain('secret')
+  })
+})
