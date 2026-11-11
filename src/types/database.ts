@@ -1725,6 +1725,7 @@ export type Database = {
         }
         Returns: string
       }
+      historique_reglages: { Args: { p_variante_id: string }; Returns: Json }
       deverrouiller_stock: {
         Args: { p_motif: string; p_variante_id: string }
         Returns: string

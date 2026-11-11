@@ -108,6 +108,17 @@ do $$ begin
   assert (select produit || '|' || categorie || '|' || libelle || '|' || seuil_alerte || '|' || physique
           from public.vue_stock where variante_id = (select id from v)) = 'Bonnet satin noir|Coiffage|Lot de 1|3|7', 'article modifié';
 end $$;
+-- Historique des réglages : chaque champ changé, avec l'ancienne et la nouvelle valeur et l'auteur.
+do $$
+declare
+  h jsonb := public.historique_reglages((select id from v));
+  champs text := (select string_agg(x ->> 'champ' || ':' || coalesce(x ->> 'ancien', '∅') || '>' || (x ->> 'nouveau'), ' | ' order by (x ->> 'champ'))
+                  from jsonb_array_elements(h) x where x ->> 'champ' <> 'Création');
+begin
+  assert champs = 'Catégorie:Accessoires>Coiffage | Nom:Bonnet en satin>Bonnet satin noir | Seuil d''alerte:5>3 | Unité de vente:Pièce>Lot de 1', 'réglages : ' || champs;
+  assert (select count(*) from jsonb_array_elements(h) x where x ->> 'auteur' = 'Responsable') = jsonb_array_length(h), 'auteur';
+  assert exists (select 1 from jsonb_array_elements(h) x where x ->> 'champ' = 'Création' and x ->> 'nouveau' = 'Pièce'), 'création du format';
+end $$;
 
 -- 7. Site public : disponibilité vivante.
 set local role anon;
@@ -152,6 +163,7 @@ end $$;
 select pg_temp.attendre_erreur(format('select public.ajuster_stock(%L, 1, %L, %L)', (select id from v), 'Essai', 'test-aj-ventes'), 'ACCES_REFUSE');
 select pg_temp.attendre_erreur(format('select public.deverrouiller_stock(%L, %L)', (select id from v), 'Essai'), 'ACCES_REFUSE');
 select pg_temp.attendre_erreur($q$select public.creer_produit('{"nom":"X","prix_fcfa":1,"cle_idempotence":"test-x-ventes"}')$q$, 'ACCES_REFUSE');
+select pg_temp.attendre_erreur(format('select public.historique_reglages(%L)', (select id from v)), 'ACCES_REFUSE');
 set local role anon;
 set local request.jwt.claim.sub = '';
 select pg_temp.attendre_erreur(format('select public.ajuster_stock(%L, 1, %L, %L)', (select id from v), 'Essai', 'test-aj-anon'), 'permission denied');

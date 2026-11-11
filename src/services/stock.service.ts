@@ -112,6 +112,23 @@ export async function listerDeverrouillages(varianteId: string): Promise<Deverro
   }))
 }
 
+export type Reglage = {
+  le: string
+  auteur: string | null
+  champ: string
+  ancien: string | null
+  nouveau: string | null
+}
+
+/** Changements de réglages d'un article (nom, catégorie, unité, seuil, prix, publication). */
+export async function listerReglages(varianteId: string): Promise<Reglage[]> {
+  const { data, error } = await supabase().rpc('historique_reglages', {
+    p_variante_id: varianteId,
+  })
+  if (error) throw versErreurApp(error)
+  return data as Reglage[]
+}
+
 type LigneTableau = {
   id: number
   article: string

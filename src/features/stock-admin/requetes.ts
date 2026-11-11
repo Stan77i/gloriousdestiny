@@ -3,6 +3,7 @@ import {
   chargerTableauStock,
   listerCategories,
   listerDeverrouillages,
+  listerReglages,
   type NouveauProduit,
   enregistrerFournisseur,
   listerFournisseurs,
@@ -35,6 +36,13 @@ export function useDeverrouillages(varianteId: string) {
   return useQuery({
     queryKey: ['admin', 'deverrouillages', varianteId],
     queryFn: () => listerDeverrouillages(varianteId),
+  })
+}
+
+export function useReglages(varianteId: string) {
+  return useQuery({
+    queryKey: ['admin', 'reglages', varianteId],
+    queryFn: () => listerReglages(varianteId),
   })
 }
 

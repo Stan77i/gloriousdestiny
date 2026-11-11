@@ -17,6 +17,7 @@ import {
   useDeverrouillages,
   useMouvements,
   useOperationStock,
+  useReglages,
   useStock,
 } from './requetes'
 
@@ -90,6 +91,7 @@ export function FicheArticle({
         <Article ligne={ligne} />
         <NouveauFormat ligne={ligne} />
         <Historique varianteId={ligne.varianteId} />
+        <HistoriqueReglages varianteId={ligne.varianteId} />
       </div>
     </Modale>
   )
@@ -794,6 +796,61 @@ function Historique({ varianteId }: { varianteId: string }) {
             ))}
           </ul>
         </div>
+      )}
+    </section>
+  )
+}
+
+/** « 9500 FCFA » → « 9 500 FCFA » (même format que le reste du site). */
+function valeurReglage(v: string | null): string {
+  if (v === null) return '—'
+  const m = /^(\d+) FCFA$/.exec(v)
+  return m ? formaterFcfa(Number(m[1])) : v
+}
+
+/** Réglages modifiés (journal d'audit inaltérable) : ancienne → nouvelle valeur, auteur, date. */
+function HistoriqueReglages({ varianteId }: { varianteId: string }) {
+  const reglages = useReglages(varianteId)
+  return (
+    <section
+      aria-labelledby="titre-reglages"
+      className="flex flex-col gap-3 border-t border-filet pt-5"
+    >
+      <h3 id="titre-reglages" className="text-[17px] font-semibold">
+        Historique des réglages
+      </h3>
+      {reglages.isPending ? (
+        <p className="text-sm text-encre-3">Chargement…</p>
+      ) : reglages.isError ? (
+        <Alerte ton="danger" titre={versErreurApp(reglages.error).message} />
+      ) : reglages.data.length === 0 ? (
+        <p className="text-sm text-encre-3">Aucun réglage modifié pour le moment.</p>
+      ) : (
+        <ol className="flex flex-col divide-y divide-filet rounded-[16px] bg-carte-2">
+          {reglages.data.map((r, i) => (
+            <li key={`${r.le}-${r.champ}-${String(i)}`} className="px-3 py-2.5 text-[13px]">
+              <span className="flex flex-wrap items-baseline justify-between gap-x-3">
+                <span className="font-semibold text-encre">{r.champ}</span>
+                <span className="text-encre-3">{formaterDateHeure(r.le)}</span>
+              </span>
+              <span className="mt-0.5 block text-encre-2">
+                {r.champ === 'Création' ? (
+                  <>Format créé : {r.nouveau}</>
+                ) : (
+                  <>
+                    <span className="text-encre-3 line-through decoration-encre-3/60">
+                      {valeurReglage(r.ancien)}
+                    </span>{' '}
+                    → <span className="font-medium text-encre">{valeurReglage(r.nouveau)}</span>
+                  </>
+                )}
+              </span>
+              <span className="mt-0.5 block text-encre-3">
+                {r.auteur ?? 'Système (mise à jour du catalogue)'}
+              </span>
+            </li>
+          ))}
+        </ol>
       )}
     </section>
   )
