@@ -25,6 +25,7 @@ import { useAuth } from '@/features/auth/useAuth'
 import { useCompteurs } from '@/features/commandes-admin/requetes'
 import { STATUT_STOCK } from '@/features/stock-admin/libelles'
 import { useStock } from '@/features/stock-admin/requetes'
+import { CarteVentes } from '@/features/carte/CarteVentes'
 import { Anneau } from '@/features/tableau-de-bord/Anneau'
 import { BarresEtat, LegendeEtat } from '@/features/tableau-de-bord/BarresEtat'
 import { GraphiquePouls } from '@/features/tableau-de-bord/GraphiquePouls'
@@ -696,6 +697,7 @@ function TableauComplet({ prenom }: { prenom: string }) {
               <SalonDuJour t={t} />
             </div>
           </div>
+          <CarteVentes du={periode.du} au={periode.au} />
           <div className="grid gap-4 lg:grid-cols-3">
             <Produits t={t} />
             <Villes t={t} />
