@@ -23,7 +23,8 @@ export function Univers({ produits }: { produits: Produit[] | undefined }) {
     {
       cle: 'perruques',
       titre: 'Perruques',
-      texte: 'Lace wigs, pose sans colle ou collée, entretien : la perruque qui vous ressemble.',
+      texte:
+        'Lace wigs, pose frontale, traitement, coloration, montage : la perruque qui vous ressemble.',
       vers: CHEMINS.perruques,
       image: perruque?.grande,
       alt: 'Une cliente prend soin de sa lace wig longue et ondulée, posée sur une tête de présentation.',
@@ -78,8 +79,8 @@ export function Univers({ produits }: { produits: Produit[] | undefined }) {
           <span className="text-or-texte">rituel.</span>
         </h2>
         <p className="max-w-md text-[17px] leading-relaxed text-encre-2 lg:justify-self-end">
-          Trois univers, un même savoir-faire : la pose au salon et les produits pour la faire durer
-          chez vous.
+          Trois univers, un même savoir-faire : nos prestations capillaires et les produits pour
+          faire durer la pose chez vous.
         </p>
       </Revele>
       <ul className="grid gap-4 lg:grid-cols-12 lg:grid-rows-2">

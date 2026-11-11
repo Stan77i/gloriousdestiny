@@ -1,6 +1,10 @@
 -- Tests agenda v2 : blocage manuel, report, rappels, ouverture tardive (jusqu'à 23 h).
 \set ON_ERROR_STOP 1
 begin;
+-- Les services à créneau de départ sont archivés en production (20261112230000) ; le moteur
+-- d'agenda reste testé sur eux, restaurés le temps de cette transaction.
+update public.services set publie = true, archive_at = null
+where slug in ('pose-de-perruque', 'pose-de-cils', 'entretien-de-perruque');
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000f1', 'ventes-agenda@test.local'),

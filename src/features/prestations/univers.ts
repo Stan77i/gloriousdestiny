@@ -4,7 +4,7 @@
  * Noir, or, ivoire, champagne, cuivre : jamais de vert ni de violet derrière une prestation.
  */
 export type UniversPrestation = {
-  /** Fond du cadre photo tant qu'aucune photo n'est déposée. */
+  /** Fond de l'illustration tant qu'aucune photo n'est déposée. */
   fond: string
   /** Scène sombre (texte clair) ou claire. */
   nuit: boolean
@@ -13,18 +13,18 @@ export type UniversPrestation = {
 
 const UNIVERS: Record<string, UniversPrestation> = {
   'pose-frontale': {
-    fond: 'radial-gradient(120% 90% at 30% 20%, #fff6e2 0%, #f1d9a6 45%, #c8964a 100%)',
-    nuit: false,
+    fond: 'radial-gradient(110% 80% at 50% 30%, #2a241d 0%, #17140f 55%, #0b0a08 100%)',
+    nuit: true,
     accroche: 'Contours travaillés, rendu naturel',
   },
   'traitement-de-perruque': {
-    fond: 'radial-gradient(120% 90% at 70% 25%, #fffdf8 0%, #f4ead6 50%, #dcc7a0 100%)',
+    fond: 'radial-gradient(110% 80% at 50% 30%, #fffdf8 0%, #f7efe0 60%, #ecdfc6 100%)',
     nuit: false,
     accroche: 'Fibres soignées, éclat retrouvé',
   },
   'coloration-de-perruque': {
-    fond: 'radial-gradient(120% 90% at 35% 30%, #f6c98f 0%, #b8682f 55%, #5a2a14 100%)',
-    nuit: true,
+    fond: 'radial-gradient(110% 80% at 50% 30%, #fffaf1 0%, #f6e6cc 60%, #ebd3ab 100%)',
+    nuit: false,
     accroche: 'Une nouvelle nuance, posée avec soin',
   },
   'montage-de-perruque': {

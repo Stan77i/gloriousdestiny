@@ -39,7 +39,8 @@ do $$ begin
   assert (select prix_fcfa from public.services where slug = 'traitement-de-perruque') = 3000, 'traitement 3 000';
   assert (select prix_fcfa from public.services where slug = 'coloration-de-perruque') = 10000, 'coloration 10 000';
   assert (select prix_fcfa from public.services where slug = 'montage-de-perruque') = 2000, 'montage 2 000';
-  assert (select count(*) from public.services where mode_reservation = 'creneau' and publie) >= 3, 'créneaux intacts';
+  assert (select count(*) from public.services where publie) = 4, 'les quatre prestations sont les seuls services';
+  assert not exists (select 1 from public.services where slug = 'pose-de-perruque'), 'anciens services masqués au public';
 end $$;
 select pg_temp.attendre_erreur('select * from public.demandes_prestations', 'permission');
 

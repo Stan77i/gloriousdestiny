@@ -39,6 +39,8 @@ fi
 
 # Deux réservations simultanées du MÊME créneau : une seule doit réussir
 # (la contrainte d'exclusion tranche, même si les deux ont vu le créneau libre).
+# Services à créneau archivés en production : restaurés pour tester le moteur d'agenda.
+"${PSQL[@]}" -c "update public.services set publie = true, archive_at = null where slug = 'pose-de-cils'" >/dev/null
 CRENEAU=$("${PSQL[@]}" -t -A -c "select min(c) from public.creneaux_disponibles((select id from public.services where slug = 'pose-de-cils'), (now() at time zone 'Africa/Douala')::date + 7, (now() at time zone 'Africa/Douala')::date + 13) c")
 reservation() {
   "${PSQL[@]}" -t -A <<SQL 2>&1 || true

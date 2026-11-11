@@ -58,7 +58,7 @@ function Detail({ r, nouveau, telephone }: { r: ResumeRdv; nouveau: boolean; tel
         {r.statut === 'annule' && (
           <Alerte ton="info" titre="Ce rendez-vous est annulé.">
             {r.motif_annulation ?? 'Le créneau a été libéré.'}{' '}
-            <Link to={CHEMINS.reserver(r.service.slug)}>Choisir un autre créneau</Link>
+            <Link to={CHEMINS.prestations}>Voir nos prestations</Link>
           </Alerte>
         )}
         {r.statut === 'demande' && (

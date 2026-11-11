@@ -56,16 +56,6 @@ export type Produit = {
   creeLe: string
 }
 
-export type Service = {
-  id: string
-  slug: string
-  nom: string
-  description: string | null
-  type: 'perruque' | 'cils' | 'autre'
-  dureeMinutes: number
-  prix: number
-}
-
 const CHAMPS_PRODUIT =
   'id, slug, nom, description, fiche, type, prix_fcfa, created_at, categorie:categories!inner(slug, nom), variantes(id, sku, libelle, prix_fcfa, actif)'
 
@@ -204,52 +194,6 @@ export async function disponibilites(varianteIds: string[]): Promise<Map<string,
     carte.set(ligne.variante_id, STATUTS.has(statut) ? statut : 'epuise')
   }
   return carte
-}
-
-type LigneService = {
-  id: string
-  slug: string
-  nom: string
-  description: string | null
-  type: string
-  duree_minutes: number | null
-  prix_fcfa: number
-}
-
-function versService(l: LigneService): Service {
-  return {
-    id: l.id,
-    slug: l.slug,
-    nom: l.nom,
-    description: l.description,
-    type: l.type as Service['type'],
-    dureeMinutes: l.duree_minutes ?? 0,
-    prix: l.prix_fcfa,
-  }
-}
-
-const CHAMPS_SERVICE = 'id, slug, nom, description, type, duree_minutes, prix_fcfa'
-
-/** Prestations réservables sur un créneau de l'agenda (pose de perruque, pose de cils…). */
-export async function listerServices(): Promise<Service[]> {
-  const { data, error } = await supabase()
-    .from('services')
-    .select(CHAMPS_SERVICE)
-    .eq('mode_reservation', 'creneau')
-    .order('prix_fcfa', { ascending: false })
-  if (error) throw versErreurApp(error)
-  return data.map(versService)
-}
-
-export async function serviceParSlug(slug: string): Promise<Service | null> {
-  const { data, error } = await supabase()
-    .from('services')
-    .select(CHAMPS_SERVICE)
-    .eq('slug', slug)
-    .eq('mode_reservation', 'creneau')
-    .maybeSingle()
-  if (error) throw versErreurApp(error)
-  return data ? versService(data) : null
 }
 
 /** Prestation capillaire sur demande (rubrique « Nos prestations »). */

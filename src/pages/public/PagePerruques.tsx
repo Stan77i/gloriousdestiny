@@ -5,7 +5,7 @@ import { HeroUnivers } from '@/components/marque/HeroUnivers'
 import { Meches } from '@/components/marque/Meches'
 import { GAMME } from '@/features/catalogue/gamme'
 import { GrilleProduits } from '@/features/catalogue/GrilleProduits'
-import { ListeServices } from '@/features/catalogue/ListeServices'
+import { ListePrestations } from '@/features/prestations/ListePrestations'
 import { useProduits } from '@/features/catalogue/requetes'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
@@ -23,7 +23,7 @@ export function PagePerruques() {
       <HeroUnivers
         titre="Perruques,"
         accent="pose parfaite."
-        intro="Lace wigs posées au salon, collées ou sans colle, entretien et remise en forme : avec les produits professionnels qui font tenir la pose."
+        intro="Pose frontale, traitement, coloration et montage de perruque, avec les produits professionnels qui font tenir la pose."
         fond="bg-rose"
         image={
           photo
@@ -40,8 +40,8 @@ export function PagePerruques() {
         }
         actions={
           <>
-            <Link to={CHEMINS.rendezVous} className={classesBouton('or', 'grand', 'no-underline')}>
-              Réserver une pose
+            <Link to={CHEMINS.prestations} className={classesBouton('or', 'grand', 'no-underline')}>
+              Nos prestations
             </Link>
             <BoutonWhatsApp libelle="Être conseillée" />
           </>
@@ -76,8 +76,8 @@ export function PagePerruques() {
                   </h3>
                   <p className="mt-4 max-w-lg text-[16px] leading-relaxed text-encre-2">
                     Dites-nous la perruque que vous cherchez : nous vous prévenons sur WhatsApp dès
-                    le retour des modèles qui vous correspondent. La pose et l’entretien de votre
-                    propre perruque restent disponibles au salon.
+                    le retour des modèles qui vous correspondent. Pose frontale, traitement,
+                    coloration et montage restent disponibles pour votre propre perruque.
                   </p>
                   <div className="mt-7 flex flex-wrap gap-3">
                     <BoutonWhatsApp
@@ -86,10 +86,10 @@ export function PagePerruques() {
                       message="Bonjour, je souhaite être prévenue du retour des perruques. Je cherche : longueur …, texture …, couleur …, type de lace …"
                     />
                     <Link
-                      to={CHEMINS.rendezVous}
+                      to={CHEMINS.prestations}
                       className={classesBouton('secondaire', 'normal', 'no-underline')}
                     >
-                      Réserver une pose
+                      Voir nos prestations
                     </Link>
                   </div>
                 </div>
@@ -123,11 +123,14 @@ export function PagePerruques() {
         />
       </section>
 
-      <section aria-labelledby="titre-salon-perruques" className="border-t border-filet py-16">
-        <h2 id="titre-salon-perruques" className="titre-affiche mb-8 text-[34px] text-encre">
-          Au salon
+      <section
+        aria-labelledby="titre-prestations-perruques"
+        className="border-t border-filet py-16"
+      >
+        <h2 id="titre-prestations-perruques" className="titre-affiche mb-8 text-[34px] text-encre">
+          Nos prestations
         </h2>
-        <ListeServices filtre={(s) => s.type === 'perruque'} />
+        <ListePrestations />
       </section>
 
       {soins && soins.length > 0 && (

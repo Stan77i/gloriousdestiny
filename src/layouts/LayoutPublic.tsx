@@ -86,8 +86,8 @@ function PiedDePage() {
             {parametres.data?.ville_salon && <dd>{parametres.data.ville_salon}</dd>}
             {parametres.data?.horaires_salon && <dd>{parametres.data.horaires_salon}</dd>}
           </dl>
-          <Link to={CHEMINS.rendezVous} className="mt-3 inline-block text-or-texte hover:text-or">
-            Prendre rendez-vous
+          <Link to={CHEMINS.prestations} className="mt-3 inline-block text-or-texte hover:text-or">
+            Nos prestations
           </Link>
         </div>
         <div className="text-sm">
@@ -148,10 +148,10 @@ export function LayoutPublic() {
           </nav>
           <div className="ml-auto flex items-center gap-2 lg:ml-4">
             <Link
-              to={CHEMINS.rendezVous}
+              to={CHEMINS.prestations}
               className="hidden min-h-11 items-center rounded-full bg-carte px-5 text-sm font-semibold text-encre no-underline shadow-panneau transition-colors duration-300 hover:bg-carte-2 md:inline-flex"
             >
-              Rendez-vous
+              Réserver
             </Link>
             {membreEquipe && (
               <Link
@@ -189,30 +189,28 @@ export function LayoutPublic() {
       >
         <nav aria-label="Navigation mobile">
           <ul className="flex flex-col">
-            {[...NAVIGATION_PUBLIQUE, { vers: CHEMINS.rendezVous, libelle: 'Rendez-vous' }].map(
-              (l, i) => (
-                <li
-                  key={l.vers}
-                  className="menu-entre border-b border-filet"
-                  style={{ ['--i' as string]: String(i) }}
+            {NAVIGATION_PUBLIQUE.map((l, i) => (
+              <li
+                key={l.vers}
+                className="menu-entre border-b border-filet"
+                style={{ ['--i' as string]: String(i) }}
+              >
+                <NavLink
+                  to={l.vers}
+                  onClick={() => {
+                    setMenu(false)
+                  }}
+                  className={({ isActive }) =>
+                    cx(
+                      'flex min-h-14 items-center text-[26px] font-semibold tracking-[-0.02em] no-underline',
+                      isActive ? 'text-or-texte' : 'text-encre',
+                    )
+                  }
                 >
-                  <NavLink
-                    to={l.vers}
-                    onClick={() => {
-                      setMenu(false)
-                    }}
-                    className={({ isActive }) =>
-                      cx(
-                        'flex min-h-14 items-center text-[26px] font-semibold tracking-[-0.02em] no-underline',
-                        isActive ? 'text-or-texte' : 'text-encre',
-                      )
-                    }
-                  >
-                    {l.libelle}
-                  </NavLink>
-                </li>
-              ),
-            )}
+                  {l.libelle}
+                </NavLink>
+              </li>
+            ))}
           </ul>
         </nav>
         <div className="mt-8 flex items-center gap-3">

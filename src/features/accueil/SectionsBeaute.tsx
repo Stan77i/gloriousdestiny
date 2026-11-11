@@ -80,18 +80,12 @@ export function RegardCils({
           </h2>
           <p className="mt-5 max-w-md text-[17px] leading-relaxed text-encre-2">
             Bandes fluffy, grappes de 80D à 200D, kits complets : du naturel au cat eye, à poser
-            vous-même ou au salon.
+            vous-même.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to={CHEMINS.cils} className={classesBouton('or', 'grand', 'no-underline')}>
               Tous les cils
               <ArrowRight aria-hidden="true" />
-            </Link>
-            <Link
-              to={CHEMINS.rendezVous}
-              className={classesBouton('secondaire', 'grand', 'no-underline')}
-            >
-              Pose au salon
             </Link>
           </div>
         </div>

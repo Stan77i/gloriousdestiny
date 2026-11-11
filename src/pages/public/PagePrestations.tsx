@@ -1,13 +1,9 @@
 import { useState } from 'react'
-import { ArrowRight, CalendarHeart } from 'lucide-react'
-import { Link } from 'react-router'
-import { CHEMINS } from '@/app/router/chemins'
+import { CalendarHeart } from 'lucide-react'
 import { Meches } from '@/components/marque/Meches'
 import { Squelette } from '@/components/ui/Chargeur'
 import { Bouton } from '@/components/ui/Bouton'
-import { classesBouton } from '@/components/ui/classesBouton'
 import { EtatErreur } from '@/components/ui/Etats'
-import { ListeServices } from '@/features/catalogue/ListeServices'
 import { usePrestations } from '@/features/catalogue/prestations'
 import { PhotoPrestation } from '@/features/prestations/PhotoPrestation'
 import { ReservationPrestation } from '@/features/prestations/ReservationPrestation'
@@ -137,27 +133,6 @@ export function PagePrestations() {
           ))
         )}
       </div>
-
-      <section aria-labelledby="titre-salon" className="border-t border-filet py-16">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h2 id="titre-salon" className="titre-affiche text-[34px] text-encre">
-              Au salon, sur créneau
-            </h2>
-            <p className="mt-2 max-w-xl text-[15px] text-encre-3">
-              Poses et entretien réservés directement dans l’agenda du salon.
-            </p>
-          </div>
-          <Link
-            to={CHEMINS.rendezVous}
-            className={classesBouton('secondaire', 'normal', 'no-underline')}
-          >
-            Voir les créneaux
-            <ArrowRight aria-hidden="true" />
-          </Link>
-        </div>
-        <ListeServices />
-      </section>
 
       {choisie && (
         <ReservationPrestation

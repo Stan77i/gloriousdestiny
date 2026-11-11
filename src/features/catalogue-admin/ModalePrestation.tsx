@@ -96,7 +96,7 @@ export function ModalePrestation({
               <img src={visible} alt="" className="size-full object-cover" />
             ) : (
               <span className="grid size-full place-items-center px-3 text-center text-[13px] text-encre-3">
-                Aucune photo : le site affiche un visuel d’attente.
+                Aucune photo : le site affiche l’illustration de la prestation.
               </span>
             )}
           </div>

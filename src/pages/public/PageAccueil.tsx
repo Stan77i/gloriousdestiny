@@ -1,5 +1,5 @@
 import { SITE } from '@/config/site'
-import { ArrowRight, Clock } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router'
 import { ContenusPublics } from '@/features/contenus/ContenusPublics'
 import { ChiffresPresence, ScenePresence } from '@/features/carte/CartePublique'
@@ -12,7 +12,7 @@ import { GAMME } from '@/features/catalogue/gamme'
 import { GrilleProduits } from '@/features/catalogue/GrilleProduits'
 import { HeroLaGamme } from '@/features/catalogue/HeroLaGamme'
 import { SLUG_LA_GAMME } from '@/features/catalogue/visuels'
-import { useParametresPublics, useProduits, useServices } from '@/features/catalogue/requetes'
+import { useProduits } from '@/features/catalogue/requetes'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { OffresDuMoment, RegardCils } from '@/features/accueil/SectionsBeaute'
 import { PrestationsAccueil } from '@/features/accueil/PrestationsAccueil'
@@ -22,9 +22,7 @@ import { CarrouselGammes } from '@/features/accueil/CarrouselGammes'
 import { Meches } from '@/components/marque/Meches'
 import { Revele } from '@/components/marque/Revele'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
-import { formaterDuree } from '@/lib/format/duree'
 import { cx } from '@/lib/cx'
-import { formaterFcfa } from '@/lib/format/montant'
 
 /** Le rituel de pose : les produits de la gamme dans l'ordre où on les utilise. */
 const RITUEL: { slug: string; geste: string; texte: string; teinte: Teinte }[] = [
@@ -99,74 +97,6 @@ function Rituel() {
   )
 }
 
-function Services() {
-  const services = useServices()
-  const parametres = useParametresPublics()
-  if (!services.data || services.data.length === 0) return null
-  const photo = GAMME.find((p) => p.slug === 'braid-gel')?.photo
-  return (
-    <section
-      aria-labelledby="titre-salon"
-      className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-10"
-    >
-      <Revele className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-        {photo && (
-          <div className="relative order-last min-h-80 overflow-hidden rounded-panneau lg:order-first">
-            <img
-              src={photo.grande}
-              srcSet={`${photo.petite} 800w, ${photo.grande} 1600w`}
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              alt={photo.alt}
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 size-full object-cover"
-            />
-          </div>
-        )}
-        <div>
-          <h2 id="titre-salon" className="titre-affiche text-[40px] text-encre sm:text-[52px]">
-            Le salon
-          </h2>
-          <p className="mt-4 max-w-lg text-[17px] leading-relaxed text-encre-2">
-            Pose et entretien de perruques, pose de cils
-            {parametres.data?.ville_salon ? `, à ${parametres.data.ville_salon}` : ''}.
-          </p>
-          <ul className="mt-8 flex flex-col gap-2">
-            {services.data.map((s) => (
-              <li key={s.id}>
-                <Link
-                  to={CHEMINS.service(s.slug)}
-                  className="group flex items-center justify-between gap-4 rounded-[22px] bg-carte px-5 py-4 no-underline shadow-panneau transition-colors duration-300 hover:bg-sable"
-                >
-                  <span>
-                    <span className="block text-[19px] font-semibold text-encre">{s.nom}</span>
-                    <span className="mt-1 inline-flex items-center gap-1.5 text-[13px] text-encre-3 [&_svg]:size-3.5">
-                      <Clock aria-hidden="true" />
-                      {formaterDuree(s.dureeMinutes)}
-                    </span>
-                  </span>
-                  <span className="chiffres rounded-full bg-carte-2 px-3.5 py-1.5 text-[15px] font-semibold whitespace-nowrap text-encre group-hover:bg-carte">
-                    {formaterFcfa(s.prix)}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          {parametres.data?.horaires_salon && (
-            <p className="mt-5 text-sm text-encre-3">{parametres.data.horaires_salon}</p>
-          )}
-          <Link
-            to={CHEMINS.rendezVous}
-            className={classesBouton('secondaire', 'normal', 'mt-7 no-underline')}
-          >
-            Prendre rendez-vous
-          </Link>
-        </div>
-      </Revele>
-    </section>
-  )
-}
-
 /** Accueil du site public. */
 function PresenceAccueil() {
   const etat = useEtatCarte('monde')
@@ -226,8 +156,8 @@ export function PageAccueil() {
           </h1>
           <VeineOr className="mt-7 max-w-md" />
           <p className="mt-7 max-w-lg text-[17px] leading-relaxed text-encre-2">
-            Perruques, pose de cils au salon et une gamme professionnelle pensée pour la pose, de la
-            colle au shampoing anti-résidus.
+            Perruques, cils, prestations capillaires et une gamme professionnelle pensée pour la
+            pose, de la colle au shampoing anti-résidus.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link
@@ -237,10 +167,10 @@ export function PageAccueil() {
               Découvrir la gamme
             </Link>
             <Link
-              to={CHEMINS.rendezVous}
+              to={CHEMINS.prestations}
               className={classesBouton('secondaire', 'grand', 'no-underline')}
             >
-              Prendre rendez-vous
+              Nos prestations
             </Link>
           </div>
         </div>
@@ -294,8 +224,6 @@ export function PageAccueil() {
       </section>
 
       <RegardCils produits={produits.data} onReessayer={() => void produits.refetch()} />
-
-      <Services />
 
       {/* Présence dans le monde : la carte des destinations, données réelles. */}
       <PresenceAccueil />

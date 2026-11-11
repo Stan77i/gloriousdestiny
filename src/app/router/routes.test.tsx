@@ -26,11 +26,9 @@ vi.mock('@/services/parametres.service', () => ({
 }))
 vi.mock('@/services/catalogue.service', () => ({
   listerProduits: vi.fn(() => Promise.resolve([])),
-  listerServices: vi.fn(() => Promise.resolve([])),
   listerPrestations: vi.fn(() => Promise.resolve([])),
   urlPhotoPrestation: vi.fn(() => null),
   produitParSlug: vi.fn(() => Promise.resolve(null)),
-  serviceParSlug: vi.fn(() => Promise.resolve(null)),
   disponibilites: vi.fn(() => Promise.resolve(new Map())),
 }))
 vi.mock('@/services/commandes.service', async (original) => ({
@@ -211,12 +209,11 @@ describe('routes', () => {
     expect(await screen.findByText("Cette page n'existe pas.")).toBeInTheDocument()
   })
 
-  it('ouvre la prise de rendez-vous en ligne', async () => {
+  it('mène l’ancienne prise de rendez-vous vers nos prestations', async () => {
     rendre('/rendez-vous', { statut: 'anonyme' })
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Rendez-vous' }),
+      await screen.findByRole('heading', { level: 1, name: /Nos prestations/i }),
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Réserver ce créneau/ })).toBeInTheDocument()
   })
 
   it('demande le téléphone pour suivre un rendez-vous', async () => {

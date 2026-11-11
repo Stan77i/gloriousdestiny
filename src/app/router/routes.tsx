@@ -13,9 +13,7 @@ import { PagePanier } from '@/pages/public/PagePanier'
 import { PagePresence } from '@/pages/public/PagePresence'
 import { PagePerruques } from '@/pages/public/PagePerruques'
 import { PageProduit } from '@/pages/public/PageProduit'
-import { PageRendezVous } from '@/pages/public/PageRendezVous'
 import { PagePrestations } from '@/pages/public/PagePrestations'
-import { PageService } from '@/pages/public/PageServices'
 import { PageSuiviCommande } from '@/pages/public/PageSuiviCommande'
 import { PageSuiviRendezVous } from '@/pages/public/PageSuiviRendezVous'
 import { CHEMINS } from './chemins'
@@ -50,8 +48,11 @@ export const routes: RouteObject[] = [
           { path: CHEMINS.cils, element: <PageCils /> },
           { path: CHEMINS.prestations, element: <PagePrestations /> },
           { path: CHEMINS.services, element: <Navigate to={CHEMINS.prestations} replace /> },
-          { path: `${CHEMINS.services}/:slug`, element: <PageService /> },
-          { path: CHEMINS.rendezVous, element: <PageRendezVous /> },
+          {
+            path: `${CHEMINS.services}/:slug`,
+            element: <Navigate to={CHEMINS.prestations} replace />,
+          },
+          { path: CHEMINS.rendezVous, element: <Navigate to={CHEMINS.prestations} replace /> },
           { path: `${CHEMINS.rendezVous}/:reference`, element: <PageSuiviRendezVous /> },
           { path: CHEMINS.contact, element: <PageContact /> },
           { path: CHEMINS.presence, element: <PagePresence /> },

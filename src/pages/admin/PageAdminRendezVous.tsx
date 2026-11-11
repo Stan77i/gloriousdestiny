@@ -694,13 +694,13 @@ export function PageAdminRendezVous() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <h1 className="text-[28px] font-semibold">Rendez-vous</h1>
         <a
-          href={`${import.meta.env.BASE_URL}rendez-vous`}
+          href={`${import.meta.env.BASE_URL}prestations`}
           target="_blank"
           rel="noopener noreferrer"
           className={classesBouton('secondaire', 'normal', 'no-underline')}
         >
           <CalendarClock aria-hidden="true" />
-          Voir la page de réservation
+          Voir la page Nos prestations
         </a>
       </div>
 

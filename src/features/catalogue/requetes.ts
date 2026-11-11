@@ -1,11 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import {
-  disponibilites,
-  listerProduits,
-  listerServices,
-  produitParSlug,
-  serviceParSlug,
-} from '@/services/catalogue.service'
+import { disponibilites, listerProduits, produitParSlug } from '@/services/catalogue.service'
 import { lireParametresPublics } from '@/services/parametres.service'
 
 /** Requêtes du site public. La disponibilité est relue souvent (stock vivant), le reste est mis en cache. */
@@ -36,18 +30,6 @@ export function useDisponibilites(varianteIds: string[]) {
     queryFn: () => disponibilites(cle),
     enabled: cle.length > 0,
     staleTime: 20_000,
-  })
-}
-
-export function useServices() {
-  return useQuery({ queryKey: ['services'], queryFn: listerServices, staleTime: 5 * 60_000 })
-}
-
-export function useService(slug: string) {
-  return useQuery({
-    queryKey: ['service', slug],
-    queryFn: () => serviceParSlug(slug),
-    staleTime: 5 * 60_000,
   })
 }
 

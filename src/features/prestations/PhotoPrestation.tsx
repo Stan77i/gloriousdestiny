@@ -1,11 +1,11 @@
-import { Meches } from '@/components/marque/Meches'
 import { cx } from '@/lib/cx'
 import type { Prestation } from '@/services/catalogue.service'
+import { IllustrationPrestation } from './IllustrationPrestation'
 import { universPrestation } from './univers'
 
 /**
  * Cadre photo d'une prestation, format portrait 4:5. Sans photo déposée (en attendant les
- * visuels), un fond propre à l'univers de la prestation, traversé de mèches au fil d'or.
+ * photos), une illustration au trait d'or propre à la prestation.
  */
 export function PhotoPrestation({
   prestation,
@@ -39,15 +39,13 @@ export function PhotoPrestation({
       ) : (
         <div
           aria-hidden="true"
-          className={cx('presta-visuel size-full', fixe && 'presta-visuel-fixe')}
+          className="grid size-full place-items-center p-[8%]"
           style={{ background: u.fond }}
         >
-          <Meches
-            ton={u.nuit ? 'or' : 'clair'}
-            className={cx(
-              'absolute inset-y-0 left-1/2 h-full w-[70%] -translate-x-1/2',
-              u.nuit ? 'opacity-80' : 'opacity-70 mix-blend-multiply',
-            )}
+          <IllustrationPrestation
+            slug={prestation.slug}
+            nuit={u.nuit}
+            className="presta-illustration size-full"
           />
         </div>
       )}

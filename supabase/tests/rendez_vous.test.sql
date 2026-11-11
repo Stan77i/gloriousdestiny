@@ -2,6 +2,10 @@
 -- atomique et idempotente, anti-abus, transitions de l'équipe, annulation par la cliente.
 \set ON_ERROR_STOP 1
 begin;
+-- Les services à créneau de départ sont archivés en production (20261112230000) ; le moteur
+-- d'agenda reste testé sur eux, restaurés le temps de cette transaction.
+update public.services set publie = true, archive_at = null
+where slug in ('pose-de-perruque', 'pose-de-cils', 'entretien-de-perruque');
 \ir prix_reference.inc.sql
 
 insert into auth.users (id, email) values
