@@ -223,7 +223,7 @@ Stratégie **neutres chauds + un accent + teintes de rôle**. Chaque jeton a deu
 - **Or** : `or` (fond : point actif, compteur du panier, tuile « à traiter », bouton d'accent `or`), `or-texte` (or lisible en texte : prix, mot d'accent du titre ; 4,5:1 minimum), `or-fonce` (appui), `sur-or` (texte sur l'or, 8,4:1).
 - **Lingot d'or** (v2.1, inspiré du tableau de bord Marlo) : `or-clair` → `or` → `or-profond` en dégradé à 135° (`.degrade-or`), avec le halo `shadow-or`. Réservé à **l'élément vedette** d'un écran : le bouton qui rapporte (Ajouter au panier, Commander, Valider ma commande, Réserver ce créneau, Commandes en admin) et la carte du chiffre d'affaires du tableau de bord. `or-doux` → `or` (`.degrade-or-doux`) : segment « en cours » des barres. `.hachures` : la piste ou l'échelle qui n'est pas remplie.
 - **Menthe** : `menthe` + `sur-menthe` : tuile pleine « fait / disponible / livré » et bloc livraison.
-- **Teintes d'univers** : `rose` (perruques), `lilas` (cils), `sauge` (produits de pose), `sable` (salon, services). Fonds uniquement, texte toujours en encre dessus (≥ 4,6:1 même pour `encre-3`). Correspondance en code : `TEINTE_TYPE_PRODUIT`, `TEINTE_SALON`.
+- **Teintes d'univers** : `rose` (perruques), `lilas` (cils), `sauge` (produits de pose), `sable` (salon, services). Fonds uniquement, texte toujours en encre dessus (≥ 4,6:1 même pour `encre-3`). Correspondance en code : `TEINTE_TYPE_PRODUIT`, `TEINTE_SALON`. Jamais derrière un article : les produits se posent sur le socle ivoire (`.socle-produit`).
 - **États** (réservés, toujours avec un mot ou une icône) : `succes`, `alerte`, `danger`, `info`, utilisés en texte et en fond à 12 %.
 - **Séries de graphiques** : `serie-1` à `serie-4` en ordre fixe (Douala, Yaoundé, Garoua, Abidjan), une valeur par thème.
 
@@ -265,12 +265,23 @@ Le voile des modales est l'encre à 42 % (clair) ou le noir à 62 % (sombre), fl
 
 - Contrôles, champs d'une ligne, sélecteurs, badges, navigation : **pilule** complète.
 - Zones de texte, alertes, vignettes internes : 18 à 22 px.
-- Cartes, panneaux, tuiles, modales : **28 px**. Une carte produit a 8 px de marge intérieure : la vignette teintée s'y loge en 22 px.
+- Cartes, panneaux, tuiles, modales : **28 px**. Une carte produit a 8 px de marge intérieure : la vignette sur socle ivoire s'y loge en 22 px.
 - Signature : la **veine d'or** (`VeineOr`), une seule par écran. Logo provisoire : pastille d'encre frappée d'un « G » d'or + nom en Urbanist 600 (`Signature`).
 
 ## Motion
 
-Une courbe : `cubic-bezier(0.22, 1, 0.36, 1)` (`--ease-sortie`), 300 ms pour les couleurs et les survols, soulèvement de 4 px des cartes au survol. Le thème bascule avec une transition de fond de 320 ms. Tout est neutralisé par `prefers-reduced-motion`.
+Une courbe : `cubic-bezier(0.22, 1, 0.36, 1)` (`--ease-sortie`), 300 ms pour les couleurs et les survols, soulèvement de 4 px des cartes au survol. Le thème bascule avec une transition de fond de 320 ms.
+
+Langage du mouvement, une idée par écran, toujours au fil d'or :
+
+- **Carrousel des gammes** (`CarrouselGammes`) : la nouvelle photo se dévoile derrière un filet d'or (transition « rideau »), puis s'approche lentement (zoom doux). Barres de progression par diapositive, pause au survol, au focus et hors écran.
+- **Mèches** (`Meches`) : une chevelure dessinée au fil d'or ; les mèches se tracent une à une, puis ondulent lentement.
+- **Regard** (`Regard`) : un œil au fil d'or ; les cils poussent, puis l'œil cligne naturellement, à intervalles irréguliers.
+- **Veine d'or** (`VeineOr`) : tracé progressif, une seule fois par écran.
+- **Révélation au défilement** (`useRevele`) : un seul observateur pour la page ; chaque élément apparaît à son entrée, une fois.
+- **Bulles** (`Bulles`) : réservées à Hair Curl Mousse et Braid Gel. Au survol sur ordinateur ; une ou deux fois à l'apparition sur téléphone.
+
+Mouvement réduit (`prefers-reduced-motion`) : tout est statique, rien ne se cache, le carrousel passe en simple fondu sans défilement automatique.
 
 ## Components
 
@@ -278,11 +289,11 @@ Une courbe : `cubic-bezier(0.22, 1, 0.36, 1)` (`--ease-sortie`), 300 ms pour les
 - **Champs** : pilules de 48 px (zone de texte 18 px) ; focus = bord encre + halo doré 4 px ; case cochée en encre, interrupteur actif en menthe.
 - **Navigation** : barre de pilules blanche, actif en encre plein (inversé en sombre), au public comme en admin. `Onglets` : filet d'encre sous l'actif.
 - **TuileChiffre** : fond `carte`, `or` (à traiter : commandes à confirmer), `menthe` (disponible, fait) ou une teinte (stock bas = sable, épuisé = rose, à expédier = sauge). La couleur ne s'allume que si la valeur l'exige.
-- **CarteProduit** : vignette teintée selon l'univers, prix en `or-texte`, bouton « Ajouter » secondaire.
+- **CarteProduit** : article détouré posé sur le socle ivoire (`.socle-produit`), prix en `or-texte`, bouton « Ajouter » secondaire. Au survol, l'article se soulève et s'agrandit légèrement. Les visuels pleins (photos d'univers) gardent le fond `carte-2`.
 - **EnTetePage** : avec `teinte`, l'en-tête devient une grande carte à la couleur de l'univers (Perruques, Cils, Catalogue, Services, Rendez-vous).
-- **Premier écran** : titre en affiche, un mot en or ; photo en carte 28 px avec légende en pilule flottante et flèche d'encre.
+- **Premier écran** : titre en affiche, un mot en or ; carrousel des gammes en carte 28 px (rideau d'or, barres de progression, pause) avec légende en pilule flottante et flèche d'encre.
 - **Rituel de pose** : quatre cartes teintées, numéro en pastille blanche.
-- **Bloc livraison** : grande tuile menthe, villes en pastilles.
+- **Bloc livraison** : grande tuile menthe, pays desservis en pastilles.
 - **Administration** (v2.1) : menu latéral (carte 26 px, groupes Boutique / Pilotage, actif en encre, compteurs à confirmer en or), barre du haut (date avec point d'or, thème en deux segments soleil / lune, profil avec initiales sur le lingot), barre d'onglets en bas sur téléphone (4 modules + « Plus »).
 - **Tableau de bord** : barres d'état en pilules (encre = réglé, or = en cours, gris = à traiter, nombre écrit dans la pilule, légende en mots), pouls des ventes en colonnes pilules dans une piste hachurée avec étiquettes reliées d'un fil (période en cours en or, encre au-dessus de la moyenne, gris en dessous), anneau à bouts arrondis, frise des rendez-vous du jour.
 - **Badge**, **Alerte**, **Modale**, **Tableau**, **États**, **Notifications** : inchangés dans leur rôle, redessinés aux nouveaux jetons.
@@ -292,7 +303,7 @@ Une courbe : `cubic-bezier(0.22, 1, 0.36, 1)` (`--ease-sortie`), 300 ms pour les
 **À faire**
 - Une seule pilule d'encre pleine par écran ; un seul lingot d'or (l'action ou le chiffre qui rapporte).
 - Colorer une tuile seulement quand sa valeur appelle une action ou dit une réussite.
-- Garder la correspondance univers → teinte partout (carte produit, en-tête, rituel).
+- Garder la correspondance univers → teinte partout (en-tête, rituel, pastilles) ; la carte produit reste sur le socle ivoire.
 - Vérifier chaque écran dans les deux thèmes, à 390 px et 1440 px.
 - Utiliser les vrais visuels ; marquer « Données d'exemple » toute démonstration.
 

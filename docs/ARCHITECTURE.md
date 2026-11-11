@@ -71,6 +71,7 @@ Chaque page indique son objectif, son contenu, ses actions et les données néce
 - **Contenu** : liste des perruques, filtres (longueur, texture, couleur), explication des options.
 - **Actions** : ouvrir une fiche, demander conseil via WhatsApp.
 - **Données** : produits de type `perruque` avec variantes et attributs.
+- **État actuel** : aucune perruque en stock. La page affiche l'état « Rupture de stock » (et non une liste vide) et propose d'être prévenue sur WhatsApp au retour des modèles ; la pose et l'entretien restent disponibles au salon.
 
 ### B4. Fiche perruque `/perruques/:slug`
 - **Objectif** : vendre une perruque précise.
@@ -79,16 +80,16 @@ Chaque page indique son objectif, son contenu, ses actions et les données néce
 - **Données** : produit, variantes, images, disponibilité (`disponible` = stock disponible > 0).
 
 ### B5. Produits `/produits` et fiche `/produits/:slug`
-- **Objectif** : présenter les 7 produits officiels de la gamme.
-- **Contenu** : nom, format (ex. 200 ml), usage, mode d'emploi, photo, prix, disponibilité.
+- **Objectif** : présenter les produits de pose, de coiffage et le coffret « La gamme Glorious Destiny » (dix-neuf produits au catalogue, cils compris).
+- **Contenu** : nom, formats avec prix propres (ex. Lace Glue en 38, 60 et 150 ml), usage, mode d'emploi, photo, disponibilité. Promotion affichée seulement pendant sa durée (voir N bis).
 - **Actions** : ajouter au panier, voir les produits liés.
 - **Données** : produits de type `produit`, variantes éventuelles (format).
 
 ### B6. Cils `/cils`
 - **Objectif** : présenter la pose de cils.
-- **Contenu** : explication de la prestation, durée, tarif, déroulé, entretien. Accessoires cils affichés seulement quand il y en aura au catalogue (aucun parmi les 7 produits actuels).
+- **Contenu** : explication de la prestation, durée, tarif, déroulé, entretien. Accessoires cils au catalogue : Colle pour extension de cils, faux cils en bande, grappes, kit d'extensions de 570 pièces.
 - **Actions** : réserver une pose, poser une question sur WhatsApp.
-- **Données** : services de type `cils`, produits de type `accessoire_cils` (vide pour l'instant).
+- **Données** : services de type `cils`, produits de type `accessoire_cils` (huit références : la colle et sept accessoires).
 
 ### B7. Services `/services` et `/services/:slug`
 - **Objectif** : présenter les prestations (pose de perruque, entretien, pose de cils).
@@ -189,6 +190,8 @@ Accès réservé aux rôles staff (voir K). Chaque écran a un état loading, em
 - Gérer les variantes (taille, couleur, longueur, format).
 - Gérer les images (ordre, texte alternatif).
 - Définir prix, seuil d'alerte, délai d'approvisionnement, stock de sécurité.
+- Gérer les formats : un produit peut avoir plusieurs formats, chacun avec son prix et son stock.
+- Gérer les promotions depuis la fiche produit (voir N bis).
 
 ### D5. Services et rendez-vous
 - Gérer les services (durée, prix, temps tampon, visibilité).
@@ -200,7 +203,10 @@ Accès réservé aux rôles staff (voir K). Chaque écran a un état loading, em
 - Entrée de stock (réception fournisseur).
 - Perte / casse (avec motif obligatoire).
 - Correction après inventaire (avec double validation si l'écart est important).
-- Journal des mouvements (filtrable, exportable, jamais modifiable).
+- Journal des mouvements (filtrable, exportable, jamais modifiable), avec quantités avant et après.
+- Verrou de 5 minutes après chaque modification manuelle, déverrouillage motivé et journalisé (voir G).
+- Ajustement direct (+/−) avec garde-fous, création de produits et de formats depuis l'administration.
+- Tableau de bord du stock et historique des réglages de chaque article.
 
 ### D7. Livraisons
 - **Retiré (décision du client, 11/11/2026).** La livraison est confiée à des agences : la cliente règle les frais et traite directement avec elles. Pas de frais, pas de suivi de colis dans le site.
@@ -234,15 +240,15 @@ Accès réservé aux rôles staff (voir K). Chaque écran a un état loading, em
 
 Pour chaque module : responsabilité, entités, règles principales.
 
-**E1. Catalogue** — Regroupe produits, variantes, images, catégories. Un produit est publié (visible) ou non, actif ou archivé. Un produit archivé reste visible dans l'historique des commandes. Les 7 produits officiels sont saisis par l'administration, pas codés en dur.
+**E1. Catalogue** — Regroupe produits, variantes, images, catégories. Un produit est publié (visible) ou non, actif ou archivé. Un produit archivé reste visible dans l'historique des commandes. Les produits sont saisis par l'administration, pas codés en dur.
 
-**E2. Produits** — Type `produit`. Deux catégories pour la gamme actuelle : **Pose de perruque** (Lace Glue, Lace Melting Spray, Lace Glue Remover Spray, Glue Residue Remover Shampoo) et **Coiffage** (Hair Curl Mousse, Wax Stick, Braid Gel). Les produits « Lace » sont des produits de perruque (validé). Un produit a un SKU unique, un prix, des variantes optionnelles (format : 200 ml, 250 g…).
+**E2. Produits** — Type `produit`. Trois catégories de produits : **Pose de perruque** (Lace Glue, Lace Melting Spray, Lace Glue Remover Spray, Glue Residue Remover Shampoo, Glue Liquid Gel), **Coiffage** (Hair Curl Mousse, Wax Stick, Braid Gel, Hair Styling Gel, Silkening Mist) et **Coffret** (La gamme Glorious Destiny). Les produits « Lace » sont des produits de perruque (validé). Un produit a un SKU unique, un prix (le plus petit format), des variantes optionnelles (format : 38 ml, 150 ml, petit format…) portant chacune leur prix et leur stock.
 
 **E3. Perruques** — Type `perruque`. Attributs : longueur, texture, couleur, densité, type de dentelle (lace), taille du bonnet. Chaque combinaison vendable est une variante avec son propre SKU et son propre stock. Attributs stockés en colonnes ou en `jsonb` validé ; à trancher (voir O).
 
 **E4. Services** — Pose de perruque, entretien de perruque, pose de cils, etc. Un service a une durée, un prix, un temps tampon avant/après, une liste de disponibilités. Un service n'a pas de stock.
 
-**E5. Cils** — Pour l'instant, uniquement la *prestation* (service, rendez-vous). Le type `accessoire_cils` existe pour de futurs produits ajoutés depuis l'admin.
+**E5. Cils** — La *prestation* (service, rendez-vous) et les accessoires, de type `accessoire_cils` : Colle pour extension de cils, faux cils en bande, grappes et kit d'extensions. Ce sont des produits ordinaires du catalogue, saisis depuis l'administration.
 
 **E6. Panier** — Local au navigateur (pas de stock, pas de réservation). Contient uniquement `variant_id` et `quantité`. Au moment de la commande, le serveur recalcule tout.
 
@@ -324,6 +330,7 @@ Extensions : `btree_gist` (contrainte d'exclusion sur les créneaux), `pgcrypto`
 ### F9. `mouvements_stock` — journal append-only
 - Colonnes : `id`, `variante_id`, `emplacement_id`, `type`, `delta_physique` (int), `delta_reserve` (int), `reference_type` (`commande` | `reception` | `inventaire` | `manuel`), `reference_id`, `motif` (obligatoire pour `perte` et `correction`), `auteur_id`, `cle_idempotence` (unique, nullable), `created_at`.
 - Contraintes : `type IN ('entree','reservation','annulation_reservation','vente','retour','perte','correction','transfert','livraison')` ; `delta_physique` et `delta_reserve` ne peuvent pas être nuls en même temps, sauf pour `livraison` (événement tracé).
+- Colonnes ajoutées par le stock autonome : `physique_avant` et `physique_apres` (quantités avant et après le mouvement).
 - Droits : `INSERT` seulement via RPC ; `UPDATE` et `DELETE` interdits (trigger qui lève une erreur).
 
 ### F10. `fournisseurs`
@@ -425,6 +432,8 @@ Règles associées :
 - **Un retour partiel** met à jour `quantite_retournee` sur la ligne et crée un mouvement par ligne.
 - **Remboursement** : la logique financière (montant à rembourser) reste hors stock ; le stock ne sait que les quantités. Le montant est saisi dans la commande (à définir en Phase 5).
 - **Modifier une quantité sans mouvement est interdit.** Aucune écriture directe sur `stocks` depuis l'application : seules les fonctions RPC écrivent, et elles écrivent toujours le mouvement dans la même transaction.
+- **Verrou de 5 minutes** (`verrous_stock`, paramètre `verrou_stock_minutes`) : chaque modification manuelle (réception, ajustement, correction, perte) ouvre une fenêtre de modification de 5 minutes. Passé ce délai, l'article est verrouillé : toute nouvelle modification exige un déverrouillage avec motif (`deverrouillages_stock`, journal immuable).
+- **Garde-fous des ajustements** : pas de stock négatif, pas de sortie sous les réservations, confirmation des fortes baisses (seuil `seuil_confirmation_baisse`, 10 par défaut).
 - **Tout mouvement est traçable** : référence, auteur, date, motif si requis. Le journal ne se modifie pas ; une erreur se corrige par un mouvement compensateur.
 
 Gestion de la concurrence :
@@ -547,7 +556,7 @@ Règles :
 
 ```
 gloriousdestiny/
-├── .claude/skills/              # skills de design et de travail (déjà en place)
+├── .claude/skills/              # skills de design et de travail : reverse-audit (audit d'un site ou d'une app tiers), carrousel-beaute (carrousel « rideau » des gammes)
 ├── docs/
 │   ├── ARCHITECTURE.md          # ce document
 │   ├── DECISIONS.md             # décisions validées (ADR courts)
@@ -655,6 +664,9 @@ Règle de séquence : on ne saute pas de phase. Une décision qui touche plusieu
 - **Carte publique « Notre présence dans le monde »** (`/presence` et section de l’accueil) : même fond (`features/carte/fond.ts`, `PointsCarte.tsx`), données de `carte_publique` — agrégats anonymes ouverts aux visiteuses (enregistrées / en route / livrées, jamais confondues ; aucun nom, téléphone, adresse, quartier ni montant). Scène toujours nocturne via `.zone-nuit`.
 - **Promotions** (`promotions`, `private.prix_effectif`, `promotions_en_cours`) : pourcentage ou prix, sur un produit ou un format, avec début et fin. Le serveur calcule le prix effectif et le facture à la commande ; le site affiche badge, ancien prix réel barré et économie, seulement pendant la promotion. Administration : fiche produit du Catalogue (propriétaire et admin).
 - **Contenus** : bucket `contenus`, publication contrôlée (complétude, accord de la cliente), affichage public des seuls contenus publiés.
+- **Catalogue du 11/11/2026** : prix et formats communiqués par la cliente (migration `prix_formats_cils`) ; nouveaux produits et accessoires cils, coffret « La gamme » (migration `fiches_nouveaux_produits`) ; Silkening Mist publié à la demande de la cliente ; stock initial de 40 par nouveau format, saisi par mouvements d'entrée.
+- **Pays livrés** : Cameroun (salon), Côte d'Ivoire, Gabon, Congo, Sénégal, Guinée, Canada, Royaume-Uni (table `pays`, indicatif et longueur du numéro par pays). Paiement à la livraison ; frais réglés à l'agence, non calculés par le site.
+- **Stock autonome** : verrou de 5 minutes et déverrouillage motivé, ajustements gardés, création de produits et de formats, quantités avant / après dans le journal, tableau de bord du stock et historique des réglages (voir G et D6).
 - **Thème** : appareil / clair / sombre, palette ivoire.
 
 ## O. Décisions et questions à valider
@@ -692,7 +704,7 @@ Ces points changent le modèle ou le travail. Merci de répondre avant la Phase 
 17. ~~Villes et frais de livraison~~ : réglé. Villes : Douala, Yaoundé, Garoua, Abidjan. Pas de frais de livraison calculés par le site (« on n'en a pas besoin ») : la livraison se règle sur WhatsApp.
 18. **WhatsApp** : lien court fourni (`wa.me/message/IJXZX7ST64EGG1`) ; le numéro complet reste recommandé (voir H). Restent : **horaires** d'ouverture et **ville du salon**.
 19. ~~Catégorisation~~ : réglé (les produits « Lace » relèvent de la perruque ; pas de produit cils actuellement).
-20. **Ajout de variantes** : les 7 produits existent-ils en plusieurs formats ou couleurs, ou un seul format chacun ?
+20. ~~Ajout de variantes~~ : réglé. Plusieurs produits ont plusieurs formats, chacun avec son prix et son stock (voir E2 et N bis).
 21. **Perruques** : liste des attributs à gérer (longueur, couleur, texture, densité, type de dentelle, taille) et nombre de références prévues.
 22. **Fournisseurs** : nombre, et délai habituel d'approvisionnement.
 23. ~~Paiement~~ : réglé (à la livraison, espèces ou Mobile Money, aucun paiement en ligne).
