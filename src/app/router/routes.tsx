@@ -10,6 +10,7 @@ import { PageCommande } from '@/pages/public/PageCommande'
 import { PageConnexion } from '@/pages/public/PageConnexion'
 import { PageContact } from '@/pages/public/PageContact'
 import { PagePanier } from '@/pages/public/PagePanier'
+import { PagePresence } from '@/pages/public/PagePresence'
 import { PagePerruques } from '@/pages/public/PagePerruques'
 import { PageProduit } from '@/pages/public/PageProduit'
 import { PageRendezVous } from '@/pages/public/PageRendezVous'
@@ -51,6 +52,7 @@ export const routes: RouteObject[] = [
           { path: CHEMINS.rendezVous, element: <PageRendezVous /> },
           { path: `${CHEMINS.rendezVous}/:reference`, element: <PageSuiviRendezVous /> },
           { path: CHEMINS.contact, element: <PageContact /> },
+          { path: CHEMINS.presence, element: <PagePresence /> },
           { path: CHEMINS.panier, element: <PagePanier /> },
           { path: CHEMINS.commande, element: <PageCommande /> },
           { path: `${CHEMINS.commande}/:reference`, element: <PageSuiviCommande /> },

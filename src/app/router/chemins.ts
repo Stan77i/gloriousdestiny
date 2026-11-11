@@ -13,6 +13,7 @@ export const CHEMINS = {
   reserver: (slug: string) => `/rendez-vous?service=${slug}`,
   suiviRendezVous: (reference: string) => `/rendez-vous/${reference}`,
   contact: '/contact',
+  presence: '/presence',
   panier: '/panier',
   commande: '/commande',
   suiviCommande: (reference: string) => `/commande/${reference}`,
@@ -28,5 +29,6 @@ export const NAVIGATION_PUBLIQUE = [
   { vers: CHEMINS.perruques, libelle: 'Perruques' },
   { vers: CHEMINS.cils, libelle: 'Cils' },
   { vers: CHEMINS.services, libelle: 'Services' },
+  { vers: CHEMINS.presence, libelle: 'Dans le monde' },
   { vers: CHEMINS.contact, libelle: 'Contact' },
 ] as const

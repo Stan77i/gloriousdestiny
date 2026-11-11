@@ -77,6 +77,9 @@ function PiedDePage() {
             {SITE.zonesLivraison}. Paiement à la livraison ; les modalités pour votre pays sont
             confirmées sur WhatsApp.
           </p>
+          <Link to={CHEMINS.presence} className="mt-3 inline-block text-or-texte hover:text-or">
+            Notre présence dans le monde
+          </Link>
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-t border-filet px-4 py-6 text-[13px] text-encre-3">

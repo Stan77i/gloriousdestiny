@@ -2,6 +2,8 @@ import { SITE } from '@/config/site'
 import { ArrowRight, Clock } from 'lucide-react'
 import { Link } from 'react-router'
 import { ContenusPublics } from '@/features/contenus/ContenusPublics'
+import { ChiffresPresence, ScenePresence } from '@/features/carte/CartePublique'
+import { useEtatCarte } from '@/features/carte/etat'
 import { CHEMINS } from '@/app/router/chemins'
 import { VeineOr } from '@/components/marque/VeineOr'
 import { classesBouton } from '@/components/ui/classesBouton'
@@ -155,6 +157,48 @@ function Services() {
 }
 
 /** Accueil du site public. */
+function PresenceAccueil() {
+  const etat = useEtatCarte('monde')
+  return (
+    <section
+      aria-labelledby="titre-presence"
+      className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-10"
+    >
+      <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+        <div>
+          <p className="text-[13px] font-semibold tracking-[0.16em] text-or-texte uppercase">
+            Notre présence dans le monde
+          </p>
+          <h2
+            id="titre-presence"
+            className="titre-affiche mt-3 text-[40px] text-encre sm:text-[52px]"
+          >
+            De Douala à Montréal
+          </h2>
+          <p className="mt-4 max-w-md text-[16px] leading-relaxed text-encre-2">
+            {SITE.zonesLivraison}. Explorez la carte : chaque trajet en or est un colis réellement
+            parti ou livré.
+          </p>
+        </div>
+        <ChiffresPresence />
+      </div>
+      <ScenePresence etat={etat} className="mt-8" />
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Link to={CHEMINS.presence} className={classesBouton('principal', 'grand', 'no-underline')}>
+          Explorer la carte
+          <ArrowRight aria-hidden="true" />
+        </Link>
+        <Link
+          to={CHEMINS.catalogue}
+          className={classesBouton('secondaire', 'grand', 'no-underline')}
+        >
+          Découvrir les produits
+        </Link>
+      </div>
+    </section>
+  )
+}
+
 export function PageAccueil() {
   useTitreDocument()
   const produits = useProduits()
@@ -254,6 +298,9 @@ export function PageAccueil() {
       </section>
 
       <Services />
+
+      {/* Présence dans le monde : la carte des destinations, données réelles. */}
+      <PresenceAccueil />
 
       <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-10">
         <ContenusPublics

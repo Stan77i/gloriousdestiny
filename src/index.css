@@ -51,7 +51,9 @@
   --gd-voile: rgb(26 24 22 / 0.42);
 }
 
-:root[data-theme='sombre'] {
+:root[data-theme='sombre'],
+/* Zone toujours nocturne (scène de la carte publique) : mêmes jetons que le mode nuit. */
+.zone-nuit {
   color-scheme: dark;
   /* Nuit : noir profond, texte clair, or. */
   --gd-fond: #0f0f0e;
@@ -245,6 +247,16 @@
   }
   .veine-trace-retard {
     animation-delay: 0.9s;
+  }
+  /* Trajet en route (carte publique) : pointillés d'or qui avancent vers la destination. */
+  .trajet-route {
+    stroke-dasharray: 0.018 0.014;
+    animation: trajet-route 1.4s linear infinite;
+  }
+  @keyframes trajet-route {
+    to {
+      stroke-dashoffset: -0.032;
+    }
   }
   @keyframes veine-trace {
     to {

@@ -1,54 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { MapPin, Store, X } from 'lucide-react'
 import { NavPilules } from '@/components/ui/Navigation'
 import { cx } from '@/lib/cx'
 import { formaterDateHeure } from '@/lib/format/date'
 import { formaterFcfa } from '@/lib/format/montant'
 import type { Carte, VilleCarte } from '@/services/carte.service'
-import { arc, projeter, type Grille, type IdVue } from './projection'
-
-type Grilles = Partial<Record<IdVue, Grille>>
-
-/** Pays d'Afrique : regroupés en un seul repère sur la vue Monde (trop proches à cette échelle). */
-const AFRIQUE = new Set(['CM', 'CI', 'GA', 'CG', 'SN', 'GN'])
-
-/** Les grilles (≈ 80 ko) ne sont chargées qu'à l'ouverture de la carte. */
-function useGrilles(): Grilles | null {
-  const [g, setG] = useState<Grilles | null>(null)
-  useEffect(() => {
-    let actif = true
-    void import('./points-carte.json').then((m) => {
-      if (actif) setG(m.default as unknown as Grilles)
-    })
-    return () => {
-      actif = false
-    }
-  }, [])
-  return g
-}
-
-function Points({ g, vue }: { g: Grille; vue: IdVue }) {
-  const cercles = useMemo(() => {
-    const r = vue === 'monde' ? 0.36 : 0.34
-    const liste = []
-    for (let k = 0; k < g.points.length; k += 3) {
-      const code = g.points[k + 2] ?? 0
-      const pays = code > 0
-      liste.push(
-        <circle
-          key={k}
-          cx={g.points[k]}
-          cy={g.points[k + 1]}
-          r={r}
-          className={pays ? 'fill-or' : 'fill-encre-3'}
-          opacity={pays ? 0.85 : 0.28}
-        />,
-      )
-    }
-    return liste
-  }, [g, vue])
-  return <g>{cercles}</g>
-}
+import { AFRIQUE, positionDansCadre, ratioCadre, useGrilles } from './fond'
+import { PointsCarte } from './PointsCarte'
+import { arc, projeter, type IdVue } from './projection'
 
 function Statistique({ libelle, valeur }: { libelle: string; valeur: string }) {
   return (
@@ -233,9 +192,7 @@ export function CarteActivite({ carte, majLe }: { carte: Carte; majLe: number })
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div
           className="relative w-full overflow-hidden rounded-[22px] bg-carte-2"
-          style={{
-            aspectRatio: g ? `${String(g.colonnes + 1)} / ${String(g.lignes + 1)}` : '16 / 9',
-          }}
+          style={{ aspectRatio: ratioCadre(g) }}
         >
           {!g ? (
             <div className="absolute inset-0 animate-pulse-doux bg-carte-3" />
@@ -247,7 +204,7 @@ export function CarteActivite({ carte, majLe }: { carte: Carte; majLe: number })
                 role="img"
                 aria-label={`Carte : ${carte.villes.filter((v) => v.commandes > 0).length} ville(s) avec des commandes sur la période`}
               >
-                <Points g={g} vue={vue} />
+                <PointsCarte g={g} rayon={vue === 'monde' ? 0.36 : 0.34} />
                 {origine &&
                   villes
                     .filter(({ v }) => v.nom !== salon?.ville && v.commandes > 0)
@@ -297,10 +254,7 @@ export function CarteActivite({ carte, majLe }: { carte: Carte; majLe: number })
                       }}
                       aria-label={`${pays.nom} : ${String(pays.commandes)} commande(s), ouvrir la zone`}
                       className="group absolute -translate-x-1/2 -translate-y-1/2"
-                      style={{
-                        left: `${String(((p.x + 0.5) / (g.colonnes + 1)) * 100)}%`,
-                        top: `${String(((p.y + 0.5) / (g.lignes + 1)) * 100)}%`,
-                      }}
+                      style={positionDansCadre(g, p)}
                     >
                       <span
                         className={cx(
@@ -335,10 +289,7 @@ export function CarteActivite({ carte, majLe }: { carte: Carte; majLe: number })
                       aria-label={`${v.nom} : ${String(v.commandes)} commande(s)`}
                       aria-pressed={choisie === v.id}
                       className="group absolute -translate-x-1/2 -translate-y-1/2"
-                      style={{
-                        left: `${String(((p.x + 0.5) / (g.colonnes + 1)) * 100)}%`,
-                        top: `${String(((p.y + 0.5) / (g.lignes + 1)) * 100)}%`,
-                      }}
+                      style={positionDansCadre(g, p)}
                     >
                       <span
                         className={cx(

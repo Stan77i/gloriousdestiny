@@ -63,3 +63,46 @@ export async function chargerCarte(du: string, au: string): Promise<Carte> {
   if (!r.success) throw versErreurApp(new Error(`Réponse inattendue : ${r.error.message}`))
   return r.data
 }
+
+/**
+ * Carte publique (supabase/migrations/20261112150000_carte_publique.sql) : comptes agrégés par
+ * pays et ville desservie, depuis l'ouverture. Trois états distincts : enregistrées (une
+ * commande n'est pas une livraison), en route (remises au transporteur), livrées (remises à la
+ * cliente). Aucun nom, téléphone, adresse, quartier ni montant.
+ */
+const comptesPublics = {
+  enregistrees: entier,
+  en_route: entier,
+  livrees: entier,
+}
+const schemaVillePublique = z.object({
+  id: entier,
+  nom: z.string(),
+  pays: z.string(),
+  latitude: coordonnee.nullable(),
+  longitude: coordonnee.nullable(),
+  ...comptesPublics,
+})
+export type VillePublique = z.infer<typeof schemaVillePublique>
+
+const schemaCartePublique = z.object({
+  salon: z
+    .object({
+      ville: z.string(),
+      pays: z.string(),
+      latitude: coordonnee.nullable(),
+      longitude: coordonnee.nullable(),
+    })
+    .nullable(),
+  pays: z.array(z.object({ code: z.string(), nom: z.string(), villes: entier, ...comptesPublics })),
+  villes: z.array(schemaVillePublique),
+})
+export type CartePublique = z.infer<typeof schemaCartePublique>
+
+export async function chargerCartePublique(): Promise<CartePublique> {
+  const { data, error } = await supabase().rpc('carte_publique')
+  if (error) throw versErreurApp(error)
+  const r = schemaCartePublique.safeParse(data)
+  if (!r.success) throw versErreurApp(new Error(`Réponse inattendue : ${r.error.message}`))
+  return r.data
+}

@@ -652,6 +652,7 @@ Règle de séquence : on ne saute pas de phase. Une décision qui touche plusieu
 - **Agenda v2** : blocage manuel de créneaux (verrou partagé avec les réservations), report par l'équipe vers un créneau libre, rappels WhatsApp préparés et tracés, ouverture jusqu'à 23 h 59.
 - **Notifications** : déclencheurs en base, rôle destinataire, unicité, lu / non lu par personne, préférences, abonnement push préparé (envoi : clé VAPID et fonction serveur à ajouter), « Prévenez-moi » avec consentement ; centre de notifications de la visiteuse calculé sur ses propres données.
 - **Carte des ventes** : Monde → Pays → Ville → Quartier, fonction `carte_activite`, grilles Natural Earth générées par `scripts/generer-points-carte.mjs`.
+- **Carte publique « Notre présence dans le monde »** (`/presence` et section de l’accueil) : même fond (`features/carte/fond.ts`, `PointsCarte.tsx`), données de `carte_publique` — agrégats anonymes ouverts aux visiteuses (enregistrées / en route / livrées, jamais confondues ; aucun nom, téléphone, adresse, quartier ni montant). Scène toujours nocturne via `.zone-nuit`.
 - **Contenus** : bucket `contenus`, publication contrôlée (complétude, accord de la cliente), affichage public des seuls contenus publiés.
 - **Thème** : appareil / clair / sombre, palette ivoire.
 

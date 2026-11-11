@@ -1572,6 +1572,7 @@ export type Database = {
         Returns: string
       }
       carte_activite: { Args: { p_au: string; p_du: string }; Returns: Json }
+      carte_publique: { Args: never; Returns: Json }
       cloturer_rendez_vous: {
         Args: { p_id: string; p_issue: string }
         Returns: Json
