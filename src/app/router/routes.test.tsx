@@ -8,6 +8,7 @@ import { AuthContext, type EtatAuth, type ValeurAuth } from '@/features/auth/Aut
 import { PanierProvider } from '@/features/panier/PanierProvider'
 import type * as ServiceAnalyse from '@/services/analyse.service'
 import type * as ServiceCatalogueAdmin from '@/services/catalogueAdmin.service'
+import type * as ServiceContenus from '@/services/contenus.service'
 import type * as ServiceCommandes from '@/services/commandes.service'
 import type * as ServiceRdv from '@/services/rendezvous.service'
 import type * as ServiceStock from '@/services/stock.service'
@@ -139,6 +140,11 @@ vi.mock('@/services/analyse.service', async (original) => ({
       mensuel: [],
     }),
   ),
+}))
+vi.mock('@/services/contenus.service', async (original) => ({
+  ...(await original<typeof ServiceContenus>()),
+  listerContenusPublics: vi.fn(() => Promise.resolve([])),
+  listerContenusAdmin: vi.fn(() => Promise.resolve([])),
 }))
 vi.mock('@/services/rendezvous.service', async (original) => ({
   ...(await original<typeof ServiceRdv>()),

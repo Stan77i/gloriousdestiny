@@ -23,6 +23,7 @@ import { useDisponibilites, useProduit, useProduits } from '@/features/catalogue
 import { visuelProduit } from '@/features/catalogue/visuels'
 import { QUANTITE_MAX } from '@/features/panier/panier'
 import { usePanier } from '@/features/panier/usePanier'
+import { ContenusPublics } from '@/features/contenus/ContenusPublics'
 import { PrevenezMoi } from '@/features/notifications/cliente/PrevenezMoi'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
@@ -359,6 +360,10 @@ export function PageProduit() {
           ))}
         </div>
       </section>
+
+      <div className="pb-16">
+        <ContenusPublics titre={`${p.nom} en vrai`} produitId={p.id} />
+      </div>
 
       {similaires.length > 0 && (
         <section aria-labelledby="titre-similaires" className="pb-16">

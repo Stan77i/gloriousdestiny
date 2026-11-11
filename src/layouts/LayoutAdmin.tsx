@@ -5,6 +5,7 @@ import {
   ChartLine,
   Ellipsis,
   ExternalLink,
+  Images,
   Inbox,
   LayoutGrid,
   LogOut,
@@ -87,6 +88,7 @@ const GROUPES: { titre: string; modules: Module[] }[] = [
         roles: ['ventes', 'stock'],
       },
       { vers: '/admin/catalogue', libelle: 'Catalogue', icone: <Tags />, fin: false, roles: [] },
+      { vers: '/admin/contenus', libelle: 'Contenus', icone: <Images />, fin: false, roles: [] },
     ],
   },
 ]

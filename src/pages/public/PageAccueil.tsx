@@ -1,5 +1,6 @@
 import { ArrowRight, Clock } from 'lucide-react'
 import { Link } from 'react-router'
+import { ContenusPublics } from '@/features/contenus/ContenusPublics'
 import { CHEMINS } from '@/app/router/chemins'
 import { VeineOr } from '@/components/marque/VeineOr'
 import { classesBouton } from '@/components/ui/classesBouton'
@@ -252,6 +253,14 @@ export function PageAccueil() {
       </section>
 
       <Services />
+
+      <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-10">
+        <ContenusPublics
+          titre="Elles l’ont adopté"
+          intro="Témoignages, transformations et vidéos de nos clientes, publiés avec leur accord."
+          types={['temoignage', 'transformation', 'video', 'photo']}
+        />
+      </div>
 
       {/* Clôture */}
       <section className="mx-auto max-w-7xl px-4 pt-4 pb-20 sm:px-6 lg:px-10">

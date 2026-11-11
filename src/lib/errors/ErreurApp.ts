@@ -14,6 +14,9 @@ export type CodeErreur =
   | 'trop_de_rendez_vous'
   | 'annulation_tardive'
   | 'rdv_existants'
+  | 'contenu_incomplet'
+  | 'consentement_requis'
+  | 'trop_de_demandes'
   | 'configuration'
   | 'inconnue'
 
@@ -51,7 +54,13 @@ export const MESSAGES: Record<CodeErreur, string> = {
   annulation_tardive:
     'Votre rendez-vous est trop proche pour être annulé en ligne. Prévenez-nous sur WhatsApp.',
   rdv_existants:
-    'Des rendez-vous sont prévus ce jour-là : annulez-les (en prévenant les clientes) avant de fermer.',
+    'Des rendez-vous sont prévus sur cette période : déplacez-les ou annulez-les (en prévenant les clientes) d’abord.',
+  contenu_incomplet:
+    'Ce contenu est incomplet pour être publié : vérifiez le fichier, le texte et la description de l’image.',
+  consentement_requis:
+    'Publication impossible sans l’accord de la cliente : cochez la case une fois son accord obtenu.',
+  trop_de_demandes:
+    'Vous avez déjà plusieurs demandes en attente pour ce numéro. Nous vous prévenons dès que possible.',
   configuration: "L'application est mal configurée. Contactez l'équipe Glorious Destiny.",
   inconnue: 'Une erreur inattendue est survenue. Réessayez dans un instant.',
 }
