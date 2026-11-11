@@ -16,6 +16,7 @@ import { useParametresPublics, useProduits, useServices } from '@/features/catal
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { OffresDuMoment, RegardCils } from '@/features/accueil/SectionsBeaute'
 import { Univers } from '@/features/accueil/Univers'
+import { CarrouselGammes } from '@/features/accueil/CarrouselGammes'
 import { Meches } from '@/components/marque/Meches'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { formaterDuree } from '@/lib/format/duree'
@@ -40,13 +41,13 @@ const RITUEL: { slug: string; geste: string; texte: string; teinte: Teinte }[] =
     slug: 'lace-glue-remover-spray',
     geste: 'Retirer',
     texte: 'La perruque se décolle en douceur.',
-    teinte: 'lilas',
+    teinte: 'sable',
   },
   {
     slug: 'glue-residue-remover-shampoo',
     geste: 'Nettoyer',
     texte: 'Les résidus de colle partent au lavage.',
-    teinte: 'sauge',
+    teinte: 'rose',
   },
 ]
 
@@ -203,7 +204,6 @@ export function PageAccueil() {
   const produits = useProduits()
   const gamme = produits.data?.filter((p) => p.type === 'produit' && p.slug !== SLUG_LA_GAMME)
   const laGamme = produits.data?.find((p) => p.slug === SLUG_LA_GAMME)
-  const vedette = GAMME.find((p) => p.slug === 'lace-melting-spray')?.photo
 
   return (
     <>
@@ -237,28 +237,7 @@ export function PageAccueil() {
             </Link>
           </div>
         </div>
-        {vedette && (
-          <figure className="relative z-[1] h-[460px] overflow-hidden rounded-panneau sm:h-[560px] lg:h-[min(720px,calc(100svh-8rem))]">
-            <img
-              src={vedette.grande}
-              srcSet={`${vedette.petite} 800w, ${vedette.grande} 1600w`}
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              alt={vedette.alt}
-              fetchPriority="high"
-              className="absolute inset-0 size-full object-cover object-[50%_30%]"
-            />
-            <figcaption className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-full bg-carte/90 py-1.5 pr-1.5 pl-5 shadow-flottant backdrop-blur-md sm:inset-x-4 sm:bottom-4">
-              <span className="text-[15px] font-semibold text-encre">Lace Melting Spray</span>
-              <Link
-                to={CHEMINS.produit('lace-melting-spray')}
-                aria-label="Voir le Lace Melting Spray"
-                className="grid size-10 shrink-0 place-items-center rounded-full bg-encre text-fond no-underline transition-colors duration-300 hover:bg-encre-2 [&_svg]:size-4"
-              >
-                <ArrowRight aria-hidden="true" />
-              </Link>
-            </figcaption>
-          </figure>
-        )}
+        <CarrouselGammes className="z-[1] h-[480px] sm:h-[580px] lg:h-[min(720px,calc(100svh-8rem))]" />
       </section>
 
       <Univers produits={produits.data} />
@@ -322,23 +301,23 @@ export function PageAccueil() {
 
       {/* Clôture */}
       <section className="mx-auto max-w-7xl px-4 pt-4 pb-20 sm:px-6 lg:px-10">
-        <div className="grid gap-8 rounded-panneau bg-menthe p-8 text-sur-menthe sm:p-12 lg:grid-cols-[1.4fr_1fr] lg:items-end">
+        <div className="zone-nuit grid gap-8 rounded-panneau bg-fond p-8 text-encre sm:p-12 lg:grid-cols-[1.4fr_1fr] lg:items-end">
           <div>
             <h2 className="titre-affiche text-[34px] sm:text-[52px]">
               Livrée chez vous,
               <br />
-              payée à la livraison
+              <span className="text-or">payée à la livraison</span>
             </h2>
-            <p className="mt-4 max-w-lg text-[17px] leading-relaxed">
+            <p className="mt-4 max-w-lg text-[17px] leading-relaxed text-encre-2">
               En espèces ou par Mobile Money, à la remise de votre colis.
             </p>
-            <BoutonWhatsApp variante="sur-menthe" className="mt-8" />
+            <BoutonWhatsApp variante="or" className="mt-8" />
           </div>
           <ul aria-label="Pays livrés" className="flex flex-wrap gap-2 lg:justify-end">
             {SITE.paysLivres.map((v) => (
               <li
                 key={v}
-                className="rounded-full bg-sur-menthe/10 px-4 py-2 text-[15px] font-semibold"
+                className="rounded-full bg-carte px-4 py-2 text-[15px] font-semibold text-encre ring-1 ring-or/25"
               >
                 {v}
               </li>

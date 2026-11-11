@@ -29,7 +29,6 @@ import { ContenusPublics } from '@/features/contenus/ContenusPublics'
 import { PrevenezMoi } from '@/features/notifications/cliente/PrevenezMoi'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
-import { FOND_TEINTE, TEINTE_TYPE_PRODUIT } from '@/domain/univers'
 import { cx } from '@/lib/cx'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterFcfa } from '@/lib/format/montant'
@@ -120,7 +119,6 @@ export function PageProduit() {
   const statut = variante ? dispo.data?.get(variante.id) : undefined
   const epuise = statut === 'epuise' || !variante
   const f = p.fiche
-  const teinte = TEINTE_TYPE_PRODUIT[p.type]
   // « Complétez votre rituel » : d'abord les produits associés, puis la même catégorie.
   const autres = tous.data?.filter((x) => x.id !== p.id) ?? []
   const associes = f.associes.flatMap((s) => autres.filter((x) => x.slug === s))
@@ -154,7 +152,7 @@ export function PageProduit() {
           <div
             className={cx(
               'relative overflow-hidden rounded-panneau',
-              visuel.pleine ? 'bg-carte-2' : cx('aspect-square', FOND_TEINTE[teinte]),
+              visuel.pleine ? 'bg-carte-2' : 'socle-produit aspect-square',
             )}
             style={visuel.pleine ? { aspectRatio: visuel.pleine.ratio } : undefined}
           >
@@ -254,7 +252,7 @@ export function PageProduit() {
                 <li key={b} className="flex items-start gap-3 text-[15px] text-encre">
                   <span
                     aria-hidden="true"
-                    className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-menthe text-sur-menthe [&_svg]:size-3"
+                    className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-or-doux text-or-texte [&_svg]:size-3"
                   >
                     <Check strokeWidth={3} />
                   </span>
@@ -371,7 +369,7 @@ export function PageProduit() {
           className="grid gap-4 pb-16 lg:grid-cols-[1.4fr_1fr]"
         >
           {f.utilisation.length > 0 && (
-            <div className={cx('rounded-panneau p-6 sm:p-10', FOND_TEINTE[teinte])}>
+            <div className="rounded-panneau bg-carte p-6 shadow-panneau sm:p-10">
               <h2 id="titre-utilisation" className="titre-affiche text-[34px] text-encre">
                 Mode d’emploi
               </h2>

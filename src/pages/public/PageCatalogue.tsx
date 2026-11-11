@@ -38,7 +38,7 @@ export function PageCatalogue({ gammeSeule = false }: { gammeSeule?: boolean }) 
   return (
     <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-10">
       <EnTetePage
-        teinte="sauge"
+        teinte="sable"
         titre={gammeSeule ? 'Produits' : 'Catalogue'}
         intro="La gamme professionnelle Glorious Destiny : pose de perruque, coiffage et cils. Livraison au Cameroun, en Côte d’Ivoire, au Gabon, au Congo, au Sénégal, en Guinée, au Canada et au Royaume-Uni."
       />

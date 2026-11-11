@@ -6,7 +6,6 @@ import { Squelette } from '@/components/ui/Chargeur'
 import { EtatErreur } from '@/components/ui/Etats'
 import { usePanier } from '@/features/panier/usePanier'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
-import { TEINTE_TYPE_PRODUIT } from '@/domain/univers'
 import type { Produit } from '@/services/catalogue.service'
 import { lienProduit } from './liens'
 import { useDisponibilites } from './requetes'
@@ -96,7 +95,6 @@ export function GrilleProduits({
               }
               categorie={p.categorie.nom}
               accroche={p.fiche.accroche ?? null}
-              teinte={TEINTE_TYPE_PRODUIT[p.type]}
               univers={UNIVERS_TYPE[p.type]}
               detoure={visuel.detoure}
               pleine={large ? visuel.pleine?.grande : visuel.pleine?.petite}

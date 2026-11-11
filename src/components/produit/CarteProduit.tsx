@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import { ArrowUpRight, Plus } from 'lucide-react'
 import { Link } from 'react-router'
 import { Bouton } from '@/components/ui/Bouton'
-import { FOND_TEINTE, type Teinte } from '@/domain/univers'
 import { cx } from '@/lib/cx'
 import type { Disponibilite } from '@/services/catalogue.service'
 import { Monogramme } from './Monogramme'
@@ -42,7 +41,6 @@ export function CarteProduit({
   onAjouter,
   choisir = false,
   enCours = false,
-  teinte = 'sauge',
   univers = 'soin',
 }: {
   nom: string
@@ -66,7 +64,6 @@ export function CarteProduit({
   /** Plusieurs formats : on invite à choisir sur la fiche plutôt qu'à ajouter à l'aveugle. */
   choisir?: boolean
   enCours?: boolean
-  teinte?: Teinte
   univers?: Univers
 }) {
   const epuise = disponibilite === 'epuise'
@@ -81,7 +78,7 @@ export function CarteProduit({
             : univers === 'perruque'
               ? 'aspect-[3/4]'
               : 'aspect-[4/5]',
-          pleine ? 'bg-carte-2' : FOND_TEINTE[teinte],
+          pleine ? 'bg-carte-2' : 'socle-produit',
         )}
       >
         {pleine ? (

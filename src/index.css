@@ -248,6 +248,102 @@
   .veine-trace-retard {
     animation-delay: 0.9s;
   }
+  /* Socle produit : ivoire lumineux (jamais une teinte colorée derrière un article). */
+  .socle-produit {
+    background: radial-gradient(
+      120% 85% at 50% 28%,
+      var(--gd-carte) 0%,
+      var(--gd-carte-2) 60%,
+      var(--gd-carte-3) 100%
+    );
+  }
+  /* Carrousel des gammes : rideau dévoilé derrière un filet d'or, zoom doux, progression. */
+  .diapo-entre {
+    z-index: 2;
+    animation: diapo-rideau 1.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .diapo-sort {
+    z-index: 1;
+  }
+  .diapo-sort img {
+    filter: brightness(0.82) saturate(0.9);
+    transition: filter 1s ease;
+  }
+  .diapo-fondu {
+    z-index: 2;
+    animation: diapo-fondu 0.5s ease both;
+  }
+  .diapo-zoom {
+    animation: diapo-zoom 7.5s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+  }
+  .diapo-filet {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    animation: diapo-filet 1.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .diapo-filet > span {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 2px;
+    background: linear-gradient(transparent, var(--gd-or-clair) 25%, var(--gd-or) 70%, transparent);
+    box-shadow: 0 0 22px 3px rgb(214 167 86 / 0.55);
+  }
+  .carrousel-progression {
+    transform: scaleX(0);
+    animation-name: carrousel-progression;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  .carrousel-legende {
+    animation: legende-entre 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+  }
+  @keyframes diapo-rideau {
+    from {
+      clip-path: inset(0 0 0 100%);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes diapo-fondu {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes diapo-zoom {
+    from {
+      transform: scale(1.09);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  @keyframes diapo-filet {
+    0% {
+      transform: translateX(100%);
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 0;
+    }
+  }
+  @keyframes carrousel-progression {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes legende-entre {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
   /* Reflet d'or : une lumière traverse le visuel d'une carte produit au survol. */
   .reflet-or {
     background: linear-gradient(
