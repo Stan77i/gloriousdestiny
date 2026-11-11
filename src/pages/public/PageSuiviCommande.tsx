@@ -17,7 +17,7 @@ import { cx } from '@/lib/cx'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterDateHeure } from '@/lib/format/date'
 import { formaterFcfa } from '@/lib/format/montant'
-import { normaliserTelephone } from '@/lib/format/telephone'
+import { normaliserTelephoneLibre } from '@/lib/format/telephone'
 import {
   signalerOuvertureWhatsapp,
   suivreCommande,
@@ -157,7 +157,7 @@ export function PageSuiviCommande() {
   })
 
   function rechercher() {
-    const tel = normaliserTelephone(saisie, '+237') ?? normaliserTelephone(saisie, '+225')
+    const tel = normaliserTelephoneLibre(saisie)
     if (!tel) {
       setErreurSaisie('Numéro invalide. Indiquez le numéro utilisé pour la commande.')
       return

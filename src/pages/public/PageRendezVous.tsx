@@ -20,7 +20,13 @@ import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { decalerJour, formaterHeure, formaterJour, jourSalon, initiale } from '@/lib/format/date'
 import { formaterDuree } from '@/lib/format/duree'
 import { formaterFcfa } from '@/lib/format/montant'
-import { normaliserTelephone, type Indicatif } from '@/lib/format/telephone'
+import {
+  normaliserTelephone,
+  type Indicatif,
+  longueurAttendue,
+  PAYS_TELEPHONE,
+} from '@/lib/format/telephone'
+import { OptionsIndicatif } from '@/components/ui/OptionsIndicatif'
 
 /** Jours affichés par page de calendrier (le serveur accepte 31 jours par appel). */
 const JOURS_PAR_PAGE = 14
@@ -103,7 +109,7 @@ export function PageRendezVous() {
   const erreurNom = tentative && nom.trim().length < 2 ? 'Indiquez votre nom.' : undefined
   const erreurTel =
     tentative && !telNormalise
-      ? `Numéro invalide : ${indicatif === '+237' ? '9' : '10'} chiffres attendus après ${indicatif}.`
+      ? `Numéro invalide : ${longueurAttendue(indicatif)} attendus après ${indicatif}.`
       : undefined
 
   function choisirService(slug: string) {
@@ -348,7 +354,7 @@ export function PageRendezVous() {
               >
                 {(a) => (
                   <div className="flex gap-2">
-                    <div className="w-[7.5rem] shrink-0">
+                    <div className="w-[9.5rem] shrink-0">
                       <Selection
                         aria-label="Indicatif"
                         value={indicatif}
@@ -356,8 +362,7 @@ export function PageRendezVous() {
                           setIndicatif(e.target.value as Indicatif)
                         }}
                       >
-                        <option value="+237">+237</option>
-                        <option value="+225">+225</option>
+                        <OptionsIndicatif />
                       </Selection>
                     </div>
                     <Saisie
@@ -365,7 +370,7 @@ export function PageRendezVous() {
                       type="tel"
                       inputMode="tel"
                       autoComplete="tel-national"
-                      placeholder={indicatif === '+237' ? '6 90 00 00 00' : '07 00 00 00 00'}
+                      placeholder={PAYS_TELEPHONE[indicatif].exemple}
                       value={telephone}
                       onChange={(e) => {
                         setTelephone(e.target.value)

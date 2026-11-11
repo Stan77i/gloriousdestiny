@@ -37,7 +37,7 @@ export function PageCatalogue({ gammeSeule = false }: { gammeSeule?: boolean }) 
       <EnTetePage
         teinte="sauge"
         titre={gammeSeule ? 'Produits' : 'Catalogue'}
-        intro="La gamme professionnelle Glorious Destiny : pose de perruque et coiffage. Livraison à Douala, Yaoundé, Garoua et Abidjan, paiement à la livraison."
+        intro="La gamme professionnelle Glorious Destiny : pose de perruque et coiffage. Livraison au Cameroun, en Côte d’Ivoire, au Gabon, au Congo, au Sénégal, en Guinée, au Canada et au Royaume-Uni."
       />
       {!gammeSeule && (
         <nav aria-label="Catégories" className="-mx-4 mb-8 overflow-x-auto px-4 sm:mx-0 sm:px-0">

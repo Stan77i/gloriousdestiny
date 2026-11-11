@@ -21,8 +21,8 @@ import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterFcfa } from '@/lib/format/montant'
 import { suivre } from '@/features/notifications/cliente/memoire'
-import { normaliserTelephone } from '@/lib/format/telephone'
-import { listerVilles, type Ville } from '@/services/clientes.service'
+import { longueurAttendue, normaliserTelephone, PAYS_TELEPHONE } from '@/lib/format/telephone'
+import { listerVilles } from '@/services/clientes.service'
 import { creerCommande } from '@/services/commandes.service'
 
 const schema = z.object({
@@ -44,11 +44,6 @@ const schema = z.object({
   notes: z.string().trim().max(1000),
 })
 type Valeurs = z.infer<typeof schema>
-
-const EXEMPLE_TEL: Record<Ville['indicatif'], string> = {
-  '+237': '6 90 00 00 00',
-  '+225': '07 07 07 07 07',
-}
 
 /** Finalisation de la commande : coordonnées, adresse de livraison, enregistrement. */
 export function PageCommande() {
@@ -103,7 +98,7 @@ export function PageCommande() {
     const telephone = normaliserTelephone(v.telephone, villeChoisie.indicatif)
     if (!telephone) {
       setError('telephone', {
-        message: `Numéro invalide pour ${villeChoisie.nom} : ${villeChoisie.indicatif === '+237' ? '9' : '10'} chiffres attendus après ${villeChoisie.indicatif}.`,
+        message: `Numéro invalide pour ${villeChoisie.nom} : ${longueurAttendue(villeChoisie.indicatif)} attendus après ${villeChoisie.indicatif}.`,
       })
       return
     }
@@ -194,7 +189,7 @@ export function PageCommande() {
               erreur={errors.telephone?.message}
               aide={
                 ville
-                  ? `Numéro ${ville.pays === 'CM' ? 'camerounais' : 'ivoirien'}, ex. ${EXEMPLE_TEL[ville.indicatif]}`
+                  ? `Numéro ${PAYS_TELEPHONE[ville.indicatif].adjectif}, ex. ${PAYS_TELEPHONE[ville.indicatif].exemple}`
                   : 'Choisissez d’abord votre ville.'
               }
             >

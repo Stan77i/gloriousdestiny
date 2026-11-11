@@ -42,3 +42,21 @@ describe('formaterDateHeure', () => {
     expect(formaterDateHeure('2026-11-10T09:00:00Z', 'Africa/Abidjan')).toContain('09:00')
   })
 })
+
+describe('téléphones des pays desservis', () => {
+  it('normalise chaque pays', async () => {
+    const { normaliserTelephone, normaliserTelephoneLibre } = await import('./telephone')
+    expect(normaliserTelephone('07700 900123', '+44')).toBe('+447700900123')
+    expect(normaliserTelephone('+44 7700 900123', '+44')).toBe('+447700900123')
+    expect(normaliserTelephone('514 555 0123', '+1')).toBe('+15145550123')
+    expect(normaliserTelephone('1 514 555 0123', '+1')).toBe('+15145550123')
+    expect(normaliserTelephone('06 12 34 56', '+241')).toBe('+24106123456')
+    expect(normaliserTelephone('06 612 34 56', '+242')).toBe('+242066123456')
+    expect(normaliserTelephone('77 123 45 67', '+221')).toBe('+221771234567')
+    expect(normaliserTelephone('621 23 45 67', '+224')).toBe('+224621234567')
+    expect(normaliserTelephone('77 123 45', '+221')).toBeNull()
+    expect(normaliserTelephoneLibre('+221 77 123 45 67')).toBe('+221771234567')
+    expect(normaliserTelephoneLibre('6 90 00 00 01')).toBe('+237690000001')
+    expect(normaliserTelephoneLibre('+33 6 12 34 56 78')).toBeNull()
+  })
+})

@@ -5,11 +5,12 @@ export type Grille = {
   pas: number
   colonnes: number
   lignes: number
-  /** Triplets à plat : colonne, ligne, code (0 terre, 1 Cameroun, 2 Côte d'Ivoire). */
+  /** Triplets à plat : colonne, ligne, code (0 autre terre, sinon pays desservi). */
   points: number[]
 }
 
-export type IdVue = 'monde' | 'afrique' | 'CM' | 'CI'
+/** « monde », « afrique » ou le code d'un pays desservi (CM, CI, GA…). */
+export type IdVue = string
 
 /** Position d'un lieu dans la grille (en unités de grille), ou null s'il sort du cadre. */
 export function projeter(

@@ -1,3 +1,4 @@
+import { SITE } from '@/config/site'
 import { ArrowRight, Clock } from 'lucide-react'
 import { Link } from 'react-router'
 import { ContenusPublics } from '@/features/contenus/ContenusPublics'
@@ -276,8 +277,8 @@ export function PageAccueil() {
             </p>
             <BoutonWhatsApp variante="sur-menthe" className="mt-8" />
           </div>
-          <ul aria-label="Villes livrées" className="flex flex-wrap gap-2 lg:justify-end">
-            {['Douala', 'Yaoundé', 'Garoua', 'Abidjan'].map((v) => (
+          <ul aria-label="Pays livrés" className="flex flex-wrap gap-2 lg:justify-end">
+            {SITE.paysLivres.map((v) => (
               <li
                 key={v}
                 className="rounded-full bg-sur-menthe/10 px-4 py-2 text-[15px] font-semibold"

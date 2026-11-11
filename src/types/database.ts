@@ -961,6 +961,39 @@ export type Database = {
         }
         Relationships: []
       }
+      pays: {
+        Row: {
+          actif: boolean
+          chiffres_max: number
+          chiffres_min: number
+          code: string
+          indicatif: string
+          nom: string
+          ordre: number
+          zero_initial_retire: boolean
+        }
+        Insert: {
+          actif?: boolean
+          chiffres_max: number
+          chiffres_min: number
+          code: string
+          indicatif: string
+          nom: string
+          ordre?: number
+          zero_initial_retire?: boolean
+        }
+        Update: {
+          actif?: boolean
+          chiffres_max?: number
+          chiffres_min?: number
+          code?: string
+          indicatif?: string
+          nom?: string
+          ordre?: number
+          zero_initial_retire?: boolean
+        }
+        Relationships: []
+      }
       preferences_notifications: {
         Row: {
           heures_calmes_debut: string | null
@@ -1477,7 +1510,15 @@ export type Database = {
           ordre?: number
           pays?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "villes_pays_fk"
+            columns: ["pays"]
+            isOneToOne: false
+            referencedRelation: "pays"
+            referencedColumns: ["code"]
+          },
+        ]
       }
     }
     Views: {

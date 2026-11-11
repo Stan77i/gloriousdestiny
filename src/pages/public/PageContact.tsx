@@ -1,3 +1,4 @@
+import { SITE } from '@/config/site'
 import { Banknote, CalendarClock, MapPin, Truck } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { EnTetePage } from '@/components/ui/EnTetePage'
@@ -50,10 +51,11 @@ export function PageContact() {
           </Ligne>
         )}
         <Ligne icone={<Truck />} titre="Livraison">
-          Douala, Yaoundé, Garoua et Abidjan.
+          {SITE.zonesLivraison}.
         </Ligne>
         <Ligne icone={<Banknote />} titre="Paiement">
-          À la livraison, en espèces ou par Mobile Money.
+          À la livraison, en espèces ou par Mobile Money ; hors Cameroun, modalités confirmées sur
+          WhatsApp.
         </Ligne>
       </dl>
     </div>

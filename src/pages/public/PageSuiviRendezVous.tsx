@@ -22,7 +22,7 @@ import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterDuree } from '@/lib/format/duree'
 import { formaterHeure, formaterJour, jourSalon, initiale } from '@/lib/format/date'
 import { formaterFcfa } from '@/lib/format/montant'
-import { normaliserTelephone } from '@/lib/format/telephone'
+import { normaliserTelephoneLibre } from '@/lib/format/telephone'
 import { signalerOuvertureWhatsappRdv, type ResumeRdv } from '@/services/rendezvous.service'
 
 function Detail({ r, nouveau, telephone }: { r: ResumeRdv; nouveau: boolean; telephone: string }) {
@@ -200,7 +200,7 @@ export function PageSuiviRendezVous() {
   useTitreDocument(`Rendez-vous ${ref}`)
 
   function rechercher() {
-    const tel = normaliserTelephone(saisie, '+237') ?? normaliserTelephone(saisie, '+225')
+    const tel = normaliserTelephoneLibre(saisie)
     if (!tel) {
       setErreurSaisie('Numéro invalide. Indiquez le numéro utilisé pour la réservation.')
       return

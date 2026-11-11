@@ -1,12 +1,13 @@
 import { versErreurApp } from '@/lib/errors/versErreurApp'
+import { estIndicatif, type Indicatif } from '@/lib/format/telephone'
 import { supabase } from '@/services/supabase/client'
 
 export type Ville = {
   id: number
   nom: string
-  pays: 'CM' | 'CI'
-  indicatif: '+237' | '+225'
-  devise: 'XAF' | 'XOF'
+  pays: string
+  indicatif: Indicatif
+  devise: string
 }
 
 export async function listerVilles(): Promise<Ville[]> {
@@ -16,7 +17,8 @@ export async function listerVilles(): Promise<Ville[]> {
     .eq('actif', true)
     .order('ordre')
   if (error) throw versErreurApp(error)
-  return data as Ville[]
+  // Une ville dont l'indicatif n'est pas connu de l'interface n'est pas proposée.
+  return data.filter((v): v is typeof v & { indicatif: Indicatif } => estIndicatif(v.indicatif))
 }
 
 export type ClienteListe = {

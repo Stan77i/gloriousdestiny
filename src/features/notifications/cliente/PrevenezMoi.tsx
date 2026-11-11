@@ -5,6 +5,7 @@ import { Bouton } from '@/components/ui/Bouton'
 import { CaseACocher, Champ, Saisie, Selection } from '@/components/ui/Champs'
 import { useMutation } from '@tanstack/react-query'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
+import { OptionsIndicatif } from '@/components/ui/OptionsIndicatif'
 import { normaliserTelephone, type Indicatif } from '@/lib/format/telephone'
 import { demanderAlerteRetourStock } from '@/services/notifications.service'
 import { suivreAlerte } from './memoire'
@@ -93,7 +94,7 @@ export function PrevenezMoi({
         <Champ libelle="WhatsApp" obligatoire>
           {(a) => (
             <div className="flex gap-2">
-              <div className="w-28 shrink-0">
+              <div className="w-36 shrink-0">
                 <Selection
                   aria-label="Indicatif"
                   value={indicatif}
@@ -101,8 +102,7 @@ export function PrevenezMoi({
                     setIndicatif(e.target.value as Indicatif)
                   }}
                 >
-                  <option value="+237">+237</option>
-                  <option value="+225">+225</option>
+                  <OptionsIndicatif />
                 </Selection>
               </div>
               <Saisie

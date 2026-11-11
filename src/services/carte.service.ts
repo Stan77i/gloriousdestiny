@@ -13,7 +13,7 @@ const coordonnee = z.coerce.number()
 const schemaVille = z.object({
   id: entier,
   nom: z.string(),
-  pays: z.enum(['CM', 'CI']),
+  pays: z.string(),
   devise: z.string(),
   latitude: coordonnee.nullable(),
   longitude: coordonnee.nullable(),
@@ -45,7 +45,7 @@ const schemaCarte = z.object({
     .nullable(),
   pays: z.array(
     z.object({
-      code: z.enum(['CM', 'CI']),
+      code: z.string(),
       nom: z.string(),
       commandes: entier,
       ca_fcfa: entier,

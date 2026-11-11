@@ -1,3 +1,4 @@
+import { SITE } from '@/config/site'
 import { useEffect, useState } from 'react'
 import {
   ArrowLeft,
@@ -37,7 +38,7 @@ import { PageIntrouvable } from '@/pages/errors/PageIntrouvable'
 const FAQ_COMMUNE = [
   {
     q: 'Où livrez-vous ?',
-    r: 'À Douala, Yaoundé, Garoua et Abidjan. Notre équipe vous appelle sur WhatsApp pour convenir du lieu et de l’heure.',
+    r: `${SITE.zonesLivraison}. Notre équipe vous appelle sur WhatsApp pour convenir du lieu, de l’heure et, hors Cameroun, des modalités d’envoi.`,
   },
   {
     q: 'Quand est-ce que je paie ?',
@@ -276,7 +277,7 @@ export function PageProduit() {
           <ul className="mt-8 grid gap-2 sm:grid-cols-3">
             {(
               [
-                [Truck, 'Livré chez vous', 'Douala, Yaoundé, Garoua, Abidjan'],
+                [Truck, 'Livré chez vous', '8 pays, d’Afrique au Canada'],
                 [Banknote, 'Payé à la livraison', 'Espèces ou Mobile Money'],
                 [MessageCircle, 'Confirmé sur WhatsApp', 'Une vraie personne vous répond'],
               ] as const

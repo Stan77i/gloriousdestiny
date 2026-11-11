@@ -74,7 +74,8 @@ function PiedDePage() {
         <div className="text-sm">
           <h2 className="font-semibold text-encre">Livraison</h2>
           <p className="mt-3 leading-relaxed text-encre-3">
-            Douala, Yaoundé, Garoua et Abidjan. Paiement à la livraison, en espèces ou Mobile Money.
+            {SITE.zonesLivraison}. Paiement à la livraison ; les modalités pour votre pays sont
+            confirmées sur WhatsApp.
           </p>
         </div>
       </div>

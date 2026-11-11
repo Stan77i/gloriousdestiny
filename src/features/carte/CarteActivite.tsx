@@ -7,14 +7,10 @@ import { formaterFcfa } from '@/lib/format/montant'
 import type { Carte, VilleCarte } from '@/services/carte.service'
 import { arc, projeter, type Grille, type IdVue } from './projection'
 
-type Grilles = Record<IdVue, Grille>
+type Grilles = Partial<Record<IdVue, Grille>>
 
-const VUES: { id: IdVue; libelle: string }[] = [
-  { id: 'monde', libelle: 'Monde' },
-  { id: 'afrique', libelle: 'Afrique' },
-  { id: 'CM', libelle: 'Cameroun' },
-  { id: 'CI', libelle: 'Côte d’Ivoire' },
-]
+/** Pays d'Afrique : regroupés en un seul repère sur la vue Monde (trop proches à cette échelle). */
+const AFRIQUE = new Set(['CM', 'CI', 'GA', 'CG', 'SN', 'GN'])
 
 /** Les grilles (≈ 80 ko) ne sont chargées qu'à l'ouverture de la carte. */
 function useGrilles(): Grilles | null {
@@ -37,7 +33,7 @@ function Points({ g, vue }: { g: Grille; vue: IdVue }) {
     const liste = []
     for (let k = 0; k < g.points.length; k += 3) {
       const code = g.points[k + 2] ?? 0
-      const pays = code === 1 ? 'CM' : code === 2 ? 'CI' : null
+      const pays = code > 0
       liste.push(
         <circle
           key={k}
@@ -66,10 +62,12 @@ function Statistique({ libelle, valeur }: { libelle: string; valeur: string }) {
 function FicheVille({
   v,
   salon,
+  nomPays,
   onFermer,
 }: {
   v: VilleCarte
   salon: Carte['salon']
+  nomPays: string
   onFermer: () => void
 }) {
   const estSalon = salon !== null && salon.ville === v.nom
@@ -81,7 +79,7 @@ function FicheVille({
       <header className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[12px] font-semibold tracking-[0.1em] text-encre-3 uppercase">
-            {v.pays === 'CM' ? 'Cameroun' : 'Côte d’Ivoire'}
+            {nomPays}
           </p>
           <h3 className="text-[22px] font-semibold tracking-[-0.02em]">{v.nom}</h3>
         </div>
@@ -174,21 +172,42 @@ export function CarteActivite({ carte, majLe }: { carte: Carte; majLe: number })
       g && v.latitude != null && v.longitude != null ? projeter(g, v.longitude, v.latitude) : null
     return p ? [{ v, p }] : []
   })
-  // Vue Monde : un repère par pays (au centre de ses villes), qui ouvre le pays au clic.
-  const paysRepere = carte.pays.flatMap((pays) => {
+  // Vue Monde : un repère par pays hors d'Afrique, un seul pour l'Afrique (au centre des villes),
+  // qui ouvre la vue correspondante au clic.
+  const nomPays = (code: string) => carte.pays.find((x) => x.code === code)?.nom ?? code
+  const groupes = [
+    {
+      id: 'afrique',
+      nom: 'Afrique',
+      codes: carte.pays.filter((x) => AFRIQUE.has(x.code)).map((x) => x.code),
+    },
+    ...carte.pays
+      .filter((x) => !AFRIQUE.has(x.code))
+      .map((x) => ({ id: x.code, nom: x.nom, codes: [x.code] })),
+  ]
+  const paysRepere = groupes.flatMap((gr) => {
     const vs = carte.villes.filter(
-      (v) => v.pays === pays.code && v.latitude != null && v.longitude != null,
+      (v) => gr.codes.includes(v.pays) && v.latitude != null && v.longitude != null,
     )
     if (!g || vs.length === 0) return []
     const lat = vs.reduce((t, v) => t + (v.latitude ?? 0), 0) / vs.length
     const lon = vs.reduce((t, v) => t + (v.longitude ?? 0), 0) / vs.length
     const p = projeter(g, lon, lat)
-    return p ? [{ pays, p }] : []
+    const commandes = carte.pays
+      .filter((x) => gr.codes.includes(x.code))
+      .reduce((t, x) => t + x.commandes, 0)
+    return p ? [{ ...gr, commandes, p }] : []
   })
-  const maxPays = Math.max(1, ...carte.pays.map((x) => x.commandes))
+  const vuesPilules = [
+    { id: 'monde', libelle: 'Monde' },
+    { id: 'afrique', libelle: 'Afrique' },
+    ...(vue === 'monde' || vue === 'afrique' ? [] : [{ id: vue, libelle: nomPays(vue) }]),
+  ]
+  const maxPays = Math.max(1, ...paysRepere.map((x) => x.commandes))
   const maxCommandes = Math.max(1, ...carte.villes.map((v) => v.commandes))
   const ville = carte.villes.find((v) => v.id === choisie) ?? null
   const echelle = g ? g.colonnes / 100 : 1
+  const estPays = vue !== 'monde' && vue !== 'afrique'
 
   return (
     <div className="flex flex-col gap-4">
@@ -203,10 +222,10 @@ export function CarteActivite({ carte, majLe }: { carte: Carte; majLe: number })
         </p>
         <NavPilules
           libelle="Zone de la carte"
-          elements={VUES}
+          elements={vuesPilules}
           actif={vue}
           onChoisir={(id) => {
-            setVue(id as IdVue)
+            setVue(id)
           }}
         />
       </div>
@@ -266,16 +285,17 @@ export function CarteActivite({ carte, majLe }: { carte: Carte; majLe: number })
                     })}
               </svg>
               {vue === 'monde' &&
-                paysRepere.map(({ pays, p }) => {
+                paysRepere.map((pays) => {
+                  const { p } = pays
                   const taille = 16 + Math.round(Math.sqrt(pays.commandes / maxPays) * 16)
                   return (
                     <button
-                      key={pays.code}
+                      key={pays.id}
                       type="button"
                       onClick={() => {
-                        setVue(pays.code)
+                        setVue(pays.id)
                       }}
-                      aria-label={`${pays.nom} : ${String(pays.commandes)} commande(s), ouvrir le pays`}
+                      aria-label={`${pays.nom} : ${String(pays.commandes)} commande(s), ouvrir la zone`}
                       className="group absolute -translate-x-1/2 -translate-y-1/2"
                       style={{
                         left: `${String(((p.x + 0.5) / (g.colonnes + 1)) * 100)}%`,
@@ -292,7 +312,7 @@ export function CarteActivite({ carte, majLe }: { carte: Carte; majLe: number })
                       <span
                         className={cx(
                           'pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-full bg-carte/90 px-2 py-0.5 text-[12px] font-semibold whitespace-nowrap shadow-panneau backdrop-blur-sm',
-                          pays.code === 'CI' ? 'right-full mr-1.5' : 'left-full ml-1.5',
+                          pays.id === 'CA' ? 'right-full mr-1.5' : 'left-full ml-1.5',
                         )}
                       >
                         {pays.nom}
@@ -358,6 +378,7 @@ export function CarteActivite({ carte, majLe }: { carte: Carte; majLe: number })
             <FicheVille
               v={ville}
               salon={salon}
+              nomPays={nomPays(ville.pays)}
               onFermer={() => {
                 setChoisie(null)
               }}
@@ -390,11 +411,13 @@ export function CarteActivite({ carte, majLe }: { carte: Carte; majLe: number })
                 </button>
               ))}
               <h3 className="mt-2 text-[13px] font-semibold text-encre-2">
-                Villes{vue === 'CM' ? ' du Cameroun' : vue === 'CI' ? ' de Côte d’Ivoire' : ''}
+                {estPays ? `Villes · ${nomPays(vue)}` : 'Villes'}
               </h3>
               <ul className="flex flex-wrap gap-1.5">
                 {carte.villes
-                  .filter((v) => (vue === 'CM' || vue === 'CI' ? v.pays === vue : true))
+                  .filter((v) =>
+                    estPays ? v.pays === vue : vue === 'afrique' ? AFRIQUE.has(v.pays) : true,
+                  )
                   .map((v) => (
                     <li key={v.id}>
                       <button
