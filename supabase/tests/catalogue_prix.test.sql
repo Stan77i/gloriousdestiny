@@ -1,5 +1,5 @@
 -- Tests prix et formats du 11/11/2026 : prix exacts par format, stock initial de 40 par
--- mouvement, Silkening Mist non publié, aucune fausse alerte « retour en stock ».
+-- mouvement, Silkening Mist publié, une fiche par produit, aucune fausse alerte « retour en stock ».
 \set ON_ERROR_STOP 1
 begin;
 do $$
@@ -20,7 +20,8 @@ begin
   assert (select min(s.physique) from public.stocks s join public.variantes v on v.id = s.variante_id
           where v.sku in (select jsonb_object_keys(attendu)) and v.sku not in ('GD-LG-STD','GD-LMS-STD','GD-LGRS-STD','GD-WS-STD')) = 40,
     'stock initial de 40 par nouveau format';
-  assert not (select publie from public.produits where slug = 'silkening-mist'), 'Silkening Mist non publié';
+  assert (select publie from public.produits where slug = 'silkening-mist'), 'Silkening Mist publié (confirmé par la cliente)';
+  assert not exists (select 1 from public.produits where sku like 'GD-%' and publie and (fiche = '{}'::jsonb or fiche ->> 'accroche' is null)), 'chaque produit publié a sa fiche';
   assert not exists (select 1 from public.notifications where type = 'retour_stock'), 'pas de fausse alerte de retour en stock';
 end $$;
 select 'TESTS CATALOGUE PRIX PASSÉS' as resultat;
