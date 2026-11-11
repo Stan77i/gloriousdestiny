@@ -24,15 +24,20 @@ Une marque qui réunit à la fois sa propre gamme professionnelle, la vente de p
 ## Operating Context
 
 - Paiement uniquement à la livraison (espèces ou Mobile Money) ; aucun paiement en ligne.
+- Livraison par agences dans huit pays : Cameroun, Côte d'Ivoire, Gabon, Congo, Sénégal, Guinée, Canada et Royaume-Uni. Le site n'affiche aucun frais de livraison : la cliente les règle directement auprès de l'agence.
 - La commande est finalisée sur WhatsApp ; elle est enregistrée en base avant l'ouverture de WhatsApp.
 - Un seul salon pour les rendez-vous (ville à confirmer).
-- Devise affichée : FCFA (XAF au Cameroun, XOF à Abidjan).
+- Devise affichée : FCFA partout. Une commande hors zone CFA est libellée en XAF ; la conversion locale se convient sur WhatsApp.
 - Site d'abord, puis PWA, puis application mobile.
 
 ## Capabilities and Constraints
 
-- Gamme officielle actuelle : exactement 7 produits (voir docs/ARCHITECTURE.md). Ne jamais en inventer ; le Silkening Mist est exclu.
-- Prix et stock officiels non encore fournis (valeurs provisoires en développement uniquement).
+- Catalogue : dix-neuf produits, saisis par l'administration (aucun produit codé en dur). On y trouve la gamme professionnelle d'origine (Lace Glue, Lace Melting Spray, Lace Glue Remover Spray, Glue Residue Remover Shampoo, Wax Stick, Hair Curl Mousse, Braid Gel), les produits de pose et de coiffage Glue Liquid Gel, Hair Styling Gel et Silkening Mist (publié depuis la confirmation de la cliente, le 11/11/2026), la Colle pour extension de cils, sept accessoires cils (faux cils en bande, grappes, kit d'extensions) et le coffret « La gamme Glorious Destiny ». Ne jamais en inventer.
+- Plusieurs produits existent en plusieurs formats, chacun avec son prix et son stock : Lace Glue (38, 60 et 150 ml), Lace Melting Spray (130 et 180 ml), Lace Glue Remover Spray (30 et 50 ml), Wax Stick (petit et grand format). Les prix détaillés vivent dans la base, pas dans ce document.
+- Prix et formats communiqués par la cliente le 11/11/2026 ; stock initial de 40 par nouveau format.
+- Perruques : aucune en stock actuellement. La page affiche l'état « Rupture de stock » et propose d'être prévenue sur WhatsApp au retour des modèles.
+- Promotions : pourcentage ou prix promotionnel, sur un produit ou un format, avec date de début et date de fin facultative. Le site n'affiche un ancien prix, une économie et un compte à rebours que pendant une promotion réelle ; le serveur calcule le prix effectif et le facture.
+- Stock : quantités physique, réservé et disponible. Chaque modification manuelle ouvre une fenêtre de 5 minutes ; ensuite l'article se verrouille et un déverrouillage motivé est exigé. Les ajustements sont gardés (pas de stock négatif, pas de sortie sous les réservations, confirmation des fortes baisses), et l'historique garde les quantités avant et après.
 - Langue : français.
 - Architecture et règles métier : docs/ARCHITECTURE.md (validé).
 
