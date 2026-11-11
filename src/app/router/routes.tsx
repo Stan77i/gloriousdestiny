@@ -158,6 +158,19 @@ export const routes: RouteObject[] = [
               }
             },
           },
+          {
+            path: 'catalogue',
+            lazy: async () => {
+              const { PageAdminCatalogue } = await import('@/pages/admin/PageAdminCatalogue')
+              return {
+                element: (
+                  <RequireStaff roles={[]}>
+                    <PageAdminCatalogue />
+                  </RequireStaff>
+                ),
+              }
+            },
+          },
           { ...routeSystemeDesign, path: 'systeme-design' },
         ],
       },

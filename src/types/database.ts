@@ -1172,6 +1172,10 @@ export type Database = {
         Args: { p_reference: string; p_telephone: string }
         Returns: Json
       }
+      tableau_de_bord: {
+        Args: { p_du: string; p_au: string }
+        Returns: Json
+      }
       annoter_cliente: {
         Args: { p_id: string; p_notes: string }
         Returns: undefined

@@ -6,6 +6,7 @@ import { RouterProvider } from 'react-router/dom'
 import { NotificationsProvider } from '@/components/feedback/notifications/NotificationsProvider'
 import { AuthContext, type EtatAuth, type ValeurAuth } from '@/features/auth/AuthContext'
 import { PanierProvider } from '@/features/panier/PanierProvider'
+import type * as ServiceCatalogueAdmin from '@/services/catalogueAdmin.service'
 import type * as ServiceCommandes from '@/services/commandes.service'
 import type * as ServiceRdv from '@/services/rendezvous.service'
 import type * as ServiceStock from '@/services/stock.service'
@@ -39,6 +40,73 @@ vi.mock('@/services/commandes.service', async (original) => ({
       annulee: 0,
       retournee: 0,
     }),
+  ),
+}))
+vi.mock('@/services/tableauDeBord.service', () => ({
+  chargerTableauDeBord: vi.fn((du: string, au: string) =>
+    Promise.resolve({
+      du,
+      au,
+      precedente: { du, au },
+      ventes: {
+        ca_fcfa: 35500,
+        nombre: 4,
+        panier_moyen_fcfa: 8875,
+        ca_precedent_fcfa: 9500,
+        nombre_precedent: 1,
+        encaisse_fcfa: 19000,
+        a_encaisser_fcfa: 35500,
+      },
+      serie: [
+        { jour: du, ca_fcfa: 5000, nombre: 1 },
+        { jour: au, ca_fcfa: 30500, nombre: 3 },
+      ],
+      commandes_par_statut: { nouvelle: 1 },
+      par_ville: [{ ville: 'Douala', nombre: 2, ca_fcfa: 14500 }],
+      produits: [],
+      clientes: { actives: 3, nouvelles: 2, recurrentes: 2, meilleures: [] },
+      alertes: {
+        seuil_heures: 12,
+        commandes_en_attente: [],
+        expirations_proches: 0,
+        a_expedier: 4,
+        en_cours_de_livraison: 0,
+      },
+      stock: {
+        epuises: 0,
+        bientot_epuises: 0,
+        unites_disponibles: 10,
+        valeur_fcfa: null,
+        articles_sans_cout: 7,
+      },
+      rendez_vous: {
+        aujourdhui: 0,
+        sept_jours: 0,
+        a_confirmer: 2,
+        periode_termines: 0,
+        periode_absentes: 0,
+        periode_ca_fcfa: 0,
+      },
+    }),
+  ),
+}))
+vi.mock('@/services/catalogueAdmin.service', async (original) => ({
+  ...(await original<typeof ServiceCatalogueAdmin>()),
+  listerProduitsAdmin: vi.fn(() =>
+    Promise.resolve([
+      {
+        id: 'p1',
+        nom: 'Lace Glue',
+        categorie: 'Pose de perruque',
+        type: 'produit',
+        prixFcfa: 9500,
+        publie: true,
+        description: '',
+        seuilAlerte: 5,
+        delaiApproJours: null,
+        stockSecuriteJours: null,
+      },
+    ]),
   ),
 }))
 vi.mock('@/services/rendezvous.service', async (original) => ({
@@ -147,9 +215,29 @@ describe('routes', () => {
       profil: { id: 'u1', nom: 'Awa', role: 'ventes' },
     })
     expect(await screen.findByRole('heading', { name: 'Bonjour Awa' })).toBeInTheDocument()
-    expect(await screen.findByText('À confirmer')).toBeInTheDocument()
-    expect(await screen.findByText('Rendez-vous à confirmer')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Ventes par ville' })).toBeInTheDocument()
+    expect(await screen.findByText('35 500 FCFA')).toBeInTheDocument()
+    expect(screen.getByText('+274 %')).toBeInTheDocument()
     expect(screen.queryByText('Stock à surveiller')).not.toBeInTheDocument()
+  })
+
+  it('réserve le catalogue à l’administration', async () => {
+    rendre('/admin/catalogue', {
+      statut: 'connecte',
+      session: sessionFactice,
+      profil: { id: 'u1', nom: 'Awa', role: 'ventes' },
+    })
+    expect(await screen.findByText("Votre compte n'a pas accès à cet espace.")).toBeInTheDocument()
+  })
+
+  it('ouvre le catalogue à la propriétaire', async () => {
+    rendre('/admin/catalogue', {
+      statut: 'connecte',
+      session: sessionFactice,
+      profil: { id: 'u3', nom: 'Grace', role: 'owner' },
+    })
+    expect(await screen.findByRole('heading', { name: 'Catalogue' })).toBeInTheDocument()
+    expect(await screen.findByText('9 500 FCFA')).toBeInTheDocument()
   })
 
   it('montre les alertes de stock au rôle stock', async () => {
