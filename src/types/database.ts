@@ -578,6 +578,45 @@ export type Database = {
           },
         ]
       }
+      deverrouillages_stock: {
+        Row: {
+          auteur_id: string | null
+          created_at: string
+          id: number
+          motif: string
+          variante_id: string
+        }
+        Insert: {
+          auteur_id?: string | null
+          created_at?: string
+          id?: never
+          motif: string
+          variante_id: string
+        }
+        Update: {
+          auteur_id?: string | null
+          created_at?: string
+          id?: never
+          motif?: string
+          variante_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deverrouillages_stock_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "variantes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deverrouillages_stock_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["variante_id"]
+          },
+        ]
+      }
       disponibilites_services: {
         Row: {
           actif: boolean
@@ -818,6 +857,8 @@ export type Database = {
           emplacement_id: number
           id: number
           motif: string | null
+          physique_apres: number | null
+          physique_avant: number | null
           reference_id: string | null
           reference_type: string | null
           type: string
@@ -832,6 +873,8 @@ export type Database = {
           emplacement_id: number
           id?: never
           motif?: string | null
+          physique_apres?: number | null
+          physique_avant?: number | null
           reference_id?: string | null
           reference_type?: string | null
           type: string
@@ -846,6 +889,8 @@ export type Database = {
           emplacement_id?: number
           id?: never
           motif?: string | null
+          physique_apres?: number | null
+          physique_avant?: number | null
           reference_id?: string | null
           reference_type?: string | null
           type?: string
@@ -1473,6 +1518,42 @@ export type Database = {
           },
         ]
       }
+      verrous_stock: {
+        Row: {
+          modifiable_jusqu_a: string
+          modifie_at: string
+          modifie_par: string | null
+          variante_id: string
+        }
+        Insert: {
+          modifiable_jusqu_a: string
+          modifie_at: string
+          modifie_par?: string | null
+          variante_id: string
+        }
+        Update: {
+          modifiable_jusqu_a?: string
+          modifie_at?: string
+          modifie_par?: string | null
+          variante_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verrous_stock_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: true
+            referencedRelation: "variantes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verrous_stock_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: true
+            referencedRelation: "vue_stock"
+            referencedColumns: ["variante_id"]
+          },
+        ]
+      }
       villes: {
         Row: {
           actif: boolean
@@ -1525,26 +1606,54 @@ export type Database = {
       vue_stock: {
         Row: {
           categorie: string | null
+          categorie_id: string | null
           delai_appro_jours: number | null
           disponible: number | null
           libelle: string | null
           mis_a_jour_le: string | null
+          modifiable_jusqu_a: string | null
+          modifie_at: string | null
+          modifie_par: string | null
           physique: number | null
+          prix_fcfa: number | null
           produit: string | null
           produit_id: string | null
           publie: boolean | null
           reserve: number | null
+          secondes_restantes: number | null
           seuil_alerte: number | null
           sku: string | null
           slug: string | null
           statut: string | null
           stock_securite_jours: number | null
           variante_id: string | null
+          vendus: number | null
+          vendus_30j: number | null
+          verrouille: boolean | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "produits_categorie_id_fkey"
+            columns: ["categorie_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
+      ajouter_format: { Args: { p: Json }; Returns: string }
+      ajuster_stock: {
+        Args: {
+          p_cle_idempotence: string
+          p_confirme?: boolean
+          p_delta: number
+          p_motif: string
+          p_variante_id: string
+        }
+        Returns: Json
+      }
       alertes_a_prevenir: { Args: never; Returns: Json }
       analyse_produits: { Args: never; Returns: Json }
       annoter_cliente: {
@@ -1589,6 +1698,7 @@ export type Database = {
         Returns: number
       }
       creer_commande: { Args: { p_commande: Json }; Returns: Json }
+      creer_produit: { Args: { p: Json }; Returns: string }
       creneaux_disponibles: {
         Args: { p_au: string; p_du: string; p_service_id: string }
         Returns: string[]
@@ -1613,6 +1723,10 @@ export type Database = {
           p_telephone: string
           p_variante_id: string
         }
+        Returns: string
+      }
+      deverrouiller_stock: {
+        Args: { p_motif: string; p_variante_id: string }
         Returns: string
       }
       disponibilite_variantes: {
@@ -1672,6 +1786,7 @@ export type Database = {
       marquer_rappel_envoye: { Args: { p_id: string }; Returns: undefined }
       mes_notifications: { Args: { p_limite?: number }; Returns: Json }
       message_whatsapp_commande: { Args: { p_id: string }; Returns: string }
+      modifier_article: { Args: { p: Json }; Returns: undefined }
       rappels_a_envoyer: { Args: never; Returns: Json }
       receptionner: { Args: { p_reception: Json }; Returns: string }
       regler_alertes_stock: {
@@ -1711,6 +1826,7 @@ export type Database = {
         Returns: Json
       }
       tableau_de_bord: { Args: { p_au: string; p_du: string }; Returns: Json }
+      tableau_stock: { Args: never; Returns: Json }
     }
     Enums: {
       [_ in never]: never

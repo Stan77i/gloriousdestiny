@@ -311,12 +311,12 @@ describe('routes', () => {
   })
 
   it('ouvre le module stock au rôle stock', async () => {
-    rendre('/admin/stock', {
+    rendre('/admin/stock?vue=inventaire', {
       statut: 'connecte',
       session: sessionFactice,
       profil: { id: 'u2', nom: 'Bintou', role: 'stock' },
     })
     expect(await screen.findByRole('heading', { level: 1, name: 'Stock' })).toBeInTheDocument()
-    expect(await screen.findByText('GLUE-STD')).toBeInTheDocument()
+    expect(await screen.findByText(/GLUE-STD/)).toBeInTheDocument()
   })
 })

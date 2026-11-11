@@ -24,11 +24,27 @@ export type LigneStock = {
   disponible: number
   statut: StatutStock
   misAJourLe: string | null
+  categorieId: string
+  prix: number
+  /** Ventes nettes des retours (mouvements « vente » à l'expédition). */
+  vendus: number
+  vendus30j: number
+  /** Verrou : calculé par le serveur (5 minutes après la dernière modification manuelle). */
+  modifieLe: string | null
+  modifiePar: string | null
+  modifiableJusqua: string | null
+  verrouille: boolean
+  secondesRestantes: number
 }
 
 export async function listerStock(): Promise<LigneStock[]> {
   const { data, error } = await supabase().from('vue_stock').select('*').order('produit')
   if (error) throw versErreurApp(error)
+  const auteurs = [...new Set(data.map((l) => l.modifie_par).filter((x): x is string => !!x))]
+  const profils = auteurs.length
+    ? await supabase().from('profiles').select('id, nom').in('id', auteurs)
+    : { data: [] as { id: string; nom: string }[] }
+  const nom = new Map((profils.data ?? []).map((p) => [p.id, p.nom]))
   return data.map((l) => ({
     varianteId: l.variante_id ?? '',
     produitId: l.produit_id ?? '',
@@ -45,7 +61,114 @@ export async function listerStock(): Promise<LigneStock[]> {
     disponible: l.disponible ?? 0,
     statut: (l.statut ?? 'epuise') as StatutStock,
     misAJourLe: l.mis_a_jour_le,
+    categorieId: l.categorie_id ?? '',
+    prix: l.prix_fcfa ?? 0,
+    vendus: l.vendus ?? 0,
+    vendus30j: l.vendus_30j ?? 0,
+    modifieLe: l.modifie_at,
+    modifiePar: l.modifie_par ? (nom.get(l.modifie_par) ?? 'Compte inconnu') : null,
+    modifiableJusqua: l.modifiable_jusqu_a,
+    verrouille: l.verrouille ?? false,
+    secondesRestantes: l.secondes_restantes ?? 0,
   }))
+}
+
+export type Categorie = {
+  id: string
+  nom: string
+  type: 'perruque' | 'cils' | 'produit' | 'service'
+}
+
+export async function listerCategories(): Promise<Categorie[]> {
+  const { data, error } = await supabase()
+    .from('categories')
+    .select('id, nom, type')
+    .neq('type', 'service')
+    .order('ordre')
+  if (error) throw versErreurApp(error)
+  return data as Categorie[]
+}
+
+export type Deverrouillage = { id: number; motif: string; le: string; auteur: string | null }
+
+export async function listerDeverrouillages(varianteId: string): Promise<Deverrouillage[]> {
+  const { data, error } = await supabase()
+    .from('deverrouillages_stock')
+    .select('id, motif, created_at, auteur_id')
+    .eq('variante_id', varianteId)
+    .order('created_at', { ascending: false })
+    .limit(20)
+  if (error) throw versErreurApp(error)
+  const auteurs = [...new Set(data.map((d) => d.auteur_id).filter((x): x is string => !!x))]
+  const profils = auteurs.length
+    ? await supabase().from('profiles').select('id, nom').in('id', auteurs)
+    : { data: [] as { id: string; nom: string }[] }
+  const nom = new Map((profils.data ?? []).map((p) => [p.id, p.nom]))
+  return data.map((d) => ({
+    id: d.id,
+    motif: d.motif,
+    le: d.created_at,
+    auteur: d.auteur_id ? (nom.get(d.auteur_id) ?? null) : null,
+  }))
+}
+
+type LigneTableau = {
+  id: number
+  article: string
+  quantite: number
+  physique_avant?: number | null
+  physique_apres: number | null
+  created_at: string
+  auteur: string | null
+  motif: string | null
+  type?: string
+}
+
+export type TableauStock = {
+  articles: number
+  disponibles: number
+  stockFaible: number
+  ruptures: number
+  physiqueTotal: number
+  reserveTotal: number
+  dernieresEntrees: LigneTableau[]
+  dernieresCorrections: LigneTableau[]
+  plusVendus: { variante_id: string; article: string; quantite: number }[]
+  dormants: {
+    variante_id: string
+    article: string
+    physique: number
+    derniere_vente: string | null
+  }[]
+}
+
+export async function chargerTableauStock(): Promise<TableauStock> {
+  const { data, error } = await supabase().rpc('tableau_stock')
+  if (error) throw versErreurApp(error)
+  const t = data as {
+    articles: number
+    disponibles: number
+    stock_faible: number
+    ruptures: number
+    physique_total: number
+    reserve_total: number
+    dernieres_entrees: LigneTableau[]
+    dernieres_corrections: LigneTableau[]
+    plus_vendus: TableauStock['plusVendus']
+    dormants: TableauStock['dormants']
+  }
+  return {
+    articles: t.articles,
+    disponibles: t.disponibles,
+    stockFaible: t.stock_faible,
+    ruptures: t.ruptures,
+    physiqueTotal: t.physique_total,
+    reserveTotal: t.reserve_total,
+    dernieresEntrees: t.dernieres_entrees,
+    dernieresCorrections: t.dernieres_corrections,
+    plusVendus: t.plus_vendus,
+    dormants: t.dormants,
+  }
 }
 
 export type TypeMouvement =
@@ -72,6 +195,8 @@ export type Mouvement = {
   libelle: string
   auteur: string | null
   commande: string | null
+  avant: number | null
+  apres: number | null
 }
 
 type LigneMouvement = {
@@ -84,25 +209,34 @@ type LigneMouvement = {
   reference_id: string | null
   created_at: string
   auteur_id: string | null
+  physique_avant: number | null
+  physique_apres: number | null
   variante: { libelle: string; produit: { nom: string } }
 }
 
-/** Journal des mouvements (le plus récent d'abord), filtrable par variante et par type. */
+/** Journal des mouvements (le plus récent d'abord), filtrable par article, type, catégorie et période. */
 export async function listerMouvements(filtre: {
   varianteId?: string | null
   type?: TypeMouvement | null
+  categorieId?: string | null
+  du?: string | null
+  au?: string | null
   limite?: number
 }): Promise<Mouvement[]> {
   let requete = supabase()
     .from('mouvements_stock')
     .select(
-      'id, type, delta_physique, delta_reserve, motif, reference_type, reference_id, created_at, auteur_id, variante:variantes!inner(libelle, produit:produits!inner(nom))',
+      'id, type, delta_physique, delta_reserve, motif, reference_type, reference_id, created_at, auteur_id, physique_avant, physique_apres, variante:variantes!inner(libelle, produit:produits!inner(nom, categorie_id))',
     )
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
     .limit(filtre.limite ?? 150)
   if (filtre.varianteId) requete = requete.eq('variante_id', filtre.varianteId)
   if (filtre.type) requete = requete.eq('type', filtre.type)
+  if (filtre.categorieId) requete = requete.eq('variante.produit.categorie_id', filtre.categorieId)
+  // Période en heure du salon (UTC+1, sans heure d'été) : du 00:00 au 23:59:59 inclus.
+  if (filtre.du) requete = requete.gte('created_at', `${filtre.du}T00:00:00+01:00`)
+  if (filtre.au) requete = requete.lte('created_at', `${filtre.au}T23:59:59.999+01:00`)
   const { data, error } = await requete.overrideTypes<LigneMouvement[], { merge: false }>()
   if (error) throw versErreurApp(error)
 
@@ -139,6 +273,8 @@ export async function listerMouvements(filtre: {
     libelle: m.variante.libelle,
     auteur: m.auteur_id ? (nomAuteur.get(m.auteur_id) ?? null) : null,
     commande: m.reference_id ? (refCommande.get(m.reference_id) ?? null) : null,
+    avant: m.physique_avant,
+    apres: m.physique_apres,
   }))
 }
 
@@ -214,7 +350,104 @@ export async function listerReceptions(): Promise<Reception[]> {
   }))
 }
 
+export type NouveauProduit = {
+  nom: string
+  categorieId: string | null
+  nouvelleCategorie: string
+  typeCategorie: 'perruque' | 'cils' | 'produit'
+  unite: string
+  prix: number
+  seuil: number
+  stockInitial: number
+  publie: boolean
+  description: string
+  cle: string
+}
+
 export const operationsStock = {
+  async ajuster(
+    varianteId: string,
+    delta: number,
+    motif: string,
+    cle: string,
+    confirme: boolean,
+  ): Promise<void> {
+    const { error } = await supabase().rpc('ajuster_stock', {
+      p_variante_id: varianteId,
+      p_delta: delta,
+      p_motif: motif,
+      p_cle_idempotence: cle,
+      p_confirme: confirme,
+    })
+    if (error) throw versErreurApp(error)
+  },
+  async deverrouiller(varianteId: string, motif: string): Promise<void> {
+    const { error } = await supabase().rpc('deverrouiller_stock', {
+      p_variante_id: varianteId,
+      p_motif: motif,
+    })
+    if (error) throw versErreurApp(error)
+  },
+  async creerProduit(n: NouveauProduit): Promise<string> {
+    const { data, error } = await supabase().rpc('creer_produit', {
+      p: {
+        nom: n.nom,
+        categorie_id: n.categorieId,
+        nouvelle_categorie: n.nouvelleCategorie,
+        type_categorie: n.typeCategorie,
+        unite: n.unite,
+        prix_fcfa: n.prix,
+        seuil_alerte: n.seuil,
+        stock_initial: n.stockInitial,
+        publie: n.publie,
+        description: n.description,
+        cle_idempotence: n.cle,
+      },
+    })
+    if (error) throw versErreurApp(error)
+    return data
+  },
+  async ajouterFormat(f: {
+    produitId: string
+    unite: string
+    prix: number | null
+    stockInitial: number
+    cle: string
+  }): Promise<string> {
+    const { data, error } = await supabase().rpc('ajouter_format', {
+      p: {
+        produit_id: f.produitId,
+        unite: f.unite,
+        prix_fcfa: f.prix,
+        stock_initial: f.stockInitial,
+        cle_idempotence: f.cle,
+      },
+    })
+    if (error) throw versErreurApp(error)
+    return data
+  },
+  async modifierArticle(a: {
+    varianteId: string
+    nom: string
+    categorieId: string | null
+    nouvelleCategorie: string
+    typeCategorie: 'perruque' | 'cils' | 'produit'
+    unite: string
+    seuil: number
+  }): Promise<void> {
+    const { error } = await supabase().rpc('modifier_article', {
+      p: {
+        variante_id: a.varianteId,
+        nom: a.nom,
+        categorie_id: a.categorieId,
+        nouvelle_categorie: a.nouvelleCategorie,
+        type_categorie: a.typeCategorie,
+        unite: a.unite,
+        seuil_alerte: a.seuil,
+      },
+    })
+    if (error) throw versErreurApp(error)
+  },
   async receptionner(r: {
     cle: string
     fournisseurId: string | null

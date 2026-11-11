@@ -3,6 +3,7 @@ import {
   BellRing,
   Boxes,
   ClipboardCheck,
+  Lock,
   PackagePlus,
   PackageX,
   Pencil,
@@ -14,7 +15,7 @@ import { Link, useSearchParams } from 'react-router'
 import { Badge } from '@/components/ui/Badge'
 import { Bouton, BoutonIcone } from '@/components/ui/Bouton'
 import { Squelette } from '@/components/ui/Chargeur'
-import { Selection } from '@/components/ui/Champs'
+import { Saisie, Selection } from '@/components/ui/Champs'
 import { EtatErreur, EtatVide } from '@/components/ui/Etats'
 import { Onglets } from '@/components/ui/Navigation'
 import { Panneau, TuileChiffre } from '@/components/ui/Panneau'
@@ -27,7 +28,11 @@ import {
   ModalePerte,
   ModaleReception,
 } from '@/features/stock-admin/ModalesStock'
+import { FicheArticle } from '@/features/stock-admin/FicheArticle'
+import { ModaleNouveauProduit } from '@/features/stock-admin/ModaleNouveauProduit'
+import { VueTableauStock } from '@/features/stock-admin/VueTableauStock'
 import {
+  useCategories,
   useFournisseurs,
   useMouvements,
   useReceptions,
@@ -40,13 +45,15 @@ import { formaterDate, formaterDateHeure } from '@/lib/format/date'
 import { formaterFcfa } from '@/lib/format/montant'
 import type { Fournisseur, LigneStock, Mouvement, TypeMouvement } from '@/services/stock.service'
 
-type Vue = 'inventaire' | 'mouvements' | 'receptions' | 'fournisseurs'
-const VUES: Vue[] = ['inventaire', 'mouvements', 'receptions', 'fournisseurs']
+type Vue = 'tableau' | 'inventaire' | 'mouvements' | 'receptions' | 'fournisseurs'
+const VUES: Vue[] = ['tableau', 'inventaire', 'mouvements', 'receptions', 'fournisseurs']
 
 type ModaleOuverte =
   | { type: 'perte' | 'inventaire' | 'alertes'; ligne: LigneStock }
   | { type: 'reception'; initiale?: string }
   | { type: 'fournisseur'; fournisseur: Fournisseur | null }
+  | { type: 'fiche'; varianteId: string }
+  | { type: 'nouveau' }
   | null
 
 const nomArticle = (l: { produit: string; libelle: string }) =>
@@ -96,24 +103,42 @@ function VueInventaire({
   ouvrir: (m: ModaleOuverte) => void
 }) {
   const [filtre, setFiltre] = useState<'tous' | 'alertes'>('tous')
+  const [recherche, setRecherche] = useState('')
+  const [categorie, setCategorie] = useState('')
+  const categories = useCategories()
   const bas = stock.filter((l) => l.statut === 'bientot_epuise').length
   const epuises = stock.filter((l) => l.statut === 'epuise').length
   const unites = stock.reduce((s, l) => s + l.disponible, 0)
   const reserves = stock.reduce((s, l) => s + l.reserve, 0)
-  const lignes = filtre === 'alertes' ? stock.filter((l) => l.statut !== 'disponible') : stock
+  const terme = recherche.trim().toLowerCase()
+  const lignes = stock.filter(
+    (l) =>
+      (filtre === 'tous' || l.statut !== 'disponible') &&
+      (categorie === '' || l.categorieId === categorie) &&
+      (terme === '' || `${l.produit} ${l.libelle} ${l.sku}`.toLowerCase().includes(terme)),
+  )
 
   const colonnes: Colonne<LigneStock>[] = [
     {
       id: 'article',
       entete: 'Article',
       cellule: (l) => (
-        <span>
-          <span className="block text-encre">{nomArticle(l)}</span>
+        <button
+          type="button"
+          onClick={() => {
+            ouvrir({ type: 'fiche', varianteId: l.varianteId })
+          }}
+          className="group text-left"
+        >
+          <span className="flex items-center gap-1.5 text-encre group-hover:text-or-texte [&_svg]:size-3.5">
+            {nomArticle(l)}
+            {l.verrouille && <Lock aria-label="verrouillé" className="text-encre-3" />}
+          </span>
           <span className="chiffres text-[13px] font-normal text-encre-3">
-            {l.sku}
+            {l.categorie} · {l.sku}
             {!l.publie && ' · non publié'}
           </span>
-        </span>
+        </button>
       ),
     },
     {
@@ -151,6 +176,15 @@ function VueInventaire({
       cellule: (l) => (
         <span className="flex gap-1 sm:justify-end">
           <BoutonIcone
+            libelle={`Gérer ${l.produit}`}
+            variante="fantome"
+            onClick={() => {
+              ouvrir({ type: 'fiche', varianteId: l.varianteId })
+            }}
+          >
+            <Pencil />
+          </BoutonIcone>
+          <BoutonIcone
             libelle={`Réception de ${l.produit}`}
             variante="fantome"
             onClick={() => {
@@ -162,7 +196,7 @@ function VueInventaire({
           <BoutonIcone
             libelle={`Perte sur ${l.produit}`}
             variante="fantome"
-            disabled={l.physique - l.reserve <= 0}
+            disabled={l.verrouille || l.physique - l.reserve <= 0}
             onClick={() => {
               ouvrir({ type: 'perte', ligne: l })
             }}
@@ -170,8 +204,9 @@ function VueInventaire({
             <Trash2 />
           </BoutonIcone>
           <BoutonIcone
-            libelle={`Inventaire de ${l.produit}`}
+            libelle={`Comptage de ${l.produit}`}
             variante="fantome"
+            disabled={l.verrouille}
             onClick={() => {
               ouvrir({ type: 'inventaire', ligne: l })
             }}
@@ -249,14 +284,51 @@ function VueInventaire({
             </button>
           ))}
         </div>
-        <Bouton
-          icone={<PackagePlus />}
-          onClick={() => {
-            ouvrir({ type: 'reception' })
+        <div className="flex flex-wrap gap-2">
+          <Bouton
+            variante="secondaire"
+            icone={<Plus />}
+            onClick={() => {
+              ouvrir({ type: 'nouveau' })
+            }}
+          >
+            Nouveau produit
+          </Bouton>
+          <Bouton
+            icone={<PackagePlus />}
+            onClick={() => {
+              ouvrir({ type: 'reception' })
+            }}
+          >
+            Nouvelle réception
+          </Bouton>
+        </div>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
+        <Saisie
+          type="search"
+          aria-label="Rechercher un article"
+          placeholder="Rechercher un article…"
+          value={recherche}
+          onChange={(e) => {
+            setRecherche(e.target.value)
+          }}
+          className="min-h-12 rounded-champ"
+        />
+        <Selection
+          aria-label="Filtrer par catégorie"
+          value={categorie}
+          onChange={(e) => {
+            setCategorie(e.target.value)
           }}
         >
-          Nouvelle réception
-        </Bouton>
+          <option value="">Toutes les catégories</option>
+          {(categories.data ?? []).map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.nom}
+            </option>
+          ))}
+        </Selection>
       </div>
 
       <Tableau
@@ -278,7 +350,8 @@ function VueInventaire({
       />
       <p className="text-[13px] text-encre-3">
         Disponible = en rayon − réservé pour des commandes en cours. Le trait sur la jauge marque le
-        seuil d’alerte.
+        seuil d’alerte. Touchez un article pour le modifier : une quantité modifiée reste modifiable
+        5 minutes, puis se verrouille (déverrouillage avec motif).
       </p>
     </div>
   )
@@ -312,7 +385,11 @@ function VueMouvements({ stock }: { stock: LigneStock[] }) {
   const varianteId = params.get('article')
   const brut = params.get('type')
   const type = TYPES_FILTRABLES.includes(brut as TypeMouvement) ? (brut as TypeMouvement) : null
-  const mouvements = useMouvements({ varianteId, type })
+  const categorieId = params.get('categorie')
+  const du = params.get('du')
+  const au = params.get('au')
+  const categories = useCategories()
+  const mouvements = useMouvements({ varianteId, type, categorieId, du, au })
 
   function maj(cle: string, valeur: string) {
     const suivants = new URLSearchParams(params)
@@ -346,9 +423,20 @@ function VueMouvements({ stock }: { stock: LigneStock[] }) {
       cellule: (m) => <Delta valeur={m.deltaPhysique} />,
     },
     {
+      id: 'avant-apres',
+      entete: 'Avant → après',
+      numerique: true,
+      cellule: (m) => (
+        <span className="chiffres text-[13px] text-encre-2">
+          {m.avant !== null && m.apres !== null ? `${String(m.avant)} → ${String(m.apres)}` : '—'}
+        </span>
+      ),
+    },
+    {
       id: 'reserve',
       entete: 'Réservé',
       numerique: true,
+      secondaire: true,
       cellule: (m) => <Delta valeur={m.deltaReserve} />,
     },
     {
@@ -388,7 +476,7 @@ function VueMouvements({ stock }: { stock: LigneStock[] }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Selection
           aria-label="Filtrer par article"
           value={varianteId ?? ''}
@@ -417,6 +505,42 @@ function VueMouvements({ stock }: { stock: LigneStock[] }) {
             </option>
           ))}
         </Selection>
+        <Selection
+          aria-label="Filtrer par catégorie"
+          value={categorieId ?? ''}
+          onChange={(e) => {
+            maj('categorie', e.target.value)
+          }}
+        >
+          <option value="">Toutes les catégories</option>
+          {(categories.data ?? []).map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.nom}
+            </option>
+          ))}
+        </Selection>
+        <label className="flex flex-col gap-1 text-[12px] text-encre-3">
+          Du
+          <Saisie
+            type="date"
+            value={du ?? ''}
+            onChange={(e) => {
+              maj('du', e.target.value)
+            }}
+            className="min-h-12 rounded-champ"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-[12px] text-encre-3">
+          Au
+          <Saisie
+            type="date"
+            value={au ?? ''}
+            onChange={(e) => {
+              maj('au', e.target.value)
+            }}
+            className="min-h-12 rounded-champ"
+          />
+        </label>
       </div>
       {mouvements.isError ? (
         <EtatErreur
@@ -441,8 +565,9 @@ function VueMouvements({ stock }: { stock: LigneStock[] }) {
         />
       )}
       <p className="text-[13px] text-encre-3">
-        Le journal est inaltérable : chaque quantité modifiée y laisse une ligne. Les 150 dernières
-        opérations sont affichées.
+        Le journal est inaltérable : chaque quantité modifiée y laisse une ligne, avec la quantité
+        avant et après, l’auteur et le motif. Une erreur se corrige par une nouvelle opération. Les
+        150 dernières opérations correspondant aux filtres sont affichées.
       </p>
     </div>
   )
@@ -601,7 +726,7 @@ export function PageAdminStock() {
   useTitreDocument('Stock')
   const [params, setParams] = useSearchParams()
   const brut = params.get('vue')
-  const vue: Vue = VUES.includes(brut as Vue) ? (brut as Vue) : 'inventaire'
+  const vue: Vue = VUES.includes(brut as Vue) ? (brut as Vue) : 'tableau'
   const stock = useStock()
   const [modale, setModale] = useState<ModaleOuverte>(null)
   const fermer = () => {
@@ -613,8 +738,9 @@ export function PageAdminStock() {
   )
 
   const onglets = [
+    { id: 'tableau', libelle: 'Tableau de bord' },
     { id: 'inventaire', libelle: 'Inventaire', ...(alertes ? { compteur: alertes } : {}) },
-    { id: 'mouvements', libelle: 'Mouvements' },
+    { id: 'mouvements', libelle: 'Historique' },
     { id: 'receptions', libelle: 'Réceptions' },
     { id: 'fournisseurs', libelle: 'Fournisseurs' },
   ]
@@ -626,6 +752,12 @@ export function PageAdminStock() {
     />
   ) : stock.isPending ? (
     <Chargement />
+  ) : vue === 'tableau' ? (
+    <VueTableauStock
+      ouvrirArticle={(id) => {
+        setModale({ type: 'fiche', varianteId: id })
+      }}
+    />
   ) : vue === 'inventaire' ? (
     <VueInventaire stock={stock.data} ouvrir={setModale} />
   ) : vue === 'mouvements' ? (
@@ -644,7 +776,7 @@ export function PageAdminStock() {
         onglets={onglets}
         actif={vue}
         onChoisir={(id) => {
-          setParams(id === 'inventaire' ? {} : { vue: id }, { replace: true })
+          setParams(id === 'tableau' ? {} : { vue: id }, { replace: true })
         }}
         panneau={contenu}
       />
@@ -657,6 +789,31 @@ export function PageAdminStock() {
           stock={stock.data}
           {...(modale.initiale ? { initiale: modale.initiale } : {})}
           onFermer={fermer}
+        />
+      )}
+      {modale?.type === 'fiche' && (
+        <FicheArticle
+          varianteId={modale.varianteId}
+          onFermer={fermer}
+          actions={{
+            reception: (id) => {
+              setModale({ type: 'reception', initiale: id })
+            },
+            inventaire: (ligne) => {
+              setModale({ type: 'inventaire', ligne })
+            },
+            perte: (ligne) => {
+              setModale({ type: 'perte', ligne })
+            },
+          }}
+        />
+      )}
+      {modale?.type === 'nouveau' && (
+        <ModaleNouveauProduit
+          onFermer={fermer}
+          onCree={(id) => {
+            setModale({ type: 'fiche', varianteId: id })
+          }}
         />
       )}
       {modale?.type === 'fournisseur' && (

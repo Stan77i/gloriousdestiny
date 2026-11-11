@@ -17,6 +17,10 @@ export type CodeErreur =
   | 'contenu_incomplet'
   | 'consentement_requis'
   | 'trop_de_demandes'
+  | 'stock_verrouille'
+  | 'stock_negatif'
+  | 'sous_reserve'
+  | 'confirmation_requise'
   | 'configuration'
   | 'inconnue'
 
@@ -61,6 +65,12 @@ export const MESSAGES: Record<CodeErreur, string> = {
     'Publication impossible sans l’accord de la cliente : cochez la case une fois son accord obtenu.',
   trop_de_demandes:
     'Vous avez déjà plusieurs demandes en attente pour ce numéro. Nous vous prévenons dès que possible.',
+  stock_verrouille:
+    'Cet article est verrouillé : sa dernière modification date de plus de 5 minutes. Déverrouillez-le en indiquant le motif.',
+  stock_negatif: 'Impossible : le stock deviendrait négatif. Vérifiez la quantité saisie.',
+  sous_reserve:
+    'Impossible : des unités sont réservées par des commandes en cours. Le stock ne peut pas descendre sous ces réservations.',
+  confirmation_requise: 'Baisse importante : confirmez-la avant de l’enregistrer.',
   configuration: "L'application est mal configurée. Contactez l'équipe Glorious Destiny.",
   inconnue: 'Une erreur inattendue est survenue. Réessayez dans un instant.',
 }

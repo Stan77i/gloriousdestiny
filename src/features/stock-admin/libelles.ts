@@ -8,13 +8,13 @@ export const STATUT_STOCK: Record<StatutStock, { libelle: string; ton: TonBadge 
 }
 
 export const TYPE_MOUVEMENT: Record<TypeMouvement, { libelle: string; ton: TonBadge }> = {
-  entree: { libelle: 'Entrée', ton: 'succes' },
+  entree: { libelle: 'Réception', ton: 'succes' },
   reservation: { libelle: 'Réservation', ton: 'or' },
-  annulation_reservation: { libelle: 'Libération', ton: 'neutre' },
+  annulation_reservation: { libelle: 'Annulation', ton: 'neutre' },
   vente: { libelle: 'Vente', ton: 'info' },
   retour: { libelle: 'Retour', ton: 'succes' },
   perte: { libelle: 'Perte', ton: 'danger' },
-  correction: { libelle: 'Inventaire', ton: 'alerte' },
+  correction: { libelle: 'Correction', ton: 'alerte' },
   transfert: { libelle: 'Transfert', ton: 'neutre' },
   livraison: { libelle: 'Livraison', ton: 'neutre' },
 }
