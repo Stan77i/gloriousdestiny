@@ -14,6 +14,7 @@ import { Link, useParams } from 'react-router'
 import { CHEMINS } from '@/app/router/chemins'
 import { useNotifications } from '@/components/feedback/notifications/useNotifications'
 import { Monogramme } from '@/components/produit/Monogramme'
+import { PrixProduit } from '@/components/produit/PrixProduit'
 import { Badge } from '@/components/ui/Badge'
 import { Bouton } from '@/components/ui/Bouton'
 import { Squelette } from '@/components/ui/Chargeur'
@@ -227,14 +228,20 @@ export function PageProduit() {
           {f.accroche && (
             <p className="mt-3 text-[21px] leading-snug font-semibold text-encre-2">{f.accroche}</p>
           )}
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            <p className="text-[26px] font-semibold text-or-texte">{prix}</p>
-            {variante && variante.libelle !== 'Format standard' && (
-              <span className="text-encre-3">· {variante.libelle}</span>
-            )}
-            {statut === 'disponible' && <Badge ton="succes">En stock</Badge>}
-            {statut === 'bientot_epuise' && <Badge ton="alerte">Bientôt épuisé</Badge>}
-            {statut === 'epuise' && <Badge>Épuisé</Badge>}
+          <div className="mt-6 flex flex-col gap-3">
+            <PrixProduit
+              prix={variante?.prix ?? p.prix}
+              promo={variante?.promo ?? null}
+              taille="fiche"
+            />
+            <div className="flex flex-wrap items-center gap-2">
+              {variante && variante.libelle !== 'Format standard' && (
+                <span className="text-[14px] text-encre-3">{variante.libelle}</span>
+              )}
+              {statut === 'disponible' && <Badge ton="succes">En stock</Badge>}
+              {statut === 'bientot_epuise' && <Badge ton="alerte">Plus que quelques pièces</Badge>}
+              {statut === 'epuise' && <Badge>Épuisé</Badge>}
+            </div>
           </div>
           {(f.histoire ?? p.description) && (
             <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-encre-2">
@@ -293,6 +300,11 @@ export function PageProduit() {
                         )}
                       >
                         {formaterFcfa(v.prix)}
+                        {v.promo && (
+                          <span className="ml-1.5 line-through opacity-60">
+                            {formaterFcfa(v.promo.prixBase)}
+                          </span>
+                        )}
                         {st === 'epuise' && ' · épuisé'}
                       </span>
                     </label>

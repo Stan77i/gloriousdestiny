@@ -24,6 +24,7 @@ import {
   useProduitsAdmin,
   useServicesAdmin,
 } from '@/features/catalogue-admin/requetes'
+import { PromotionsProduit } from '@/features/catalogue-admin/Promotions'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterDuree } from '@/lib/format/duree'
@@ -192,6 +193,7 @@ function ModaleProduit({ produit, onFermer }: { produit: ProduitAdmin; onFermer:
             )}
           </Champ>
         </div>
+        <PromotionsProduit produitId={produit.id} prixProduit={produit.prixFcfa} />
       </div>
     </Modale>
   )

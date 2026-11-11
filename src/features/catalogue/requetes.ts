@@ -11,14 +11,21 @@ import { lireParametresPublics } from '@/services/parametres.service'
 /** Requêtes du site public. La disponibilité est relue souvent (stock vivant), le reste est mis en cache. */
 
 export function useProduits() {
-  return useQuery({ queryKey: ['produits'], queryFn: listerProduits, staleTime: 5 * 60_000 })
+  // Relu chaque minute : une promotion qui commence ou expire s'affiche (ou disparaît) seule.
+  return useQuery({
+    queryKey: ['produits'],
+    queryFn: listerProduits,
+    staleTime: 60_000,
+    refetchInterval: 60_000,
+  })
 }
 
 export function useProduit(slug: string) {
   return useQuery({
     queryKey: ['produit', slug],
     queryFn: () => produitParSlug(slug),
-    staleTime: 5 * 60_000,
+    staleTime: 60_000,
+    refetchInterval: 60_000,
   })
 }
 

@@ -29,7 +29,18 @@ export function lireFiche(brute: unknown): FicheProduit {
   return r.success ? r.data : schemaFiche.parse({})
 }
 
-export type Variante = { id: string; sku: string; libelle: string; prix: number }
+/**
+ * Format vendu. `prix` est le prix effectif (promotion comprise, celui que le serveur facture) ;
+ * `promo` n'existe que si une promotion réelle est en cours : `prixBase` est alors le prix du
+ * catalogue, jamais un prix inventé.
+ */
+export type Variante = {
+  id: string
+  sku: string
+  libelle: string
+  prix: number
+  promo: { prixBase: number; reduction: number; fin: string | null } | null
+}
 
 export type Produit = {
   id: string
@@ -77,7 +88,33 @@ type LigneProduit = {
   }[]
 }
 
-function versProduit(l: LigneProduit): Produit {
+type Promo = { prixBase: number; prixPromo: number; reduction: number; fin: string | null }
+
+/** Promotions en cours (calculées par le serveur), par format. Expirées : ignorées ici aussi. */
+async function promotionsEnCours(): Promise<Map<string, Promo>> {
+  const { data, error } = await supabase().rpc('promotions_en_cours')
+  if (error) throw versErreurApp(error)
+  const maintenant = Date.now()
+  // `fin` est nullable en base (promotion sans date de fin), même si le type généré l'ignore.
+  type Ligne = {
+    variante_id: string
+    prix_base: number
+    prix_promo: number
+    reduction: number
+    fin: string | null
+  }
+  const lignes: Ligne[] = data
+  return new Map(
+    lignes
+      .filter((x) => x.fin === null || new Date(x.fin).getTime() > maintenant)
+      .map((x) => [
+        x.variante_id,
+        { prixBase: x.prix_base, prixPromo: x.prix_promo, reduction: x.reduction, fin: x.fin },
+      ]),
+  )
+}
+
+function versProduit(l: LigneProduit, promos: Map<string, Promo>): Produit {
   return {
     id: l.id,
     slug: l.slug,
@@ -90,31 +127,48 @@ function versProduit(l: LigneProduit): Produit {
     creeLe: l.created_at,
     variantes: l.variantes
       .filter((v) => v.actif)
-      .map((v) => ({ id: v.id, sku: v.sku, libelle: v.libelle, prix: v.prix_fcfa ?? l.prix_fcfa }))
+      .map((v) => {
+        const promo = promos.get(v.id)
+        return {
+          id: v.id,
+          sku: v.sku,
+          libelle: v.libelle,
+          prix: promo ? promo.prixPromo : (v.prix_fcfa ?? l.prix_fcfa),
+          promo: promo
+            ? { prixBase: promo.prixBase, reduction: promo.reduction, fin: promo.fin }
+            : null,
+        }
+      })
       // Du plus petit format au plus grand (le prix suit la contenance).
       .sort((a, b) => a.prix - b.prix || a.sku.localeCompare(b.sku)),
   }
 }
 
 export async function listerProduits(): Promise<Produit[]> {
-  const { data, error } = await supabase()
-    .from('produits')
-    .select(CHAMPS_PRODUIT)
-    .order('nom')
-    .overrideTypes<LigneProduit[], { merge: false }>()
+  const [{ data, error }, promos] = await Promise.all([
+    supabase()
+      .from('produits')
+      .select(CHAMPS_PRODUIT)
+      .order('nom')
+      .overrideTypes<LigneProduit[], { merge: false }>(),
+    promotionsEnCours(),
+  ])
   if (error) throw versErreurApp(error)
-  return data.map(versProduit)
+  return data.map((l) => versProduit(l, promos))
 }
 
 export async function produitParSlug(slug: string): Promise<Produit | null> {
-  const { data, error } = await supabase()
-    .from('produits')
-    .select(CHAMPS_PRODUIT)
-    .eq('slug', slug)
-    .maybeSingle()
-    .overrideTypes<LigneProduit | null, { merge: false }>()
+  const [{ data, error }, promos] = await Promise.all([
+    supabase()
+      .from('produits')
+      .select(CHAMPS_PRODUIT)
+      .eq('slug', slug)
+      .maybeSingle()
+      .overrideTypes<LigneProduit | null, { merge: false }>(),
+    promotionsEnCours(),
+  ])
   if (error) throw versErreurApp(error)
-  return data ? versProduit(data) : null
+  return data ? versProduit(data, promos) : null
 }
 
 const STATUTS = new Set<Disponibilite>(['disponible', 'bientot_epuise', 'epuise'])

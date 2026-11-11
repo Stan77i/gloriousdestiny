@@ -1,17 +1,23 @@
 import type { ReactNode } from 'react'
 import { useNotifications } from '@/components/feedback/notifications/useNotifications'
-import { CarteProduit } from '@/components/produit/CarteProduit'
+import { CarteProduit, type Univers } from '@/components/produit/CarteProduit'
+import { PrixProduit } from '@/components/produit/PrixProduit'
 import { Squelette } from '@/components/ui/Chargeur'
 import { EtatErreur } from '@/components/ui/Etats'
 import { usePanier } from '@/features/panier/usePanier'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
-import { formaterFcfa } from '@/lib/format/montant'
 import { TEINTE_TYPE_PRODUIT } from '@/domain/univers'
 import type { Produit } from '@/services/catalogue.service'
 import { lienProduit } from './liens'
 import { useDisponibilites } from './requetes'
 import { SLUG_LA_GAMME, visuelProduit } from './visuels'
 import { cx } from '@/lib/cx'
+
+const UNIVERS_TYPE: Record<Produit['type'], Univers> = {
+  produit: 'soin',
+  accessoire_cils: 'cils',
+  perruque: 'perruque',
+}
 
 /**
  * Grille de produits reliée aux données : prix de la base, disponibilité vivante,
@@ -74,6 +80,9 @@ export function GrilleProduits({
             : variante
               ? 'epuise'
               : undefined
+        // Meilleure réduction réelle parmi les formats (badge de l'image).
+        const reductions = p.variantes.flatMap((v) => (v.promo ? [v.promo.reduction] : []))
+        const reduction = reductions.length > 0 ? Math.max(...reductions) : undefined
         return (
           <li key={p.id} className={cx('h-full', large && 'col-span-full')}>
             <CarteProduit
@@ -86,18 +95,24 @@ export function GrilleProduits({
                     : null
               }
               categorie={p.categorie.nom}
+              accroche={p.fiche.accroche ?? null}
               teinte={TEINTE_TYPE_PRODUIT[p.type]}
+              univers={UNIVERS_TYPE[p.type]}
               detoure={visuel.detoure}
               pleine={large ? visuel.pleine?.grande : visuel.pleine?.petite}
               large={large}
               photo={visuel.photo?.petite}
               prix={
-                plusieurs
-                  ? `Dès ${formaterFcfa(variante?.prix ?? p.prix)}`
-                  : formaterFcfa(variante?.prix ?? p.prix)
+                <PrixProduit
+                  prix={variante?.prix ?? p.prix}
+                  promo={variante?.promo ?? null}
+                  des={plusieurs}
+                />
               }
+              reduction={reduction}
               disponibilite={dispo.isPending ? undefined : (statut ?? 'epuise')}
               vers={lienProduit(p)}
+              choisir={plusieurs}
               {...(variante &&
                 !plusieurs && {
                   onAjouter: () => {

@@ -1158,6 +1158,77 @@ export type Database = {
         }
         Relationships: []
       }
+      promotions: {
+        Row: {
+          actif: boolean
+          created_at: string
+          created_by: string | null
+          debut: string
+          fin: string | null
+          id: string
+          mode: string
+          produit_id: string
+          updated_at: string
+          valeur: number
+          variante_id: string | null
+        }
+        Insert: {
+          actif?: boolean
+          created_at?: string
+          created_by?: string | null
+          debut?: string
+          fin?: string | null
+          id?: string
+          mode: string
+          produit_id: string
+          updated_at?: string
+          valeur: number
+          variante_id?: string | null
+        }
+        Update: {
+          actif?: boolean
+          created_at?: string
+          created_by?: string | null
+          debut?: string
+          fin?: string | null
+          id?: string
+          mode?: string
+          produit_id?: string
+          updated_at?: string
+          valeur?: number
+          variante_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promotions_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "produits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promotions_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["produit_id"]
+          },
+          {
+            foreignKeyName: "promotions_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "variantes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promotions_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["variante_id"]
+          },
+        ]
+      }
       reception_lignes: {
         Row: {
           cout_unitaire_fcfa: number | null
@@ -1725,7 +1796,7 @@ export type Database = {
         }
         Returns: string
       }
-      historique_reglages: { Args: { p_variante_id: string }; Returns: Json }
+      desactiver_promotion: { Args: { p_id: string }; Returns: undefined }
       deverrouiller_stock: {
         Args: { p_motif: string; p_variante_id: string }
         Returns: string
@@ -1763,6 +1834,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      enregistrer_promotion: { Args: { p: Json }; Returns: string }
       entree_stock: {
         Args: {
           p_cle_idempotence: string
@@ -1778,6 +1850,7 @@ export type Database = {
         Args: { p_date: string; p_motif: string }
         Returns: undefined
       }
+      historique_reglages: { Args: { p_variante_id: string }; Returns: Json }
       livrer_commande: { Args: { p_id: string }; Returns: Json }
       marquer_alerte_prevenue: { Args: { p_id: string }; Returns: undefined }
       marquer_notifications_lues: {
@@ -1788,6 +1861,16 @@ export type Database = {
       mes_notifications: { Args: { p_limite?: number }; Returns: Json }
       message_whatsapp_commande: { Args: { p_id: string }; Returns: string }
       modifier_article: { Args: { p: Json }; Returns: undefined }
+      promotions_en_cours: {
+        Args: never
+        Returns: {
+          fin: string
+          prix_base: number
+          prix_promo: number
+          reduction: number
+          variante_id: string
+        }[]
+      }
       rappels_a_envoyer: { Args: never; Returns: Json }
       receptionner: { Args: { p_reception: Json }; Returns: string }
       regler_alertes_stock: {

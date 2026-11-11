@@ -1,8 +1,9 @@
 import { Link } from 'react-router'
 import { CHEMINS } from '@/app/router/chemins'
 import { classesBouton } from '@/components/ui/classesBouton'
-import { EnTetePage } from '@/components/ui/EnTetePage'
-import { EtatVide } from '@/components/ui/Etats'
+import { HeroUnivers } from '@/components/marque/HeroUnivers'
+import { Meches } from '@/components/marque/Meches'
+import { GAMME } from '@/features/catalogue/gamme'
 import { GrilleProduits } from '@/features/catalogue/GrilleProduits'
 import { ListeServices } from '@/features/catalogue/ListeServices'
 import { useProduits } from '@/features/catalogue/requetes'
@@ -15,24 +16,39 @@ export function PagePerruques() {
   const produits = useProduits()
   const perruques = produits.data?.filter((p) => p.type === 'perruque')
   const soins = produits.data?.filter((p) => p.categorie.slug === 'pose-de-perruque')
+  const photo = GAMME.find((p) => p.slug === 'lace-glue')?.photo
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-      <EnTetePage
-        teinte="rose"
-        titre="Perruques"
-        intro="Vente, pose et entretien de perruques, avec les produits professionnels qui font tenir la pose."
+      <HeroUnivers
+        titre="Perruques,"
+        accent="pose parfaite."
+        intro="Lace wigs posées au salon, collées ou sans colle, entretien et remise en forme : avec les produits professionnels qui font tenir la pose."
+        fond="bg-rose"
+        image={
+          photo
+            ? {
+                src: photo.grande,
+                srcSet: `${photo.petite} 800w, ${photo.grande} 1600w`,
+                alt: photo.alt,
+                position: 'object-[60%_35%]',
+              }
+            : null
+        }
+        decor={
+          <Meches className="pointer-events-none absolute inset-y-0 right-0 -z-10 h-full w-48 opacity-70 lg:-right-10 lg:w-64" />
+        }
         actions={
-          <Link
-            to={CHEMINS.rendezVous}
-            className={classesBouton('principal', 'normal', 'no-underline')}
-          >
-            Réserver une pose
-          </Link>
+          <>
+            <Link to={CHEMINS.rendezVous} className={classesBouton('or', 'grand', 'no-underline')}>
+              Réserver une pose
+            </Link>
+            <BoutonWhatsApp libelle="Être conseillée" />
+          </>
         }
       />
 
-      <section aria-labelledby="titre-selection" className="pb-16">
+      <section aria-labelledby="titre-selection" className="py-16">
         <h2 id="titre-selection" className="titre-affiche mb-8 text-[34px] text-encre">
           Notre sélection
         </h2>
@@ -42,14 +58,32 @@ export function PagePerruques() {
           erreur={produits.error}
           onReessayer={() => void produits.refetch()}
           vide={
-            <div className="rounded-panneau border border-filet bg-carte">
-              <EtatVide
-                titre="Notre sélection de perruques arrive en ligne"
-                action={<BoutonWhatsApp libelle="Être conseillée sur WhatsApp" />}
+            <div className="grid gap-6 rounded-panneau bg-carte p-7 shadow-panneau sm:p-10 lg:grid-cols-[1.2fr_1fr] lg:items-center">
+              <div>
+                <p className="text-[22px] font-semibold tracking-[-0.015em] text-encre">
+                  Notre sélection de perruques arrive en ligne.
+                </p>
+                <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-encre-2">
+                  En attendant, décrivez-nous la perruque que vous cherchez : nous vous répondons
+                  sur WhatsApp avec les modèles disponibles.
+                </p>
+                <BoutonWhatsApp libelle="Être conseillée sur WhatsApp" className="mt-6" />
+              </div>
+              <ul
+                aria-label="Ce que nous vous demanderons"
+                className="flex flex-wrap gap-2 lg:justify-end"
               >
-                En attendant, décrivez-nous la perruque que vous cherchez : longueur, texture,
-                couleur. Nous vous répondons sur WhatsApp.
-              </EtatVide>
+                {['Longueur', 'Texture : lisse, ondulée, bouclée', 'Couleur', 'Type de lace'].map(
+                  (c) => (
+                    <li
+                      key={c}
+                      className="rounded-full bg-rose px-4 py-2 text-[14px] font-medium text-encre"
+                    >
+                      {c}
+                    </li>
+                  ),
+                )}
+              </ul>
             </div>
           }
         />

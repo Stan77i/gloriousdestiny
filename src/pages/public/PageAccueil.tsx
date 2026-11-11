@@ -14,6 +14,9 @@ import { HeroLaGamme } from '@/features/catalogue/HeroLaGamme'
 import { SLUG_LA_GAMME } from '@/features/catalogue/visuels'
 import { useParametresPublics, useProduits, useServices } from '@/features/catalogue/requetes'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
+import { OffresDuMoment, RegardCils } from '@/features/accueil/SectionsBeaute'
+import { Univers } from '@/features/accueil/Univers'
+import { Meches } from '@/components/marque/Meches'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { formaterDuree } from '@/lib/format/duree'
 import { cx } from '@/lib/cx'
@@ -168,13 +171,7 @@ function PresenceAccueil() {
     >
       <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
         <div>
-          <p className="text-[13px] font-semibold tracking-[0.16em] text-or-texte uppercase">
-            Notre présence dans le monde
-          </p>
-          <h2
-            id="titre-presence"
-            className="titre-affiche mt-3 text-[40px] text-encre sm:text-[52px]"
-          >
+          <h2 id="titre-presence" className="titre-affiche text-[40px] text-encre sm:text-[52px]">
             De Douala à Montréal
           </h2>
           <p className="mt-4 max-w-md text-[16px] leading-relaxed text-encre-2">
@@ -211,8 +208,10 @@ export function PageAccueil() {
   return (
     <>
       {/* Premier écran */}
-      <section className="mx-auto grid max-w-7xl gap-8 px-4 pt-8 pb-16 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-[1fr_0.95fr] lg:items-center lg:gap-14 lg:px-10 lg:py-10">
-        <div>
+      <section className="relative mx-auto grid max-w-7xl gap-8 px-4 pt-8 pb-16 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-[1fr_0.95fr] lg:items-center lg:gap-14 lg:px-10 lg:py-10">
+        {/* Mèches d'or : la chevelure qui passe du texte à la photo. */}
+        <Meches className="pointer-events-none absolute top-0 right-0 -z-0 h-[420px] w-40 opacity-50 lg:top-[4%] lg:right-auto lg:left-[41%] lg:h-[92%] lg:w-56 lg:opacity-90" />
+        <div className="relative z-10">
           <h1 className="titre-affiche text-[56px] text-encre sm:text-[84px] xl:text-[96px]">
             Votre pose,
             <br />
@@ -239,7 +238,7 @@ export function PageAccueil() {
           </div>
         </div>
         {vedette && (
-          <figure className="relative h-[460px] overflow-hidden rounded-panneau sm:h-[560px] lg:h-[min(720px,calc(100svh-8rem))]">
+          <figure className="relative z-[1] h-[460px] overflow-hidden rounded-panneau sm:h-[560px] lg:h-[min(720px,calc(100svh-8rem))]">
             <img
               src={vedette.grande}
               srcSet={`${vedette.petite} 800w, ${vedette.grande} 1600w`}
@@ -261,6 +260,9 @@ export function PageAccueil() {
           </figure>
         )}
       </section>
+
+      <Univers produits={produits.data} />
+      <OffresDuMoment produits={produits.data} onReessayer={() => void produits.refetch()} />
 
       {/* Le rituel de pose */}
       <section aria-labelledby="titre-rituel">
@@ -302,6 +304,8 @@ export function PageAccueil() {
           />
         </div>
       </section>
+
+      <RegardCils produits={produits.data} onReessayer={() => void produits.refetch()} />
 
       <Services />
 

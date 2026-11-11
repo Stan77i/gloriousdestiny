@@ -22,10 +22,7 @@ export function PagePresence() {
   return (
     <>
       <section className="mx-auto max-w-7xl px-4 pt-10 pb-8 sm:px-6 lg:px-10 lg:pt-14">
-        <p className="text-[13px] font-semibold tracking-[0.16em] text-or-texte uppercase">
-          D’Afrique au Canada
-        </p>
-        <h1 className="titre-affiche mt-3 max-w-3xl text-[44px] leading-[1.02] text-encre sm:text-[64px]">
+        <h1 className="titre-affiche max-w-3xl text-[44px] leading-[1.02] text-encre sm:text-[64px]">
           Notre présence dans le monde
         </h1>
         <VeineOr className="mt-5 max-w-[260px]" />

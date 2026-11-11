@@ -248,6 +248,138 @@
   .veine-trace-retard {
     animation-delay: 0.9s;
   }
+  /* Reflet d'or : une lumière traverse le visuel d'une carte produit au survol. */
+  .reflet-or {
+    background: linear-gradient(
+      112deg,
+      transparent 38%,
+      rgb(255 236 196 / 0.5) 50%,
+      transparent 62%
+    );
+    transform: translateX(-130%);
+    transition: transform 1.1s var(--ease-sortie);
+  }
+  .group:hover .reflet-or {
+    transform: translateX(130%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reflet-or {
+      display: none;
+    }
+  }
+  /* Mèches (cheveux au fil d'or) : tracé progressif, puis ondulation douce et décalée. */
+  .meche {
+    transform-box: view-box;
+    transform-origin: 300px 0;
+    animation: meche-ondule 8s ease-in-out infinite alternate;
+  }
+  .meche-trace {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: trace-or 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .meches-pause .meche,
+  .regard-pause .regard-paupiere {
+    animation-play-state: paused;
+  }
+  @keyframes meche-ondule {
+    from {
+      transform: rotate(-1.4deg) skewX(1.1deg);
+    }
+    to {
+      transform: rotate(1.6deg) skewX(-1.3deg);
+    }
+  }
+  @keyframes trace-or {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  /* Regard : paupière tracée, cils qui poussent un à un, clignement rare. */
+  .regard-paupiere {
+    transform-box: view-box;
+    transform-origin: 200px 116px;
+    animation: regard-cligne 7s ease-in-out 2.6s infinite;
+  }
+  .regard-trace,
+  .regard-cil {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: trace-or 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .regard-iris {
+    opacity: 0;
+    animation: regard-iris 0.8s ease-out 0.4s forwards;
+  }
+  @keyframes regard-cligne {
+    0%,
+    92%,
+    100% {
+      transform: scaleY(1);
+    }
+    95% {
+      transform: scaleY(0.08);
+    }
+  }
+  @keyframes regard-iris {
+    to {
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .meche,
+    .regard-paupiere {
+      animation: none;
+    }
+    .meche-trace,
+    .regard-trace,
+    .regard-cil {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+    .regard-iris {
+      animation: none;
+      opacity: 1;
+    }
+  }
+  /* Révélation des flacons : le visuel monte de sa base, une seule fois, quand il paraît. */
+  .revele {
+    clip-path: inset(0 0 0 0 round 0);
+  }
+  .revele[data-visible='non'] {
+    clip-path: inset(100% 0 0 0);
+  }
+  .revele[data-visible='oui'] {
+    transition: clip-path 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .revele[data-visible='non'] {
+      clip-path: none;
+    }
+  }
+  /* Reflet d'or qui balaie une fois les flacons quand ils apparaissent. */
+  .reflet-une-fois {
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgb(255 238 200 / 0.42) 50%,
+      transparent 60%
+    );
+    transform: translateX(-120%);
+  }
+  [data-visible='oui'] > .reflet-une-fois {
+    animation: reflet-passe 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+  }
+  @keyframes reflet-passe {
+    to {
+      transform: translateX(120%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reflet-une-fois {
+      display: none;
+    }
+  }
   /* Trajet en route (carte publique) : pointillés d'or qui avancent vers la destination. */
   .trajet-route {
     stroke-dasharray: 0.018 0.014;

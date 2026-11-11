@@ -4,7 +4,8 @@ import { useNotifications } from '@/components/feedback/notifications/useNotific
 import { Bouton } from '@/components/ui/Bouton'
 import { classesBouton } from '@/components/ui/classesBouton'
 import { usePanier } from '@/features/panier/usePanier'
-import { formaterFcfa } from '@/lib/format/montant'
+import { PrixProduit } from '@/components/produit/PrixProduit'
+import { useApparition } from '@/hooks/useApparition'
 import type { Produit } from '@/services/catalogue.service'
 import { lienProduit } from './liens'
 import { useDisponibilites } from './requetes'
@@ -28,6 +29,7 @@ const COMPOSITION = [
 export function HeroLaGamme({ produit }: { produit: Produit | undefined }) {
   const panier = usePanier()
   const { notifier } = useNotifications()
+  const { ref: refApparition, etat: apparition } = useApparition<HTMLDivElement>()
   const variante = produit?.variantes[0]
   const dispo = useDisponibilites(variante ? [variante.id] : [])
   if (!produit || !variante) return null
@@ -39,20 +41,20 @@ export function HeroLaGamme({ produit }: { produit: Produit | undefined }) {
       aria-labelledby="titre-la-gamme"
       className="overflow-hidden rounded-panneau bg-carte shadow-panneau"
     >
-      <Link to={lienProduit(produit)} className="block" tabIndex={-1} aria-hidden="true">
-        <img
-          src={PHOTO_LA_GAMME.grande}
-          srcSet={`${PHOTO_LA_GAMME.petite} 1000w, ${PHOTO_LA_GAMME.grande} 2000w`}
-          sizes="(min-width: 1280px) 1200px, 100vw"
-          alt=""
-          className="aspect-[4/3] w-full object-cover sm:aspect-[2000/1116]"
-        />
-      </Link>
+      <div ref={refApparition} data-visible={apparition} className="revele relative">
+        <Link to={lienProduit(produit)} className="block" tabIndex={-1} aria-hidden="true">
+          <img
+            src={PHOTO_LA_GAMME.grande}
+            srcSet={`${PHOTO_LA_GAMME.petite} 1000w, ${PHOTO_LA_GAMME.grande} 2000w`}
+            sizes="(min-width: 1280px) 1200px, 100vw"
+            alt=""
+            className="aspect-[4/3] w-full object-cover sm:aspect-[2000/1116]"
+          />
+        </Link>
+        <span aria-hidden="true" className="reflet-une-fois pointer-events-none absolute inset-0" />
+      </div>
       <div className="grid gap-6 p-6 sm:p-8 lg:grid-cols-[1.4fr_1fr] lg:items-end lg:gap-10 lg:p-10">
         <div>
-          <p className="text-[13px] font-semibold tracking-[0.16em] text-or-texte uppercase">
-            Le coffret
-          </p>
           <h3
             id="titre-la-gamme"
             className="titre-affiche mt-2 text-[34px] leading-[1.05] text-encre sm:text-[48px]"
@@ -72,9 +74,12 @@ export function HeroLaGamme({ produit }: { produit: Produit | undefined }) {
           </ul>
         </div>
         <div className="flex flex-col gap-4 lg:items-end">
-          <p className="chiffres titre-affiche text-[40px] leading-none text-or-texte sm:text-[48px]">
-            {formaterFcfa(variante.prix)}
-          </p>
+          <PrixProduit
+            prix={variante.prix}
+            promo={variante.promo}
+            taille="fiche"
+            className="lg:items-end"
+          />
           <div className="flex flex-wrap gap-3 lg:justify-end">
             <Bouton
               variante="or"

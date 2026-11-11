@@ -653,6 +653,7 @@ Règle de séquence : on ne saute pas de phase. Une décision qui touche plusieu
 - **Notifications** : déclencheurs en base, rôle destinataire, unicité, lu / non lu par personne, préférences, abonnement push préparé (envoi : clé VAPID et fonction serveur à ajouter), « Prévenez-moi » avec consentement ; centre de notifications de la visiteuse calculé sur ses propres données.
 - **Carte des ventes** : Monde → Pays → Ville → Quartier, fonction `carte_activite`, grilles Natural Earth générées par `scripts/generer-points-carte.mjs`.
 - **Carte publique « Notre présence dans le monde »** (`/presence` et section de l’accueil) : même fond (`features/carte/fond.ts`, `PointsCarte.tsx`), données de `carte_publique` — agrégats anonymes ouverts aux visiteuses (enregistrées / en route / livrées, jamais confondues ; aucun nom, téléphone, adresse, quartier ni montant). Scène toujours nocturne via `.zone-nuit`.
+- **Promotions** (`promotions`, `private.prix_effectif`, `promotions_en_cours`) : pourcentage ou prix, sur un produit ou un format, avec début et fin. Le serveur calcule le prix effectif et le facture à la commande ; le site affiche badge, ancien prix réel barré et économie, seulement pendant la promotion. Administration : fiche produit du Catalogue (propriétaire et admin).
 - **Contenus** : bucket `contenus`, publication contrôlée (complétude, accord de la cliente), affichage public des seuls contenus publiés.
 - **Thème** : appareil / clair / sombre, palette ivoire.
 
