@@ -639,7 +639,7 @@ Chaque phase a une **condition de sortie** : elle n'est terminée que si ses tes
 | **8. Livraison** | Réduite à la demande du client : livraison par agence, frais réglés à l'agence, aucun suivi de colis (voir D7) | Panier et commande l'indiquent ; statuts expédiée / livrée inchangés |
 | **9. Rendez-vous** | Services, disponibilités, exceptions, créneaux serveur, réservation, annulation, historique | Aucun chevauchement possible (contrainte + tests) ; fuseau correct |
 | **10. Dashboard admin** | Tous les indicateurs de D1 (fonction `tableau_de_bord`), catalogue (prix, visibilité, prestations, horaires) et les écrans D2 à D8 | Chaque chiffre est vérifiable par une requête directe |
-| **11. Analyse et prévision** | Vitesse, rupture, réapprovisionnement, classification, clientes récurrentes | Calculs vérifiés à la main sur jeu de test ; « données insuffisantes » affiché quand il faut |
+| **11. Analyse et prévision** | Vitesse, rupture, réapprovisionnement, classification, clientes récurrentes (fonction `analyse_produits`, calcul à la demande, date du calcul affichée) | Calculs vérifiés à la main sur jeu de test ; « données insuffisantes » affiché quand il faut |
 | **12. PWA** | Manifest, service worker, installation, icônes, cache maîtrisé, comportement hors connexion, optimisation mobile | Installation testée ; pas de stock périmé servi |
 | **13. Tests de recette** | Tous les scénarios de la liste de la mission (achat, dernier produit, double commande, annulation, retour, livraison, rupture, réappro, rendez-vous, WhatsApp, erreur réseau, accès non autorisé) | Tous verts ; rapport d'audit écrit |
 

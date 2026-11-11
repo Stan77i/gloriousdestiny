@@ -18,6 +18,7 @@ const MODULES: { vers: string; libelle: string; fin: boolean; roles: Role[] | nu
   { vers: '/admin/rendez-vous', libelle: 'Rendez-vous', fin: false, roles: ['ventes'] },
   { vers: '/admin/clientes', libelle: 'Clientes', fin: false, roles: ['ventes'] },
   { vers: '/admin/stock', libelle: 'Stock', fin: false, roles: ['stock'] },
+  { vers: '/admin/analyse', libelle: 'Analyse', fin: false, roles: ['ventes', 'stock'] },
   { vers: '/admin/catalogue', libelle: 'Catalogue', fin: false, roles: [] },
   { vers: CHEMINS.adminSystemeDesign, libelle: 'Système de design', fin: false, roles: null },
 ]

@@ -12,10 +12,22 @@ function compact(montant: number): string {
 }
 
 /**
- * Chiffre d'affaires par jour : une série, des barres fines dorées ancrées sur la ligne de base,
+ * Chiffre d'affaires par période (jour, semaine, mois) : une série, des barres fines dorées ancrées sur la ligne de base,
  * une infobulle au survol ou au clavier, et le tableau des valeurs pour qui ne lit pas le graphique.
  */
-export function GraphiqueVentes({ serie }: { serie: Point[] }) {
+export function GraphiqueVentes({
+  serie,
+  etiquette = (jour) => formaterJour(jour, 'court'),
+  etiquetteAxe = (jour) => formaterJour(jour, 'court').split(' ').slice(0, 2).join(' '),
+  unite = 'Jour',
+}: {
+  serie: Point[]
+  /** Libellé complet d'un point (infobulle, tableau, lecteur d'écran). */
+  etiquette?: (jour: string) => string
+  /** Libellé court sous l'axe quand chaque point a le sien (7 points ou moins). */
+  etiquetteAxe?: (jour: string) => string
+  unite?: string
+}) {
   const [actif, setActif] = useState<number | null>(null)
   const haut = graduation(Math.max(...serie.map((p) => p.ca_fcfa)))
   const point = actif === null ? undefined : serie[actif]
@@ -40,7 +52,7 @@ export function GraphiqueVentes({ serie }: { serie: Point[] }) {
               <button
                 key={p.jour}
                 type="button"
-                aria-label={`${formaterJour(p.jour)} : ${formaterFcfa(p.ca_fcfa)}, ${String(p.nombre)} vente(s)`}
+                aria-label={`${etiquette(p.jour)} : ${formaterFcfa(p.ca_fcfa)}, ${String(p.nombre)} vente(s)`}
                 onMouseEnter={() => {
                   setActif(i)
                 }}
@@ -72,7 +84,7 @@ export function GraphiqueVentes({ serie }: { serie: Point[] }) {
               left: `clamp(70px, ${String(((actif + 0.5) / serie.length) * 100)}%, calc(100% - 70px))`,
             }}
           >
-            <p className="font-semibold">{formaterJour(point.jour, 'court')}</p>
+            <p className="font-semibold">{etiquette(point.jour)}</p>
             <p className="chiffres">{formaterFcfa(point.ca_fcfa)}</p>
             <p className="opacity-75">{point.nombre} vente(s)</p>
           </div>
@@ -83,9 +95,7 @@ export function GraphiqueVentes({ serie }: { serie: Point[] }) {
           const p = serie[i]
           return p ? (
             <span key={p.jour} className={reperes ? '' : 'min-w-0 flex-1 text-center'}>
-              {reperes
-                ? formaterJour(p.jour, 'court')
-                : formaterJour(p.jour, 'court').split(' ').slice(0, 2).join(' ')}
+              {reperes ? etiquette(p.jour) : etiquetteAxe(p.jour)}
             </span>
           ) : null
         })}
@@ -97,7 +107,7 @@ export function GraphiqueVentes({ serie }: { serie: Point[] }) {
         <table className="mt-2 w-full text-left text-[13px]">
           <thead className="text-encre-3">
             <tr>
-              <th className="py-1 font-medium">Jour</th>
+              <th className="py-1 font-medium">{unite}</th>
               <th className="py-1 text-right font-medium">Ventes</th>
               <th className="py-1 text-right font-medium">CA net</th>
             </tr>
@@ -105,7 +115,7 @@ export function GraphiqueVentes({ serie }: { serie: Point[] }) {
           <tbody className="divide-y divide-filet">
             {serie.map((p) => (
               <tr key={p.jour}>
-                <td className="py-1">{formaterJour(p.jour, 'court')}</td>
+                <td className="py-1">{etiquette(p.jour)}</td>
                 <td className="chiffres py-1 text-right">{p.nombre}</td>
                 <td className="chiffres py-1 text-right">{formaterFcfa(p.ca_fcfa)}</td>
               </tr>

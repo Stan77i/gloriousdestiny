@@ -6,6 +6,7 @@ import { RouterProvider } from 'react-router/dom'
 import { NotificationsProvider } from '@/components/feedback/notifications/NotificationsProvider'
 import { AuthContext, type EtatAuth, type ValeurAuth } from '@/features/auth/AuthContext'
 import { PanierProvider } from '@/features/panier/PanierProvider'
+import type * as ServiceAnalyse from '@/services/analyse.service'
 import type * as ServiceCatalogueAdmin from '@/services/catalogueAdmin.service'
 import type * as ServiceCommandes from '@/services/commandes.service'
 import type * as ServiceRdv from '@/services/rendezvous.service'
@@ -107,6 +108,27 @@ vi.mock('@/services/catalogueAdmin.service', async (original) => ({
         stockSecuriteJours: null,
       },
     ]),
+  ),
+}))
+vi.mock('@/services/analyse.service', async (original) => ({
+  ...(await original<typeof ServiceAnalyse>()),
+  chargerAnalyse: vi.fn(() =>
+    Promise.resolve({
+      calcule_at: '2026-11-11T08:00:00Z',
+      aujourdhui: '2026-11-11',
+      regles: {
+        fenetre_jours: 28,
+        tendance_jours: 30,
+        seuil_tendance_pct: 20,
+        dormant_jours: 60,
+        min_ventes: 3,
+        min_historique_jours: 14,
+        part_populaire_pct: 25,
+      },
+      produits: [],
+      hebdomadaire: [],
+      mensuel: [],
+    }),
   ),
 }))
 vi.mock('@/services/rendezvous.service', async (original) => ({
@@ -219,6 +241,18 @@ describe('routes', () => {
     expect(await screen.findByText('35 500 FCFA')).toBeInTheDocument()
     expect(screen.getByText('+274 %')).toBeInTheDocument()
     expect(screen.queryByText('Stock à surveiller')).not.toBeInTheDocument()
+  })
+
+  it('ouvre l’analyse au rôle stock', async () => {
+    rendre('/admin/analyse', {
+      statut: 'connecte',
+      session: sessionFactice,
+      profil: { id: 'u2', nom: 'Bintou', role: 'stock' },
+    })
+    expect(
+      await screen.findByRole('heading', { name: 'Analyse et prévisions' }),
+    ).toBeInTheDocument()
+    expect(await screen.findByText(/Calculé le 11 novembre 2026/)).toBeInTheDocument()
   })
 
   it('réserve le catalogue à l’administration', async () => {
