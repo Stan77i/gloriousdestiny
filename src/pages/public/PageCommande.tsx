@@ -20,6 +20,7 @@ import { usePanier } from '@/features/panier/usePanier'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterFcfa } from '@/lib/format/montant'
+import { suivre } from '@/features/notifications/cliente/memoire'
 import { normaliserTelephone } from '@/lib/format/telephone'
 import { listerVilles, type Ville } from '@/services/clientes.service'
 import { creerCommande } from '@/services/commandes.service'
@@ -121,6 +122,7 @@ export function PageCommande() {
       })
       setEnregistree(true)
       memoriserDerniereCommande(commande.reference, telephone)
+      suivre('commande', commande.reference, telephone)
       oublierCleCommande()
       panier.vider()
       void client.invalidateQueries({ queryKey: ['disponibilites'] })

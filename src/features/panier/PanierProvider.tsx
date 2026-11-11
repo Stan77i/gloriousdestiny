@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useReducer, type ReactNode } from 'react'
-import { CLE_STOCKAGE, ecrirePanier, lirePanier, reduirePanier } from './panier'
+import { CLE_PANIER_MAJ, CLE_STOCKAGE, ecrirePanier, lirePanier, reduirePanier } from './panier'
 import { PanierContext, type ValeurPanier } from './PanierContext'
 
 function lireStockage() {
@@ -16,7 +16,13 @@ export function PanierProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(CLE_STOCKAGE, ecrirePanier(lignes))
+      const texte = ecrirePanier(lignes)
+      // Date de dernière modification réelle (pas au simple rechargement de la page) :
+      // sert au rappel « votre panier vous attend », jamais plus d'une fois par contenu.
+      if (window.localStorage.getItem(CLE_STOCKAGE) !== texte) {
+        window.localStorage.setItem(CLE_PANIER_MAJ, new Date().toISOString())
+      }
+      window.localStorage.setItem(CLE_STOCKAGE, texte)
     } catch {
       // stockage plein ou refusé : le panier reste valable pour cette visite
     }

@@ -61,3 +61,38 @@ else
   echo " ECHEC concurrence rendez-vous : succès=$succes refus=$refus" >&2
   exit 1
 fi
+
+# Une réservation et un blocage SIMULTANÉS sur la même plage : jamais les deux.
+"${PSQL[@]}" <<'SQL'
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-00000000c0c0', 'ventes-course@test.local') on conflict do nothing;
+insert into public.profiles (id, nom, role) values ('00000000-0000-0000-0000-00000000c0c0', 'Ventes', 'ventes') on conflict do nothing;
+SQL
+CRENEAU2=$("${PSQL[@]}" -t -A -c "select max(c) from public.creneaux_disponibles((select id from public.services where slug = 'pose-de-cils'), (now() at time zone 'Africa/Douala')::date + 7, (now() at time zone 'Africa/Douala')::date + 13) c")
+reserve() {
+  "${PSQL[@]}" -t -A <<SQL 2>&1 || true
+set role anon;
+select public.reserver_rendez_vous(jsonb_build_object(
+  'cle_idempotence', 'test-course-blocage-1',
+  'service_id', (select id from public.services where slug = 'pose-de-cils'),
+  'debut', '$CRENEAU2',
+  'cliente', jsonb_build_object('nom', 'Cliente course', 'telephone', '+237690000777')
+)) ->> 'reference';
+SQL
+}
+bloque() {
+  "${PSQL[@]}" -t -A <<SQL 2>&1 || true
+set role authenticated;
+set request.jwt.claim.sub = '00000000-0000-0000-0000-00000000c0c0';
+select 'BLOC-' || public.bloquer_creneau('$CRENEAU2'::timestamptz, '$CRENEAU2'::timestamptz + interval '1 hour', 'Course');
+SQL
+}
+reserve > /tmp/gd-course-1 & bloque > /tmp/gd-course-2 & wait
+rdv=$(grep -cE '^RDV-' /tmp/gd-course-1 || true)
+bloc=$(grep -cE '^BLOC-' /tmp/gd-course-2 || true)
+rm -f /tmp/gd-course-1 /tmp/gd-course-2
+if [ $((rdv + bloc)) = 1 ]; then
+  echo " TEST CONCURRENCE BLOCAGE PASSÉ (réservation=$rdv, blocage=$bloc : jamais les deux)"
+else
+  echo " ECHEC course blocage : réservation=$rdv blocage=$bloc" >&2
+  exit 1
+fi

@@ -52,6 +52,8 @@ export function reduirePanier(lignes: LignePanier[], action: ActionPanier): Lign
   }
 }
 
+/** Date de la dernière modification du panier (ISO). */
+export const CLE_PANIER_MAJ = 'gd-panier-maj'
 export const CLE_STOCKAGE = 'gd-panier'
 
 /** Lecture tolérante : un contenu corrompu ou d'un ancien format donne un panier vide. */

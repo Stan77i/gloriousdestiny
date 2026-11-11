@@ -24,6 +24,7 @@ import { Modale } from '@/components/ui/Modale'
 import { aRole, LIBELLES_ROLES, type Role } from '@/domain/roles'
 import { useAuth } from '@/features/auth/useAuth'
 import { useCompteurs } from '@/features/commandes-admin/requetes'
+import { CentreEquipe } from '@/features/notifications/CentreEquipe'
 import { useDemandesRdv } from '@/features/rendez-vous/requetes'
 import { appliquerTheme, themeActuel, type Theme } from '@/features/theme/theme'
 import { cx } from '@/lib/cx'
@@ -298,6 +299,7 @@ export function LayoutAdmin() {
               {initiale(formaterJour(jourSalon(new Date(maintenant))))}
             </p>
             <div className="ml-auto flex items-center gap-2">
+              {role !== null && <CentreEquipe role={role} />}
               <SegmentTheme />
               {profil && (
                 <span className="flex items-center gap-2.5 rounded-full bg-carte py-1 pr-4 pl-1 shadow-panneau lg:hidden">

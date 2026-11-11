@@ -11,6 +11,7 @@ import { SITE } from '@/config/site'
 import { useAuth } from '@/features/auth/useAuth'
 import { useParametresPublics } from '@/features/catalogue/requetes'
 import { usePanier } from '@/features/panier/usePanier'
+import { CentreCliente } from '@/features/notifications/cliente/CentreCliente'
 import { BoutonTheme } from '@/features/theme/BoutonTheme'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { cx } from '@/lib/cx'
@@ -137,6 +138,7 @@ export function LayoutPublic() {
               </Link>
             )}
             <BoutonTheme className="hidden sm:inline-flex" />
+            <CentreCliente />
             <LienPanier />
             <BoutonIcone
               libelle="Ouvrir le menu"

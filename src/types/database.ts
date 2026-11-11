@@ -1,4 +1,3 @@
-// Fichier GÉNÉRÉ depuis le projet Supabase (npm run db:types). Ne pas modifier à la main.
 export type Json =
   | string
   | number
@@ -15,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      abonnements_push: {
+        Row: {
+          auth: string
+          consentement_at: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          revoque_at: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          consentement_at?: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          revoque_at?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          consentement_at?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          revoque_at?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       adresses_clientes: {
         Row: {
           adresse: string | null
@@ -63,6 +98,54 @@ export type Database = {
           },
         ]
       }
+      alertes_retour_stock: {
+        Row: {
+          annulee_at: string | null
+          consentement_at: string
+          created_at: string
+          id: string
+          nom: string
+          prevenue_at: string | null
+          telephone: string
+          variante_id: string
+        }
+        Insert: {
+          annulee_at?: string | null
+          consentement_at: string
+          created_at?: string
+          id?: string
+          nom: string
+          prevenue_at?: string | null
+          telephone: string
+          variante_id: string
+        }
+        Update: {
+          annulee_at?: string | null
+          consentement_at?: string
+          created_at?: string
+          id?: string
+          nom?: string
+          prevenue_at?: string | null
+          telephone?: string
+          variante_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertes_retour_stock_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "variantes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertes_retour_stock_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["variante_id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -93,6 +176,39 @@ export type Database = {
           entite?: string
           entite_id?: string | null
           id?: never
+        }
+        Relationships: []
+      }
+      blocages_agenda: {
+        Row: {
+          created_at: string
+          cree_par: string | null
+          debut: string
+          fin: string
+          id: string
+          motif: string
+          retire_at: string | null
+          retire_par: string | null
+        }
+        Insert: {
+          created_at?: string
+          cree_par?: string | null
+          debut: string
+          fin: string
+          id?: string
+          motif: string
+          retire_at?: string | null
+          retire_par?: string | null
+        }
+        Update: {
+          created_at?: string
+          cree_par?: string | null
+          debut?: string
+          fin?: string
+          id?: string
+          motif?: string
+          retire_at?: string | null
+          retire_par?: string | null
         }
         Relationships: []
       }
@@ -260,6 +376,13 @@ export type Database = {
             referencedRelation: "variantes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "commande_lignes_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["variante_id"]
+          },
         ]
       }
       commandes: {
@@ -360,6 +483,97 @@ export type Database = {
             columns: ["ville_id"]
             isOneToOne: false
             referencedRelation: "villes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contenus: {
+        Row: {
+          auteur: string | null
+          consentement_cliente: boolean
+          created_at: string
+          cree_par: string | null
+          fichier: string | null
+          fichier_avant: string | null
+          id: string
+          mis_en_avant: boolean
+          ordre: number
+          produit_id: string | null
+          publie_at: string | null
+          service_id: string | null
+          statut: string
+          texte: string | null
+          texte_alternatif: string | null
+          titre: string
+          type: string
+          type_fichier: string | null
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          auteur?: string | null
+          consentement_cliente?: boolean
+          created_at?: string
+          cree_par?: string | null
+          fichier?: string | null
+          fichier_avant?: string | null
+          id?: string
+          mis_en_avant?: boolean
+          ordre?: number
+          produit_id?: string | null
+          publie_at?: string | null
+          service_id?: string | null
+          statut?: string
+          texte?: string | null
+          texte_alternatif?: string | null
+          titre: string
+          type: string
+          type_fichier?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          auteur?: string | null
+          consentement_cliente?: boolean
+          created_at?: string
+          cree_par?: string | null
+          fichier?: string | null
+          fichier_avant?: string | null
+          id?: string
+          mis_en_avant?: boolean
+          ordre?: number
+          produit_id?: string | null
+          publie_at?: string | null
+          service_id?: string | null
+          statut?: string
+          texte?: string | null
+          texte_alternatif?: string | null
+          titre?: string
+          type?: string
+          type_fichier?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contenus_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "produits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contenus_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["produit_id"]
+          },
+          {
+            foreignKeyName: "contenus_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
             referencedColumns: ["id"]
           },
         ]
@@ -509,11 +723,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "images_produits_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["produit_id"]
+          },
+          {
             foreignKeyName: "images_produits_variante_id_fkey"
             columns: ["variante_id"]
             isOneToOne: false
             referencedRelation: "variantes"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "images_produits_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["variante_id"]
           },
         ]
       }
@@ -638,6 +866,75 @@ export type Database = {
             referencedRelation: "variantes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "mouvements_stock_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["variante_id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          cle_dedup: string
+          corps: string
+          created_at: string
+          donnees: Json
+          id: number
+          lien: string | null
+          role_cible: string | null
+          titre: string
+          type: string
+        }
+        Insert: {
+          cle_dedup: string
+          corps: string
+          created_at?: string
+          donnees?: Json
+          id?: never
+          lien?: string | null
+          role_cible?: string | null
+          titre: string
+          type: string
+        }
+        Update: {
+          cle_dedup?: string
+          corps?: string
+          created_at?: string
+          donnees?: Json
+          id?: never
+          lien?: string | null
+          role_cible?: string | null
+          titre?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      notifications_lues: {
+        Row: {
+          lu_at: string
+          notification_id: number
+          user_id: string
+        }
+        Insert: {
+          lu_at?: string
+          notification_id: number
+          user_id: string
+        }
+        Update: {
+          lu_at?: string
+          notification_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_lues_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
         ]
       }
       parametres: {
@@ -661,6 +958,33 @@ export type Database = {
           public?: boolean
           updated_at?: string
           valeur?: Json
+        }
+        Relationships: []
+      }
+      preferences_notifications: {
+        Row: {
+          heures_calmes_debut: string | null
+          heures_calmes_fin: string | null
+          push_actif: boolean
+          types_coupes: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          heures_calmes_debut?: string | null
+          heures_calmes_fin?: string | null
+          push_actif?: boolean
+          types_coupes?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          heures_calmes_debut?: string | null
+          heures_calmes_fin?: string | null
+          push_actif?: boolean
+          types_coupes?: string[]
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -793,6 +1117,13 @@ export type Database = {
             referencedRelation: "variantes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "reception_lignes_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["variante_id"]
+          },
         ]
       }
       receptions: {
@@ -848,6 +1179,7 @@ export type Database = {
           occupe_debut: string
           occupe_fin: string
           prix_snapshot_fcfa: number | null
+          rappel_envoye_at: string | null
           reference: string
           service_id: string
           service_nom_snapshot: string | null
@@ -871,6 +1203,7 @@ export type Database = {
           occupe_debut: string
           occupe_fin: string
           prix_snapshot_fcfa?: number | null
+          rappel_envoye_at?: string | null
           reference?: string
           service_id: string
           service_nom_snapshot?: string | null
@@ -894,6 +1227,7 @@ export type Database = {
           occupe_debut?: string
           occupe_fin?: string
           prix_snapshot_fcfa?: number | null
+          rappel_envoye_at?: string | null
           reference?: string
           service_id?: string
           service_nom_snapshot?: string | null
@@ -950,11 +1284,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'rendez_vous_historique_rendez_vous_id_fkey'
-            columns: ['rendez_vous_id']
+            foreignKeyName: "rendez_vous_historique_rendez_vous_id_fkey"
+            columns: ["rendez_vous_id"]
             isOneToOne: false
-            referencedRelation: 'rendez_vous'
-            referencedColumns: ['id']
+            referencedRelation: "rendez_vous"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1046,6 +1380,13 @@ export type Database = {
             referencedRelation: "variantes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "stocks_variante_id_fkey"
+            columns: ["variante_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["variante_id"]
+          },
         ]
       }
       variantes: {
@@ -1090,6 +1431,13 @@ export type Database = {
             referencedRelation: "produits"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "variantes_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "vue_stock"
+            referencedColumns: ["produit_id"]
+          },
         ]
       }
       villes: {
@@ -1099,6 +1447,8 @@ export type Database = {
           fuseau: string
           id: number
           indicatif: string
+          latitude: number | null
+          longitude: number | null
           nom: string
           ordre: number
           pays: string
@@ -1109,6 +1459,8 @@ export type Database = {
           fuseau: string
           id?: never
           indicatif: string
+          latitude?: number | null
+          longitude?: number | null
           nom: string
           ordre?: number
           pays: string
@@ -1119,6 +1471,8 @@ export type Database = {
           fuseau?: string
           id?: never
           indicatif?: string
+          latitude?: number | null
+          longitude?: number | null
           nom?: string
           ordre?: number
           pays?: string
@@ -1150,36 +1504,8 @@ export type Database = {
       }
     }
     Functions: {
-      annuler_rendez_vous: { Args: { p_id: string; p_motif: string }; Returns: Json }
-      annuler_rendez_vous_cliente: {
-        Args: { p_reference: string; p_telephone: string }
-        Returns: Json
-      }
-      cloturer_rendez_vous: { Args: { p_id: string; p_issue: string }; Returns: Json }
-      confirmer_rendez_vous: { Args: { p_id: string }; Returns: Json }
-      creneaux_disponibles: {
-        Args: { p_au: string; p_du: string; p_service_id: string }
-        Returns: string[]
-      }
-      fermer_journee: { Args: { p_date: string; p_motif: string }; Returns: undefined }
-      reserver_rendez_vous: { Args: { p_rdv: Json }; Returns: Json }
-      rouvrir_journee: { Args: { p_date: string }; Returns: undefined }
-      signaler_ouverture_whatsapp_rdv: {
-        Args: { p_reference: string; p_telephone: string }
-        Returns: boolean
-      }
-      suivre_rendez_vous: {
-        Args: { p_reference: string; p_telephone: string }
-        Returns: Json
-      }
-      analyse_produits: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      tableau_de_bord: {
-        Args: { p_du: string; p_au: string }
-        Returns: Json
-      }
+      alertes_a_prevenir: { Args: never; Returns: Json }
+      analyse_produits: { Args: never; Returns: Json }
       annoter_cliente: {
         Args: { p_id: string; p_notes: string }
         Returns: undefined
@@ -1192,8 +1518,25 @@ export type Database = {
         Args: { p_id: string; p_motif: string }
         Returns: Json
       }
+      annuler_rendez_vous: {
+        Args: { p_id: string; p_motif: string }
+        Returns: Json
+      }
+      annuler_rendez_vous_cliente: {
+        Args: { p_reference: string; p_telephone: string }
+        Returns: Json
+      }
+      bloquer_creneau: {
+        Args: { p_debut: string; p_fin: string; p_motif: string }
+        Returns: string
+      }
+      carte_activite: { Args: { p_au: string; p_du: string }; Returns: Json }
+      cloturer_rendez_vous: {
+        Args: { p_id: string; p_issue: string }
+        Returns: Json
+      }
       confirmer_commande: { Args: { p_id: string }; Returns: Json }
-      creer_commande: { Args: { p_commande: Json }; Returns: Json }
+      confirmer_rendez_vous: { Args: { p_id: string }; Returns: Json }
       corriger_inventaire: {
         Args: {
           p_cle_idempotence: string
@@ -1202,6 +1545,15 @@ export type Database = {
           p_variante_id: string
         }
         Returns: number
+      }
+      creer_commande: { Args: { p_commande: Json }; Returns: Json }
+      creneaux_disponibles: {
+        Args: { p_au: string; p_du: string; p_service_id: string }
+        Returns: string[]
+      }
+      creneaux_report: {
+        Args: { p_id: string; p_jour: string }
+        Returns: string[]
       }
       declarer_perte: {
         Args: {
@@ -1212,12 +1564,47 @@ export type Database = {
         }
         Returns: number
       }
+      demander_alerte_retour_stock: {
+        Args: {
+          p_consentement: boolean
+          p_nom: string
+          p_telephone: string
+          p_variante_id: string
+        }
+        Returns: string
+      }
       disponibilite_variantes: {
         Args: { p_variante_ids: string[] }
         Returns: {
           statut: string
           variante_id: string
         }[]
+      }
+      enregistrer_abonnement_push: {
+        Args: {
+          p_auth: string
+          p_endpoint: string
+          p_p256dh: string
+          p_user_agent?: string
+        }
+        Returns: undefined
+      }
+      enregistrer_paiement: {
+        Args: {
+          p_id: string
+          p_mode: string
+          p_montant_fcfa: number
+          p_reference?: string
+        }
+        Returns: Json
+      }
+      enregistrer_preferences_notifications: {
+        Args: {
+          p_heures_calmes_debut?: string
+          p_heures_calmes_fin?: string
+          p_types_coupes: string[]
+        }
+        Returns: undefined
       }
       entree_stock: {
         Args: {
@@ -1229,18 +1616,21 @@ export type Database = {
         }
         Returns: number
       }
-      enregistrer_paiement: {
-        Args: {
-          p_id: string
-          p_mode: string
-          p_montant_fcfa: number
-          p_reference?: string
-        }
-        Returns: Json
-      }
       expedier_commande: { Args: { p_id: string }; Returns: Json }
+      fermer_journee: {
+        Args: { p_date: string; p_motif: string }
+        Returns: undefined
+      }
       livrer_commande: { Args: { p_id: string }; Returns: Json }
+      marquer_alerte_prevenue: { Args: { p_id: string }; Returns: undefined }
+      marquer_notifications_lues: {
+        Args: { p_ids?: number[] }
+        Returns: undefined
+      }
+      marquer_rappel_envoye: { Args: { p_id: string }; Returns: undefined }
+      mes_notifications: { Args: { p_limite?: number }; Returns: Json }
       message_whatsapp_commande: { Args: { p_id: string }; Returns: string }
+      rappels_a_envoyer: { Args: never; Returns: Json }
       receptionner: { Args: { p_reception: Json }; Returns: string }
       regler_alertes_stock: {
         Args: {
@@ -1251,11 +1641,22 @@ export type Database = {
         }
         Returns: undefined
       }
+      reprogrammer_rendez_vous: {
+        Args: { p_debut: string; p_id: string; p_motif?: string }
+        Returns: Json
+      }
+      reserver_rendez_vous: { Args: { p_rdv: Json }; Returns: Json }
+      retirer_blocage: { Args: { p_id: string }; Returns: undefined }
       retourner_commande: {
         Args: { p_id: string; p_lignes: Json; p_motif: string }
         Returns: Json
       }
+      rouvrir_journee: { Args: { p_date: string }; Returns: undefined }
       signaler_ouverture_whatsapp: {
+        Args: { p_reference: string; p_telephone: string }
+        Returns: boolean
+      }
+      signaler_ouverture_whatsapp_rdv: {
         Args: { p_reference: string; p_telephone: string }
         Returns: boolean
       }
@@ -1263,6 +1664,11 @@ export type Database = {
         Args: { p_reference: string; p_telephone: string }
         Returns: Json
       }
+      suivre_rendez_vous: {
+        Args: { p_reference: string; p_telephone: string }
+        Returns: Json
+      }
+      tableau_de_bord: { Args: { p_au: string; p_du: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never

@@ -215,3 +215,75 @@ export async function rouvrirJournee(date: string): Promise<void> {
   const { error } = await supabase().rpc('rouvrir_journee', { p_date: date })
   if (error) throw versErreurApp(error)
 }
+
+// ---------------------------------------------------------------------------
+// Agenda v2 : blocages, report, rappels (supabase/migrations/20261112100000_agenda_v2.sql)
+// ---------------------------------------------------------------------------
+
+export type Blocage = { id: string; debut: string; fin: string; motif: string }
+
+/** Plages bloquées actives qui touchent [du, au[ (instants ISO). */
+export async function listerBlocages(du: string, au: string): Promise<Blocage[]> {
+  const { data, error } = await supabase()
+    .from('blocages_agenda')
+    .select('id, debut, fin, motif')
+    .is('retire_at', null)
+    .lt('debut', au)
+    .gt('fin', du)
+    .order('debut')
+  if (error) throw versErreurApp(error)
+  return data
+}
+
+export async function bloquerCreneau(debut: string, fin: string, motif: string): Promise<void> {
+  const { error } = await supabase().rpc('bloquer_creneau', {
+    p_debut: debut,
+    p_fin: fin,
+    p_motif: motif,
+  })
+  if (error) throw versErreurApp(error)
+}
+
+export async function retirerBlocage(id: string): Promise<void> {
+  const { error } = await supabase().rpc('retirer_blocage', { p_id: id })
+  if (error) throw versErreurApp(error)
+}
+
+/** Créneaux libres pour déplacer un rendez-vous (jour AAAA-MM-JJ, heure du salon). */
+export async function creneauxReport(id: string, jour: string): Promise<string[]> {
+  const { data, error } = await supabase().rpc('creneaux_report', { p_id: id, p_jour: jour })
+  if (error) throw versErreurApp(error)
+  return z.array(z.string()).parse(data)
+}
+
+export async function reprogrammerRendezVous(id: string, debut: string, motif: string) {
+  const { error } = await supabase().rpc('reprogrammer_rendez_vous', {
+    p_id: id,
+    p_debut: debut,
+    p_motif: motif,
+  })
+  if (error) throw versErreurApp(error)
+}
+
+const schemaRappel = z.object({
+  id: z.uuid(),
+  reference: z.string(),
+  debut: z.string(),
+  statut: z.enum(['demande', 'confirme']),
+  service: z.string(),
+  cliente: z.string(),
+  telephone: z.string(),
+  message: z.string(),
+})
+export type Rappel = z.infer<typeof schemaRappel>
+
+export async function rappelsAEnvoyer(): Promise<Rappel[]> {
+  const { data, error } = await supabase().rpc('rappels_a_envoyer')
+  if (error) throw versErreurApp(error)
+  return z.array(schemaRappel).parse(data)
+}
+
+export async function marquerRappelEnvoye(id: string): Promise<void> {
+  const { error } = await supabase().rpc('marquer_rappel_envoye', { p_id: id })
+  if (error) throw versErreurApp(error)
+}

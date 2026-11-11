@@ -41,6 +41,8 @@ export type Produit = {
   prix: number
   categorie: { slug: string; nom: string }
   variantes: Variante[]
+  /** Date de création : sert uniquement à signaler une vraie nouveauté. */
+  creeLe: string
 }
 
 export type Service = {
@@ -54,7 +56,7 @@ export type Service = {
 }
 
 const CHAMPS_PRODUIT =
-  'id, slug, nom, description, fiche, type, prix_fcfa, categorie:categories!inner(slug, nom), variantes(id, sku, libelle, prix_fcfa, actif)'
+  'id, slug, nom, description, fiche, type, prix_fcfa, created_at, categorie:categories!inner(slug, nom), variantes(id, sku, libelle, prix_fcfa, actif)'
 
 type LigneProduit = {
   id: string
@@ -64,6 +66,7 @@ type LigneProduit = {
   fiche: unknown
   type: string
   prix_fcfa: number
+  created_at: string
   categorie: { slug: string; nom: string }
   variantes: {
     id: string
@@ -84,6 +87,7 @@ function versProduit(l: LigneProduit): Produit {
     type: l.type as Produit['type'],
     prix: l.prix_fcfa,
     categorie: l.categorie,
+    creeLe: l.created_at,
     variantes: l.variantes
       .filter((v) => v.actif)
       .map((v) => ({ id: v.id, sku: v.sku, libelle: v.libelle, prix: v.prix_fcfa ?? l.prix_fcfa })),

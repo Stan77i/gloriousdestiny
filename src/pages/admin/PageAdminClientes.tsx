@@ -16,6 +16,7 @@ import {
   useClientes,
   useCommandesCliente,
 } from '@/features/commandes-admin/requetes'
+import { AlertesAPrevenir } from '@/features/notifications/AlertesAPrevenir'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterDate, formaterDateHeure } from '@/lib/format/date'
@@ -95,6 +96,7 @@ export function PageAdminClientes() {
           />
         </label>
       </div>
+      <AlertesAPrevenir />
       {clientes.isError ? (
         <EtatErreur
           message={versErreurApp(clientes.error).message}

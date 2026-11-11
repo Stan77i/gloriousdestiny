@@ -23,6 +23,7 @@ import { useDisponibilites, useProduit, useProduits } from '@/features/catalogue
 import { visuelProduit } from '@/features/catalogue/visuels'
 import { QUANTITE_MAX } from '@/features/panier/panier'
 import { usePanier } from '@/features/panier/usePanier'
+import { PrevenezMoi } from '@/features/notifications/cliente/PrevenezMoi'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { FOND_TEINTE, TEINTE_TYPE_PRODUIT } from '@/domain/univers'
@@ -259,6 +260,11 @@ export function PageProduit() {
               {epuise ? 'Épuisé' : 'Ajouter au panier'}
             </Bouton>
           </div>
+          {epuise && variante && statut === 'epuise' && (
+            <div className="mt-4">
+              <PrevenezMoi varianteId={variante.id} produit={p.nom} slug={p.slug} />
+            </div>
+          )}
           <BoutonWhatsApp
             libelle="Une question ? Écrivez-nous"
             variante="fantome"

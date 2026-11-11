@@ -10,6 +10,7 @@ import { EnTetePage } from '@/components/ui/EnTetePage'
 import { EtatErreur } from '@/components/ui/Etats'
 import { useParametresPublics, useServices } from '@/features/catalogue/requetes'
 import { moment, regrouperParJour } from '@/features/rendez-vous/creneaux'
+import { suivre } from '@/features/notifications/cliente/memoire'
 import { cleReservation, memoriserRendezVous } from '@/features/rendez-vous/memoire'
 import { useCreneaux, useReservation } from '@/features/rendez-vous/requetes'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
@@ -127,6 +128,7 @@ export function PageRendezVous() {
       {
         onSuccess: (r) => {
           memoriserRendezVous(r.reference, telNormalise)
+          suivre('rdv', r.reference, telNormalise)
           void naviguer(CHEMINS.suiviRendezVous(r.reference), { state: { nouveau: true } })
         },
         onError: (e) => {

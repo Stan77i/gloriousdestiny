@@ -55,6 +55,11 @@ export function minuitSalon(jour: string): string {
   return new Date(`${jour}T00:00:00${SITE.decalageSalon}`).toISOString()
 }
 
+/** Instant ISO d'une heure « HH:MM » d'un jour AAAA-MM-JJ, à l'heure du salon. */
+export function instantSalon(jour: string, heure: string): string {
+  return new Date(`${jour}T${heure}:00${SITE.decalageSalon}`).toISOString()
+}
+
 /** Lundi (AAAA-MM-JJ) de la semaine du jour donné. */
 export function lundiDe(jour: string): string {
   const jourSemaine = new Date(`${jour}T12:00:00Z`).getUTCDay() // 0 = dimanche
