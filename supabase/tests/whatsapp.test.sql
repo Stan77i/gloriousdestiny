@@ -39,7 +39,8 @@ begin
   assert position((select c ->> 'reference' from r) in m) > 0, 'référence dans le message';
   assert position('• Lace Glue × 2 : 19 000 FCFA' in m) > 0, 'ligne Lace Glue : ' || m;
   assert position('• Braid Gel · 250 g × 1 : 6 000 FCFA' in m) > 0, 'ligne Braid Gel : ' || m;
-  assert position('Total : 25 000 FCFA (paiement à la livraison)' in m) > 0, 'total formaté';
+  assert position('Frais de livraison : 1 500 FCFA' in m) > 0, 'frais dans le message : ' || m;
+  assert position('Total : 26 500 FCFA (paiement à la livraison)' in m) > 0, 'total formaté';
   assert position('Livraison : Rue 1.234, Bonapriso, Douala' in m) > 0, 'adresse complète';
   assert position('Repère : Face pharmacie' in m) > 0, 'point de repère';
   assert position('Téléphone : +237690000555' in m) > 0, 'téléphone';

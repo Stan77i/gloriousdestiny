@@ -59,7 +59,8 @@ do $$
 declare r jsonb := (select r from r1);
 begin
   assert r ->> 'reference' ~ '^GD-[0-9]{4}-[0-9]{4,}$', 'référence lisible';
-  assert (r ->> 'total_fcfa')::int = 3 * 9500 + 5500, 'total recalculé par le serveur : ' || (r ->> 'total_fcfa');
+  assert (r ->> 'total_fcfa')::int = 3 * 9500 + 5500 + 1500, 'total recalculé par le serveur, frais Douala inclus : ' || (r ->> 'total_fcfa');
+  assert (r ->> 'frais_livraison_fcfa')::int = 1500, 'frais de la ville appliqués';
   assert r ->> 'statut' = 'nouvelle', 'statut nouvelle';
   assert r ->> 'devise' = 'XAF', 'devise du Cameroun';
   assert jsonb_array_length(r -> 'lignes') = 2, 'lignes cumulées par variante';
@@ -170,7 +171,7 @@ select pg_temp.attendre_erreur(format('select public.annuler_commande(%L, %L)', 
 reset role;
 do $$ begin
   assert (select reserve from public.stocks s join t on s.variante_id = t.remover) = 0, 'réservation Remover libérée';
-  assert (select statut from public.livraisons where commande_id = (select (r ->> 'id')::uuid from r3)) = 'echec', 'livraison close';
+  assert (select statut from public.livraisons where commande_id = (select (r ->> 'id')::uuid from r3)) = 'annulee', 'livraison annulée (pas un échec)';
 end $$;
 
 -- 10. Expiration automatique des commandes non confirmées.
