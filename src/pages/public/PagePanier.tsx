@@ -199,11 +199,12 @@ export function PagePanier() {
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-encre-2">Livraison</dt>
-                <dd className="text-right text-encre-3">Convenue sur WhatsApp</dd>
+                <dd className="text-right text-encre-3">Réglée à l’agence</dd>
               </div>
             </dl>
             <p className="text-[13px] leading-relaxed text-encre-3">
-              Paiement à la livraison, en espèces ou par Mobile Money.
+              Paiement à la livraison, en espèces ou par Mobile Money. Les frais de livraison se
+              règlent directement auprès de l’agence de livraison.
             </p>
             {indisponibles > 0 && (
               <Alerte ton="alerte" titre="Certains articles ne sont plus disponibles">

@@ -279,7 +279,7 @@ export function PageCommande() {
           <dl className="flex flex-col gap-2 border-t border-filet pt-4 text-sm">
             <div className="flex justify-between gap-4">
               <dt className="text-encre-2">Livraison</dt>
-              <dd className="text-encre-3">Convenue avec vous</dd>
+              <dd className="text-right text-encre-3">Réglée à l’agence</dd>
             </div>
             <div className="flex justify-between gap-4 text-[17px] font-semibold">
               <dt>Total</dt>
