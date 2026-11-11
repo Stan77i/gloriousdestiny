@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Menu, ShoppingBag } from 'lucide-react'
 import { Link, NavLink, Outlet, ScrollRestoration } from 'react-router'
 import { CHEMINS, NAVIGATION_PUBLIQUE } from '@/app/router/chemins'
@@ -18,6 +18,17 @@ import { cx } from '@/lib/cx'
 
 function LienPanier() {
   const { nombreArticles } = usePanier()
+  // Chaque ajout relance l'animation (clé), jamais au chargement de la page.
+  const [ajouts, setAjouts] = useState(0)
+  useEffect(() => {
+    const f = () => {
+      setAjouts((n) => n + 1)
+    }
+    window.addEventListener('panier:ajout', f)
+    return () => {
+      window.removeEventListener('panier:ajout', f)
+    }
+  }, [])
   return (
     <Link
       to={CHEMINS.panier}
@@ -28,11 +39,19 @@ function LienPanier() {
           : 'Panier, vide'
       }
     >
-      <ShoppingBag aria-hidden="true" />
+      <ShoppingBag
+        key={`sac-${String(ajouts)}`}
+        aria-hidden="true"
+        className={ajouts > 0 ? 'icone-rebond' : undefined}
+      />
       {nombreArticles > 0 && (
         <span
+          key={`pastille-${String(ajouts)}`}
           aria-hidden="true"
-          className="chiffres absolute -top-1 -right-1 grid h-5 min-w-5 place-items-center rounded-full bg-or px-1 text-[11px] font-bold text-sur-or"
+          className={cx(
+            'chiffres absolute -top-1 -right-1 grid h-5 min-w-5 place-items-center rounded-full bg-or px-1 text-[11px] font-bold text-sur-or',
+            ajouts > 0 && 'pastille-rebond',
+          )}
         >
           {nombreArticles}
         </span>
@@ -171,8 +190,12 @@ export function LayoutPublic() {
         <nav aria-label="Navigation mobile">
           <ul className="flex flex-col">
             {[...NAVIGATION_PUBLIQUE, { vers: CHEMINS.rendezVous, libelle: 'Rendez-vous' }].map(
-              (l) => (
-                <li key={l.vers} className="border-b border-filet">
+              (l, i) => (
+                <li
+                  key={l.vers}
+                  className="menu-entre border-b border-filet"
+                  style={{ ['--i' as string]: String(i) }}
+                >
                   <NavLink
                     to={l.vers}
                     onClick={() => {

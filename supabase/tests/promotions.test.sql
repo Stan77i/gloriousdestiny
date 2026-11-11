@@ -34,11 +34,12 @@ set local request.jwt.claim.sub = '00000000-0000-0000-0000-0000000000e1';
 -- 1. −20 % sur tous les formats de Lace Glue (4 000 / 7 000 / 15 000).
 insert into p select public.enregistrer_promotion(jsonb_build_object(
   'produit_id', (select id from public.produits where slug = 'lace-glue'), 'mode', 'pourcentage', 'valeur', 20,
-  'fin', (now() + interval '7 days')::text));
+  'fin', (now() + interval '7 days')::text, 'libelle', 'Offre spéciale'));
 do $$ begin
   assert pg_temp.promo('GD-LG-STD') ->> 'prix_promo' = '3200' and pg_temp.promo('GD-LG-STD') ->> 'reduction' = '20', '38 ml : 4000 → 3200, −20 %';
   assert pg_temp.promo('GD-LG-150') ->> 'prix_base' = '15000' and pg_temp.promo('GD-LG-150') ->> 'prix_promo' = '12000', '150 ml';
   assert pg_temp.promo('GD-LMS-STD') is null, 'autre produit : aucune promotion';
+  assert pg_temp.promo('GD-LG-STD') ->> 'libelle' = 'Offre spéciale', 'libellé de l''offre';
 end $$;
 
 -- 2. Prix promotionnel sur un seul format ; un prix non inférieur est refusé.

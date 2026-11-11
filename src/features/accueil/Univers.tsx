@@ -7,6 +7,8 @@ import { GAMME } from '@/features/catalogue/gamme'
 import { PHOTO_LA_GAMME, visuelProduit } from '@/features/catalogue/visuels'
 import type { Produit } from '@/services/catalogue.service'
 import { cx } from '@/lib/cx'
+import { Revele } from '@/components/marque/Revele'
+import { useRevele } from '@/hooks/useRevele'
 
 /**
  * Les trois univers de la maison, en composition éditoriale : les perruques en grand portrait,
@@ -40,6 +42,7 @@ export function Univers({ produits }: { produits: Produit[] | undefined }) {
       image: cils?.grande,
       alt: cils?.alt ?? '',
       compte: nb('accessoire_cils'),
+      rupture: false,
       decor: (
         <Regard className="absolute top-[8%] right-[6%] w-[42%] max-w-[220px] drop-shadow-[0_2px_8px_rgb(0_0_0/0.35)]" />
       ),
@@ -54,6 +57,7 @@ export function Univers({ produits }: { produits: Produit[] | undefined }) {
       image: PHOTO_LA_GAMME.grande,
       alt: PHOTO_LA_GAMME.alt,
       compte: nb('produit'),
+      rupture: false,
       decor: null,
       classe: 'lg:col-span-5 aspect-[16/11]',
       position: 'object-[50%_60%]',
@@ -64,7 +68,7 @@ export function Univers({ produits }: { produits: Produit[] | undefined }) {
       aria-labelledby="titre-univers"
       className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-10 lg:py-24"
     >
-      <div className="mb-10 grid gap-4 lg:grid-cols-[1fr_1fr] lg:items-end">
+      <Revele className="mb-10 grid gap-4 lg:grid-cols-[1fr_1fr] lg:items-end">
         <h2
           id="titre-univers"
           className="titre-affiche text-[40px] leading-[1.02] text-encre sm:text-[60px]"
@@ -77,31 +81,39 @@ export function Univers({ produits }: { produits: Produit[] | undefined }) {
           Trois univers, un même savoir-faire : la pose au salon et les produits pour la faire durer
           chez vous.
         </p>
-      </div>
+      </Revele>
       <ul className="grid gap-4 lg:grid-cols-12 lg:grid-rows-2">
-        {tuiles.map((t) => (
-          <li key={t.cle} className={cx('relative', t.classe)}>
+        {tuiles.map((t, i) => (
+          <Tuile key={t.cle} indice={i} className={cx('relative', t.classe)}>
             <Link
               to={t.vers}
               className="group absolute inset-0 isolate overflow-hidden rounded-panneau bg-encre no-underline"
             >
               {t.image && (
-                <img
-                  src={t.image}
-                  alt={t.alt}
-                  loading="lazy"
-                  decoding="async"
-                  className={cx(
-                    'absolute inset-0 -z-10 size-full object-cover transition-transform duration-[1400ms] ease-(--ease-sortie) group-hover:scale-[1.05] motion-reduce:group-hover:scale-100',
-                    t.position,
-                  )}
-                />
+                <span className="parallaxe absolute inset-0 -z-10 block">
+                  <img
+                    src={t.image}
+                    alt={t.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className={cx(
+                      'absolute inset-0 -z-10 size-full object-cover transition-transform duration-[1400ms] ease-(--ease-sortie) group-hover:scale-[1.05] motion-reduce:group-hover:scale-100',
+                      t.position,
+                    )}
+                  />
+                </span>
               )}
               <span
                 aria-hidden="true"
                 className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(15_15_14/0)_35%,rgb(15_15_14/0.82)_100%)]"
               />
               {t.decor}
+              {t.rupture && (
+                <span className="absolute top-4 left-4 inline-flex items-center gap-2 rounded-full bg-[#17140f]/80 px-3.5 py-1.5 text-[12px] font-semibold tracking-[0.1em] text-[#f3d89f] uppercase backdrop-blur-sm">
+                  <span aria-hidden="true" className="size-1.5 rounded-full bg-[#f3d89f]" />
+                  Rupture de stock
+                </span>
+              )}
               <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-7">
                 <span className="max-w-sm">
                   <span className="block text-[30px] font-semibold tracking-[-0.025em] text-[#fffaf0] sm:text-[40px]">
@@ -117,9 +129,26 @@ export function Univers({ produits }: { produits: Produit[] | undefined }) {
                 </span>
               </span>
             </Link>
-          </li>
+          </Tuile>
         ))}
       </ul>
     </section>
+  )
+}
+
+function Tuile({
+  indice,
+  className,
+  children,
+}: {
+  indice: number
+  className: string
+  children: React.ReactNode
+}) {
+  const ref = useRevele(indice)
+  return (
+    <li ref={ref} className={className}>
+      {children}
+    </li>
   )
 }

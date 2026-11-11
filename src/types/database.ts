@@ -1166,6 +1166,7 @@ export type Database = {
           debut: string
           fin: string | null
           id: string
+          libelle: string | null
           mode: string
           produit_id: string
           updated_at: string
@@ -1865,6 +1866,7 @@ export type Database = {
         Args: never
         Returns: {
           fin: string
+          libelle: string | null
           prix_base: number
           prix_promo: number
           reduction: number

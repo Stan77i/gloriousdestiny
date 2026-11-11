@@ -2,6 +2,8 @@ import type { ReactNode } from 'react'
 import { useNotifications } from '@/components/feedback/notifications/useNotifications'
 import { CarteProduit, type Univers } from '@/components/produit/CarteProduit'
 import { PrixProduit } from '@/components/produit/PrixProduit'
+import { SLUGS_BULLES } from '@/components/produit/bulles'
+import { useRevele } from '@/hooks/useRevele'
 import { Squelette } from '@/components/ui/Chargeur'
 import { EtatErreur } from '@/components/ui/Etats'
 import { usePanier } from '@/features/panier/usePanier'
@@ -16,6 +18,24 @@ const UNIVERS_TYPE: Record<Produit['type'], Univers> = {
   produit: 'soin',
   accessoire_cils: 'cils',
   perruque: 'perruque',
+}
+
+/** Case de la grille, révélée au défilement (décalée par colonne). */
+function CelluleRevelee({
+  indice,
+  large,
+  children,
+}: {
+  indice: number
+  large: boolean
+  children: ReactNode
+}) {
+  const ref = useRevele(indice)
+  return (
+    <li ref={ref} className={cx('h-full', large && 'col-span-full')}>
+      {children}
+    </li>
+  )
 }
 
 /**
@@ -65,7 +85,7 @@ export function GrilleProduits({
 
   return (
     <ul className={`grid gap-3 sm:gap-4 ${colonnes}`}>
-      {produits.map((p) => {
+      {produits.map((p, i) => {
         const variante = p.variantes[0]
         const plusieurs = p.variantes.length > 1
         const visuel = visuelProduit(p.slug)
@@ -83,7 +103,7 @@ export function GrilleProduits({
         const reductions = p.variantes.flatMap((v) => (v.promo ? [v.promo.reduction] : []))
         const reduction = reductions.length > 0 ? Math.max(...reductions) : undefined
         return (
-          <li key={p.id} className={cx('h-full', large && 'col-span-full')}>
+          <CelluleRevelee key={p.id} indice={i % 4} large={large}>
             <CarteProduit
               nom={p.nom}
               format={
@@ -96,6 +116,7 @@ export function GrilleProduits({
               categorie={p.categorie.nom}
               accroche={p.fiche.accroche ?? null}
               univers={UNIVERS_TYPE[p.type]}
+              bulles={SLUGS_BULLES.has(p.slug)}
               detoure={visuel.detoure}
               pleine={large ? visuel.pleine?.grande : visuel.pleine?.petite}
               large={large}
@@ -119,7 +140,7 @@ export function GrilleProduits({
                   },
                 })}
             />
-          </li>
+          </CelluleRevelee>
         )
       })}
     </ul>

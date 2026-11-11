@@ -5,6 +5,7 @@ import { CHEMINS } from '@/app/router/chemins'
 import { GAMME } from '@/features/catalogue/gamme'
 import { PHOTO_LA_GAMME, visuelProduit } from '@/features/catalogue/visuels'
 import { useAEcran } from '@/hooks/useAEcran'
+import { useMouvementReduit } from '@/hooks/useMouvementReduit'
 import { cx } from '@/lib/cx'
 
 /**
@@ -99,21 +100,6 @@ function diapos(): Diapo[] {
 }
 
 const DUREE_MS = 6000
-
-function abonnerMouvement(rappel: () => void) {
-  const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-  mq.addEventListener('change', rappel)
-  return () => {
-    mq.removeEventListener('change', rappel)
-  }
-}
-function useMouvementReduit(): boolean {
-  return useSyncExternalStore(
-    abonnerMouvement,
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    () => false,
-  )
-}
 
 function abonnerVisibilite(rappel: () => void) {
   document.addEventListener('visibilitychange', rappel)

@@ -1,4 +1,5 @@
-import { useId } from 'react'
+import { useEffect, useId } from 'react'
+import { useMouvementReduit } from '@/hooks/useMouvementReduit'
 import { useAEcran } from '@/hooks/useAEcran'
 import { cx } from '@/lib/cx'
 
@@ -67,9 +68,35 @@ const MECHES: { d: string; l: number; o: number; t: number }[] = [
   },
 ]
 
+/**
+ * Brise : la même mèche, déplacée latéralement d'autant plus qu'on descend vers les pointes
+ * (les racines restent immobiles). Deux souffles, l'un vers la droite, l'autre vers la gauche.
+ */
+function souffle(d: string, amplitude: number, phase: number): string {
+  let n = 0
+  return d.replace(/(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)/g, (_, xs: string, ys: string) => {
+    n += 1
+    const x = Number(xs)
+    const y = Number(ys)
+    if (n === 1) return `${xs} ${ys}`
+    const poids = (y / 1000) ** 1.4
+    const dx = amplitude * poids * Math.sin(y / 210 + phase)
+    return `${(x + dx).toFixed(1)} ${ys}`
+  })
+}
+
 export function Meches({ className, ton = 'or' }: { className?: string; ton?: 'or' | 'clair' }) {
   const { ref, visible } = useAEcran<SVGSVGElement>()
   const id = `meches-${useId().replace(/:/g, '')}`
+  const reduit = useMouvementReduit()
+  // La brise (SMIL) s'arrête hors écran, comme l'ondulation CSS.
+  useEffect(() => {
+    const svg = ref.current
+    // Navigateurs sans SMIL (ou environnement de test) : la brise est simplement absente.
+    if (!svg || typeof svg.pauseAnimations !== 'function') return
+    if (visible) svg.unpauseAnimations()
+    else svg.pauseAnimations()
+  }, [visible, ref])
   return (
     <svg
       ref={ref}
@@ -109,7 +136,20 @@ export function Meches({ className, ton = 'or' }: { className?: string; ton?: 'o
             opacity={m.o}
             className="meche-trace"
             style={{ animationDelay: `${String(0.15 + i * 0.12)}s` }}
-          />
+          >
+            {!reduit && (
+              <animate
+                attributeName="d"
+                dur={`${(m.t * 1.7).toFixed(1)}s`}
+                begin={`${(1.8 + i * 0.35).toFixed(2)}s`}
+                repeatCount="indefinite"
+                calcMode="spline"
+                keyTimes="0;0.25;0.5;0.75;1"
+                keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"
+                values={[m.d, souffle(m.d, 26, i), m.d, souffle(m.d, -20, i + 1.3), m.d].join(';')}
+              />
+            )}
+          </path>
         </g>
       ))}
     </svg>

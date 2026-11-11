@@ -58,32 +58,66 @@ export function PagePerruques() {
           erreur={produits.error}
           onReessayer={() => void produits.refetch()}
           vide={
-            <div className="grid gap-6 rounded-panneau bg-carte p-7 shadow-panneau sm:p-10 lg:grid-cols-[1.2fr_1fr] lg:items-center">
-              <div>
-                <p className="text-[22px] font-semibold tracking-[-0.015em] text-encre">
-                  Notre sélection de perruques arrive en ligne.
-                </p>
-                <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-encre-2">
-                  En attendant, décrivez-nous la perruque que vous cherchez : nous vous répondons
-                  sur WhatsApp avec les modèles disponibles.
-                </p>
-                <BoutonWhatsApp libelle="Être conseillée sur WhatsApp" className="mt-6" />
-              </div>
-              <ul
-                aria-label="Ce que nous vous demanderons"
-                className="flex flex-wrap gap-2 lg:justify-end"
-              >
-                {['Longueur', 'Texture : lisse, ondulée, bouclée', 'Couleur', 'Type de lace'].map(
-                  (c) => (
-                    <li
-                      key={c}
-                      className="rounded-full bg-rose px-4 py-2 text-[14px] font-medium text-encre"
+            <div className="zone-nuit relative isolate overflow-hidden rounded-panneau bg-fond text-encre">
+              <Meches className="pointer-events-none absolute inset-y-0 right-[4%] -z-10 h-full w-56 opacity-70 sm:w-72" />
+              <div className="grid gap-8 p-7 sm:p-12 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+                <div>
+                  <p className="inline-flex items-center gap-2 rounded-full bg-or-doux px-3.5 py-1.5 text-[12px] font-semibold tracking-[0.12em] text-or uppercase">
+                    <span
+                      aria-hidden="true"
+                      className="size-1.5 animate-pulse-doux rounded-full bg-or"
+                    />
+                    Rupture de stock
+                  </p>
+                  <h3 className="titre-affiche mt-5 text-[34px] leading-[1.05] sm:text-[48px]">
+                    Nos perruques sont
+                    <br />
+                    <span className="text-or">momentanément épuisées.</span>
+                  </h3>
+                  <p className="mt-4 max-w-lg text-[16px] leading-relaxed text-encre-2">
+                    Dites-nous la perruque que vous cherchez : nous vous prévenons sur WhatsApp dès
+                    le retour des modèles qui vous correspondent. La pose et l’entretien de votre
+                    propre perruque restent disponibles au salon.
+                  </p>
+                  <div className="mt-7 flex flex-wrap gap-3">
+                    <BoutonWhatsApp
+                      variante="or"
+                      libelle="Être prévenue du retour"
+                      message="Bonjour, je souhaite être prévenue du retour des perruques. Je cherche : longueur …, texture …, couleur …, type de lace …"
+                    />
+                    <Link
+                      to={CHEMINS.rendezVous}
+                      className={classesBouton('secondaire', 'normal', 'no-underline')}
                     >
-                      {c}
-                    </li>
-                  ),
-                )}
-              </ul>
+                      Réserver une pose
+                    </Link>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[13px] font-semibold text-encre-2">
+                    Ce que vous pourrez nous préciser
+                  </p>
+                  <ul
+                    aria-label="Ce que vous pourrez nous préciser"
+                    className="mt-3 flex flex-wrap gap-2"
+                  >
+                    {[
+                      'Longueur',
+                      'Lisse, ondulée ou bouclée',
+                      'Couleur',
+                      'Type de lace',
+                      'Densité',
+                    ].map((c) => (
+                      <li
+                        key={c}
+                        className="rounded-full bg-carte px-4 py-2 text-[14px] font-medium text-encre ring-1 ring-or/25"
+                      >
+                        {c}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           }
         />

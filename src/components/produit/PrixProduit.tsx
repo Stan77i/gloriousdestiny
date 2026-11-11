@@ -1,8 +1,15 @@
 import { cx } from '@/lib/cx'
+import { useHorloge } from '@/hooks/useHorloge'
 import { formaterDate } from '@/lib/format/date'
+import { echeance } from '@/lib/format/echeance'
 import { formaterFcfa } from '@/lib/format/montant'
 
-export type PromoAffichee = { prixBase: number; reduction: number; fin: string | null }
+export type PromoAffichee = {
+  prixBase: number
+  reduction: number
+  fin: string | null
+  libelle?: string | null
+}
 
 /**
  * Pastille de réduction : lingot d'or, chiffre en encre. Le pourcentage vient du serveur,
@@ -20,7 +27,7 @@ export function BadgePromo({
   return (
     <span
       className={cx(
-        'degrade-or chiffres inline-flex items-center gap-1 rounded-full font-semibold tracking-[0.02em] text-sur-or shadow-or',
+        'badge-promo degrade-or chiffres relative inline-flex items-center gap-1 overflow-hidden rounded-full font-semibold tracking-[0.02em] text-sur-or shadow-or',
         taille === 'grand' ? 'px-3.5 py-1.5 text-[13px] uppercase' : 'px-2.5 py-1 text-[12px]',
         className,
       )}
@@ -65,8 +72,46 @@ export function PrixProduit({
   }
   const economie = promo.prixBase - prix
   return (
+    <PrixPromo
+      prix={prix}
+      promo={promo}
+      des={des}
+      fiche={fiche}
+      economie={economie}
+      className={className}
+    />
+  )
+}
+
+function PrixPromo({
+  prix,
+  promo,
+  des,
+  fiche,
+  economie,
+  className,
+}: {
+  prix: number
+  promo: PromoAffichee
+  des: boolean
+  fiche: boolean
+  economie: number
+  className?: string | undefined
+}) {
+  const maintenant = useHorloge()
+  const quand = echeance(promo.fin, maintenant)
+  return (
     <div className={cx('flex flex-col', fiche ? 'gap-2' : 'gap-0.5', className)}>
-      {fiche && <BadgePromo reduction={promo.reduction} taille="grand" className="self-start" />}
+      {fiche && (
+        <span className="flex flex-wrap items-center gap-2">
+          <BadgePromo reduction={promo.reduction} taille="grand" />
+          {promo.libelle && (
+            <span className="rounded-full bg-encre px-3 py-1.5 text-[12px] font-semibold tracking-[0.08em] text-or uppercase">
+              {promo.libelle}
+            </span>
+          )}
+        </span>
+      )}
       <p className="chiffres flex flex-wrap items-baseline gap-x-2">
         <span className="sr-only">
           Prix promotionnel {formaterFcfa(prix)} au lieu de {formaterFcfa(promo.prixBase)}
@@ -94,9 +139,19 @@ export function PrixProduit({
       <p className={cx('font-medium text-or-texte', fiche ? 'text-[15px]' : 'text-[12px]')}>
         Vous économisez {formaterFcfa(economie)}
         {promo.fin && fiche && (
-          <span className="font-normal text-encre-3"> · jusqu’au {formaterDate(promo.fin)}</span>
+          <span className="font-normal text-encre-3">
+            {' '}
+            · offre jusqu’au {formaterDate(promo.fin)}
+          </span>
         )}
       </p>
+      {!fiche && (promo.libelle ?? quand) && (
+        <p className="text-[12px] text-encre-3">
+          {promo.libelle
+            ? [promo.libelle, quand].filter(Boolean).join(' · ')
+            : `Offre ${quand ?? ''}`}
+        </p>
+      )}
     </div>
   )
 }

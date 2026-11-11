@@ -15,6 +15,8 @@ import { CHEMINS } from '@/app/router/chemins'
 import { useNotifications } from '@/components/feedback/notifications/useNotifications'
 import { Monogramme } from '@/components/produit/Monogramme'
 import { PrixProduit } from '@/components/produit/PrixProduit'
+import { Bulles } from '@/components/produit/Bulles'
+import { SLUGS_BULLES } from '@/components/produit/bulles'
 import { Badge } from '@/components/ui/Badge'
 import { Bouton } from '@/components/ui/Bouton'
 import { Squelette } from '@/components/ui/Chargeur'
@@ -171,18 +173,20 @@ export function PageProduit() {
                 srcSet={`${visuel.photo.petite} 800w, ${visuel.photo.grande} 1600w`}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 alt={visuel.photo.alt}
-                className="absolute inset-0 size-full object-cover"
+                className="apparait-fondu absolute inset-0 size-full object-cover"
               />
             ) : visuel.detoure ? (
               <img
+                key="produit"
                 src={visuel.detoure}
                 alt={`${p.nom}, Glorious Destiny`}
                 fetchPriority="high"
-                className="absolute inset-0 size-full object-contain p-[10%]"
+                className="apparait-fondu absolute inset-0 size-full object-contain p-[10%]"
               />
             ) : (
               <Monogramme nom={p.nom} />
             )}
+            {SLUGS_BULLES.has(p.slug) && vue === 'produit' && <Bulles auto />}
           </div>
           {visuel.photo && visuel.detoure && (
             <div role="group" aria-label="Choisir la vue" className="flex gap-3">

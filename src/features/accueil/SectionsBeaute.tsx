@@ -2,6 +2,8 @@ import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router'
 import { CHEMINS } from '@/app/router/chemins'
 import { Regard } from '@/components/marque/Regard'
+import { CompteARebours } from '@/components/produit/CompteARebours'
+import { prochaineFin } from './offres'
 import { classesBouton } from '@/components/ui/classesBouton'
 import { GrilleProduits } from '@/features/catalogue/GrilleProduits'
 import type { Produit } from '@/services/catalogue.service'
@@ -15,20 +17,26 @@ export function OffresDuMoment({
   onReessayer: () => void
 }) {
   const offres = produits?.filter((p) => p.variantes.some((v) => v.promo))
+  const fin = prochaineFin(produits)
   if (!offres || offres.length === 0) return null
   return (
     <section
+      id="offres"
       aria-labelledby="titre-offres"
-      className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-10"
+      className="mx-auto max-w-7xl scroll-mt-24 px-4 pb-20 sm:px-6 lg:px-10"
     >
       <div className="zone-nuit rounded-panneau bg-fond p-5 text-encre sm:p-10">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <h2 id="titre-offres" className="titre-affiche text-[40px] leading-none sm:text-[56px]">
             Offres <span className="text-or">du moment</span>
           </h2>
-          <p className="max-w-sm text-[15px] text-encre-2">
-            Réductions réelles, calculées sur le prix habituel, pendant une durée limitée.
-          </p>
+          {fin ? (
+            <CompteARebours fin={fin.fin} titre={fin.titre} onTermine={onReessayer} />
+          ) : (
+            <p className="max-w-sm text-[15px] text-encre-2">
+              Réductions réelles, calculées sur le prix habituel.
+            </p>
+          )}
         </div>
         <GrilleProduits
           produits={offres}

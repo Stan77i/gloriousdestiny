@@ -1,10 +1,11 @@
-import type { ReactNode } from 'react'
-import { ArrowUpRight, Plus } from 'lucide-react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { ArrowUpRight, Check, Plus } from 'lucide-react'
 import { Link } from 'react-router'
 import { Bouton } from '@/components/ui/Bouton'
 import { cx } from '@/lib/cx'
 import type { Disponibilite } from '@/services/catalogue.service'
 import { Monogramme } from './Monogramme'
+import { Bulles } from './Bulles'
 import { BadgePromo } from './PrixProduit'
 
 export type { Disponibilite }
@@ -42,6 +43,7 @@ export function CarteProduit({
   choisir = false,
   enCours = false,
   univers = 'soin',
+  bulles = false,
 }: {
   nom: string
   format: string | null
@@ -65,9 +67,28 @@ export function CarteProduit({
   choisir?: boolean
   enCours?: boolean
   univers?: Univers
+  /** Mousse ou gel : bulles légères au survol. */
+  bulles?: boolean
 }) {
   const epuise = disponibilite === 'epuise'
   const dispo = disponibilite ? DISPO[disponibilite] : null
+  // Retour visuel de l'ajout : le bouton devient « Ajouté » avec une coche, puis revient.
+  const [ajoute, setAjoute] = useState(false)
+  const minuteur = useRef<number | undefined>(undefined)
+  useEffect(
+    () => () => {
+      window.clearTimeout(minuteur.current)
+    },
+    [],
+  )
+  const ajouter = () => {
+    onAjouter?.()
+    setAjoute(true)
+    window.clearTimeout(minuteur.current)
+    minuteur.current = window.setTimeout(() => {
+      setAjoute(false)
+    }, 1600)
+  }
   return (
     <article className="group relative flex h-full flex-col rounded-panneau bg-carte p-2 shadow-panneau transition-[box-shadow,transform] duration-500 ease-(--ease-sortie) focus-within:shadow-flottant hover:-translate-y-1 hover:shadow-flottant motion-reduce:hover:translate-y-0">
       <div
@@ -116,6 +137,7 @@ export function CarteProduit({
             className="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 [@media(hover:none)]:hidden"
           />
         )}
+        {bulles && <Bulles />}
         {/* Reflet d'or qui traverse le visuel au survol. */}
         <span aria-hidden="true" className="reflet-or pointer-events-none absolute inset-0 z-10" />
         <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-1.5">
@@ -165,12 +187,12 @@ export function CarteProduit({
               variante={epuise ? 'secondaire' : 'principal'}
               disabled={epuise || disponibilite === undefined}
               enCours={enCours}
-              onClick={onAjouter}
-              icone={<Plus />}
-              aria-label={`Ajouter ${nom} au panier`}
-              className="relative z-20"
+              onClick={ajouter}
+              icone={ajoute ? <Check className="coche-trace" /> : <Plus />}
+              aria-label={ajoute ? `${nom} ajouté au panier` : `Ajouter ${nom} au panier`}
+              className={cx('relative z-20', ajoute && 'bg-or text-sur-or hover:bg-or')}
             >
-              {epuise ? 'Épuisé' : 'Ajouter'}
+              {epuise ? 'Épuisé' : ajoute ? 'Ajouté' : 'Ajouter'}
             </Bouton>
           ) : choisir ? (
             <span

@@ -24,6 +24,7 @@ type Promotion = {
   debut: string
   fin: string | null
   actif: boolean
+  libelle: string | null
 }
 type Format = { id: string; libelle: string; prix: number }
 
@@ -31,7 +32,7 @@ async function charger(produitId: string, prixProduit: number) {
   const [promos, formats] = await Promise.all([
     supabase()
       .from('promotions')
-      .select('id, variante_id, mode, valeur, debut, fin, actif')
+      .select('id, variante_id, mode, valeur, debut, fin, actif, libelle')
       .eq('produit_id', produitId)
       .order('created_at', { ascending: false }),
     supabase()
@@ -83,6 +84,7 @@ export function PromotionsProduit({
   const [valeur, setValeur] = useState('')
   const [debut, setDebut] = useState('')
   const [fin, setFin] = useState('')
+  const [libelle, setLibelle] = useState('')
   const [erreur, setErreur] = useState<string | null>(null)
   const invalider = () =>
     Promise.all([
@@ -100,6 +102,7 @@ export function PromotionsProduit({
           valeur: Number.parseInt(valeur, 10),
           debut: versIso(debut),
           fin: versIso(fin),
+          libelle: libelle.trim(),
         },
       })
       if (error) throw versErreurApp(error)
@@ -199,7 +202,35 @@ export function PromotionsProduit({
             />
           )}
         </Champ>
-        <Champ libelle="Fin" aide="Vide : jusqu’à désactivation.">
+        <Champ
+          libelle="Mention (facultative)"
+          aide="Affichée avec la réduction, 40 caractères au plus."
+        >
+          {(a) => (
+            <>
+              <Saisie
+                {...a}
+                list="mentions-promotion"
+                maxLength={40}
+                value={libelle}
+                onChange={(e) => {
+                  setLibelle(e.target.value)
+                }}
+                placeholder="Ex. Offre spéciale"
+              />
+              <datalist id="mentions-promotion">
+                <option value="Offre spéciale" />
+                <option value="Offre limitée" />
+                <option value="Prix doux" />
+                <option value="Offre de lancement" />
+              </datalist>
+            </>
+          )}
+        </Champ>
+        <Champ
+          libelle="Fin"
+          aide="Vide : jusqu’à désactivation. Le compte à rebours du site s’appuie sur cette date."
+        >
           {(a) => (
             <Saisie
               {...a}
@@ -248,6 +279,7 @@ export function PromotionsProduit({
                 setValeur('')
                 setDebut('')
                 setFin('')
+                setLibelle('')
               },
               onError: (e) => {
                 setErreur(versErreurApp(e).message)
@@ -276,6 +308,7 @@ export function PromotionsProduit({
                     {p.mode === 'pourcentage' ? `−${String(p.valeur)} %` : formaterFcfa(p.valeur)}
                   </span>{' '}
                   · {format ? format.libelle : 'tous les formats'}
+                  {p.libelle && ` · ${p.libelle}`}
                   <span className="block text-encre-3">
                     du {formaterDateHeure(p.debut)}
                     {p.fin ? ` au ${formaterDateHeure(p.fin)}` : ', sans date de fin'}

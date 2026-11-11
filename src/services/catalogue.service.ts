@@ -39,7 +39,7 @@ export type Variante = {
   sku: string
   libelle: string
   prix: number
-  promo: { prixBase: number; reduction: number; fin: string | null } | null
+  promo: { prixBase: number; reduction: number; fin: string | null; libelle: string | null } | null
 }
 
 export type Produit = {
@@ -88,7 +88,13 @@ type LigneProduit = {
   }[]
 }
 
-type Promo = { prixBase: number; prixPromo: number; reduction: number; fin: string | null }
+type Promo = {
+  prixBase: number
+  prixPromo: number
+  reduction: number
+  fin: string | null
+  libelle: string | null
+}
 
 /** Promotions en cours (calculées par le serveur), par format. Expirées : ignorées ici aussi. */
 async function promotionsEnCours(): Promise<Map<string, Promo>> {
@@ -102,6 +108,7 @@ async function promotionsEnCours(): Promise<Map<string, Promo>> {
     prix_promo: number
     reduction: number
     fin: string | null
+    libelle: string | null
   }
   const lignes: Ligne[] = data
   return new Map(
@@ -109,7 +116,13 @@ async function promotionsEnCours(): Promise<Map<string, Promo>> {
       .filter((x) => x.fin === null || new Date(x.fin).getTime() > maintenant)
       .map((x) => [
         x.variante_id,
-        { prixBase: x.prix_base, prixPromo: x.prix_promo, reduction: x.reduction, fin: x.fin },
+        {
+          prixBase: x.prix_base,
+          prixPromo: x.prix_promo,
+          reduction: x.reduction,
+          fin: x.fin,
+          libelle: x.libelle,
+        },
       ]),
   )
 }
@@ -135,7 +148,12 @@ function versProduit(l: LigneProduit, promos: Map<string, Promo>): Produit {
           libelle: v.libelle,
           prix: promo ? promo.prixPromo : (v.prix_fcfa ?? l.prix_fcfa),
           promo: promo
-            ? { prixBase: promo.prixBase, reduction: promo.reduction, fin: promo.fin }
+            ? {
+                prixBase: promo.prixBase,
+                reduction: promo.reduction,
+                fin: promo.fin,
+                libelle: promo.libelle,
+              }
             : null,
         }
       })

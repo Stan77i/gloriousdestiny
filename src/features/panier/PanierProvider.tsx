@@ -45,6 +45,8 @@ export function PanierProvider({ children }: { children: ReactNode }) {
       nombreArticles: lignes.reduce((s, l) => s + l.quantite, 0),
       ajouter: (varianteId, quantite = 1) => {
         envoyer({ type: 'ajouter', varianteId, quantite })
+        // Signal pour l'en-tête (rebond du panier) : aucun effet sur les données.
+        window.dispatchEvent(new CustomEvent('panier:ajout'))
       },
       modifier: (varianteId, quantite) => {
         envoyer({ type: 'modifier', varianteId, quantite })

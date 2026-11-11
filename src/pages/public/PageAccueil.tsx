@@ -16,8 +16,10 @@ import { useParametresPublics, useProduits, useServices } from '@/features/catal
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { OffresDuMoment, RegardCils } from '@/features/accueil/SectionsBeaute'
 import { Univers } from '@/features/accueil/Univers'
+import { BarreOffre } from '@/features/accueil/BarreOffre'
 import { CarrouselGammes } from '@/features/accueil/CarrouselGammes'
 import { Meches } from '@/components/marque/Meches'
+import { Revele } from '@/components/marque/Revele'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { formaterDuree } from '@/lib/format/duree'
 import { cx } from '@/lib/cx'
@@ -60,34 +62,36 @@ function Rituel() {
     <ol className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
       {etapes.map((e, i) => (
         <li key={e.slug} className="w-[78%] shrink-0 snap-start sm:w-auto">
-          <Link
-            to={CHEMINS.produit(e.slug)}
-            className={cx(
-              'group flex h-full flex-col rounded-panneau p-2 pb-5 no-underline transition-transform duration-300 ease-(--ease-sortie) hover:-translate-y-1',
-              FOND_TEINTE[e.teinte],
-            )}
-          >
-            <div className="relative aspect-[3/4] overflow-hidden rounded-[22px]">
-              <img
-                src={e.photo.petite}
-                alt={e.photo.alt}
-                loading="lazy"
-                decoding="async"
-                className="size-full object-cover transition-transform duration-700 ease-(--ease-sortie) group-hover:scale-[1.03]"
-              />
-              <span className="chiffres absolute top-3 left-3 grid size-11 place-items-center rounded-full bg-carte text-[17px] font-semibold text-encre shadow-panneau">
-                {i + 1}
-              </span>
-            </div>
-            <p className="mt-4 px-3 text-[28px] font-semibold tracking-[-0.02em] text-encre">
-              {e.geste}
-            </p>
-            <p className="mt-1 px-3 text-sm leading-relaxed text-encre-2">{e.texte}</p>
-            <p className="mt-auto inline-flex items-center gap-1.5 px-3 pt-3 text-sm font-semibold text-encre underline-offset-4 group-hover:underline [&_svg]:size-4">
-              {e.produit.nom}
-              <ArrowRight aria-hidden="true" />
-            </p>
-          </Link>
+          <Revele indice={i} className="h-full">
+            <Link
+              to={CHEMINS.produit(e.slug)}
+              className={cx(
+                'group flex h-full flex-col rounded-panneau p-2 pb-5 no-underline transition-transform duration-300 ease-(--ease-sortie) hover:-translate-y-1',
+                FOND_TEINTE[e.teinte],
+              )}
+            >
+              <div className="relative aspect-[3/4] overflow-hidden rounded-[22px]">
+                <img
+                  src={e.photo.petite}
+                  alt={e.photo.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="size-full object-cover transition-transform duration-700 ease-(--ease-sortie) group-hover:scale-[1.03]"
+                />
+                <span className="chiffres absolute top-3 left-3 grid size-11 place-items-center rounded-full bg-carte text-[17px] font-semibold text-encre shadow-panneau">
+                  {i + 1}
+                </span>
+              </div>
+              <p className="mt-4 px-3 text-[28px] font-semibold tracking-[-0.02em] text-encre">
+                {e.geste}
+              </p>
+              <p className="mt-1 px-3 text-sm leading-relaxed text-encre-2">{e.texte}</p>
+              <p className="mt-auto inline-flex items-center gap-1.5 px-3 pt-3 text-sm font-semibold text-encre underline-offset-4 group-hover:underline [&_svg]:size-4">
+                {e.produit.nom}
+                <ArrowRight aria-hidden="true" />
+              </p>
+            </Link>
+          </Revele>
         </li>
       ))}
     </ol>
@@ -104,7 +108,7 @@ function Services() {
       aria-labelledby="titre-salon"
       className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-10"
     >
-      <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+      <Revele className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
         {photo && (
           <div className="relative order-last min-h-80 overflow-hidden rounded-panneau lg:order-first">
             <img
@@ -157,7 +161,7 @@ function Services() {
             Prendre rendez-vous
           </Link>
         </div>
-      </div>
+      </Revele>
     </section>
   )
 }
@@ -182,7 +186,9 @@ function PresenceAccueil() {
         </div>
         <ChiffresPresence />
       </div>
-      <ScenePresence etat={etat} className="mt-8" />
+      <Revele>
+        <ScenePresence etat={etat} className="mt-8" />
+      </Revele>
       <div className="mt-6 flex flex-wrap gap-3">
         <Link to={CHEMINS.presence} className={classesBouton('principal', 'grand', 'no-underline')}>
           Explorer la carte
@@ -242,6 +248,7 @@ export function PageAccueil() {
 
       <Univers produits={produits.data} />
       <OffresDuMoment produits={produits.data} onReessayer={() => void produits.refetch()} />
+      <BarreOffre produits={produits.data} onTermine={() => void produits.refetch()} />
 
       {/* Le rituel de pose */}
       <section aria-labelledby="titre-rituel">
@@ -271,9 +278,9 @@ export function PageAccueil() {
               <ArrowRight aria-hidden="true" />
             </Link>
           </div>
-          <div className="mb-8">
+          <Revele vedette className="mb-8">
             <HeroLaGamme produit={laGamme} />
-          </div>
+          </Revele>
           <GrilleProduits
             produits={gamme}
             chargement={produits.isPending}
