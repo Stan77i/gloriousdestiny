@@ -22,6 +22,8 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    // Copies de travail des agents (.claude/worktrees) : jamais testées depuis ici.
+    exclude: ['**/node_modules/**', '**/dist/**', '.claude/**', 'e2e/**'],
     // Les tests n'appellent jamais le vrai projet Supabase.
     env: {
       VITE_SUPABASE_URL: 'https://projet-test.supabase.co',

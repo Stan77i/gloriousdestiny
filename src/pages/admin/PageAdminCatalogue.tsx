@@ -24,6 +24,7 @@ import {
   useProduitsAdmin,
   useServicesAdmin,
 } from '@/features/catalogue-admin/requetes'
+import { ModalePrestation } from '@/features/catalogue-admin/ModalePrestation'
 import { PromotionsProduit } from '@/features/catalogue-admin/Promotions'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
@@ -422,14 +423,23 @@ function Prestations() {
             id: 'nom',
             entete: 'Prestation',
             pleineLargeur: true,
-            cellule: (s) => <span className="font-medium">{s.nom}</span>,
+            cellule: (s) => (
+              <span className="flex flex-col">
+                <span className="font-medium">{s.nom}</span>
+                <span className="text-[13px] text-encre-3">
+                  {s.mode === 'demande'
+                    ? `Nos prestations · sur demande${s.image ? '' : ' · sans photo'}`
+                    : 'Agenda du salon'}
+                </span>
+              </span>
+            ),
           },
           {
             id: 'duree',
             entete: 'Durée',
             cellule: (s) => (
               <span className="flex flex-col">
-                {formaterDuree(s.dureeMinutes)}
+                {s.mode === 'demande' ? '—' : formaterDuree(s.dureeMinutes)}
                 {s.tamponApresMinutes > 0 && (
                   <span className="text-[13px] text-encre-3">
                     + {s.tamponApresMinutes} min de battement
@@ -448,7 +458,11 @@ function Prestations() {
             id: 'site',
             entete: 'Sur le site',
             cellule: (s) =>
-              s.publie ? <Badge ton="succes">Réservable</Badge> : <Badge>Masquée</Badge>,
+              s.publie ? (
+                <Badge ton="succes">{s.mode === 'demande' ? 'Disponible' : 'Réservable'}</Badge>
+              ) : (
+                <Badge>{s.mode === 'demande' ? 'Indisponible' : 'Masquée'}</Badge>
+              ),
           },
           {
             id: 'action',
@@ -471,7 +485,16 @@ function Prestations() {
           },
         ]}
       />
-      {edition && (
+      {edition?.mode === 'demande' && (
+        <ModalePrestation
+          key={edition.id}
+          service={edition}
+          onFermer={() => {
+            setEdition(null)
+          }}
+        />
+      )}
+      {edition && edition.mode === 'creneau' && (
         <ModaleService
           key={edition.id}
           service={edition}

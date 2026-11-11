@@ -104,6 +104,10 @@ export type ServiceAdmin = {
   id: string
   nom: string
   description: string
+  /** creneau : agenda du salon ; demande : rubrique « Nos prestations » (date souhaitée). */
+  mode: 'creneau' | 'demande'
+  /** Chemin de la photo dans le bucket « produits » (prestations sur demande). */
+  image: string | null
   dureeMinutes: number
   tamponApresMinutes: number
   prixFcfa: number
@@ -113,15 +117,21 @@ export type ServiceAdmin = {
 export async function listerServicesAdmin(): Promise<ServiceAdmin[]> {
   const { data, error } = await supabase()
     .from('services')
-    .select('id, nom, description, duree_minutes, tampon_apres_minutes, prix_fcfa, publie')
+    .select(
+      'id, nom, description, mode_reservation, image, ordre, duree_minutes, tampon_apres_minutes, prix_fcfa, publie',
+    )
     .is('archive_at', null)
+    .order('mode_reservation', { ascending: false })
+    .order('ordre')
     .order('nom')
   if (error) throw versErreurApp(error)
   return data.map((s) => ({
     id: s.id,
     nom: s.nom,
     description: s.description ?? '',
-    dureeMinutes: s.duree_minutes,
+    mode: s.mode_reservation === 'demande' ? 'demande' : 'creneau',
+    image: s.image,
+    dureeMinutes: s.duree_minutes ?? 0,
     tamponApresMinutes: s.tampon_apres_minutes,
     prixFcfa: s.prix_fcfa,
     publie: s.publie,
@@ -149,6 +159,53 @@ export async function modifierService(id: string, saisie: z.output<typeof schema
     })
     .eq('id', id)
   if (error) throw versErreurApp(error)
+}
+
+/** Prestation sur demande : nom, texte, prix, photo, disponibilité (un seul endroit). */
+export const schemaPrestation = z.object({
+  nom: z.string().trim().min(2, 'Un nom (2 caractères au moins).').max(80),
+  prix: entierRequis(0, 10_000_000, 'Indiquez un prix en FCFA (nombre entier).'),
+  publie: z.boolean(),
+  description: z.string().trim().max(1000, '1 000 caractères au plus'),
+})
+export type SaisiePrestation = z.input<typeof schemaPrestation>
+
+export async function modifierPrestation(
+  id: string,
+  saisie: z.output<typeof schemaPrestation>,
+  image?: string | null,
+) {
+  const { error } = await supabase()
+    .from('services')
+    .update({
+      nom: saisie.nom,
+      prix_fcfa: saisie.prix,
+      publie: saisie.publie,
+      description: saisie.description === '' ? null : saisie.description,
+      ...(image === undefined ? {} : { image }),
+    })
+    .eq('id', id)
+    .eq('mode_reservation', 'demande')
+  if (error) throw versErreurApp(error)
+}
+
+const MIMES_PHOTO = ['image/webp', 'image/png', 'image/jpeg', 'image/avif']
+
+export function verifierPhotoPrestation(f: File): string | null {
+  if (!MIMES_PHOTO.includes(f.type)) return 'Format accepté : JPEG, PNG, WebP ou AVIF.'
+  if (f.size > 5 * 1024 * 1024) return 'Photo trop lourde (5 Mo au plus).'
+  return null
+}
+
+/** Envoie la photo (nom aléatoire) et renvoie son chemin dans le bucket « produits ». */
+export async function televerserPhotoPrestation(f: File): Promise<string> {
+  const ext = (f.name.split('.').pop() ?? 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '')
+  const chemin = `prestations/${crypto.randomUUID()}.${ext}`
+  const { error } = await supabase()
+    .storage.from('produits')
+    .upload(chemin, f, { contentType: f.type, upsert: false, cacheControl: '31536000' })
+  if (error) throw versErreurApp(error)
+  return chemin
 }
 
 /** Plage d'ouverture du salon pour un jour de la semaine (0 = dimanche … 6 = samedi). */

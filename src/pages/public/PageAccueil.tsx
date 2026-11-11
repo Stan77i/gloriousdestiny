@@ -15,6 +15,7 @@ import { SLUG_LA_GAMME } from '@/features/catalogue/visuels'
 import { useParametresPublics, useProduits, useServices } from '@/features/catalogue/requetes'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { OffresDuMoment, RegardCils } from '@/features/accueil/SectionsBeaute'
+import { PrestationsAccueil } from '@/features/accueil/PrestationsAccueil'
 import { Univers } from '@/features/accueil/Univers'
 import { BarreOffre } from '@/features/accueil/BarreOffre'
 import { CarrouselGammes } from '@/features/accueil/CarrouselGammes'
@@ -247,6 +248,7 @@ export function PageAccueil() {
       </section>
 
       <Univers produits={produits.data} />
+      <PrestationsAccueil />
       <OffresDuMoment produits={produits.data} onReessayer={() => void produits.refetch()} />
       <BarreOffre produits={produits.data} onTermine={() => void produits.refetch()} />
 

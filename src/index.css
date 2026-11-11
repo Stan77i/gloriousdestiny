@@ -520,6 +520,64 @@
       display: none;
     }
   }
+  /* Prestations : la photo se dévoile comme un rideau, puis respire au survol ; le prix
+     s'éclaire d'un filet d'or. */
+  .presta-cadre {
+    clip-path: inset(0 0 0 0 round 28px);
+    transition: clip-path 1.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  [data-revele='cache'] .presta-cadre {
+    clip-path: inset(14% 8% 14% 8% round 28px);
+  }
+  .presta-visuel {
+    transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(1.06);
+  }
+  [data-revele='vu'] .presta-visuel,
+  .presta-visuel-fixe {
+    transform: scale(1);
+  }
+  .presta:hover .presta-visuel {
+    transform: scale(1.045) translateY(-1%);
+  }
+  .presta-prix::after {
+    content: '';
+    display: block;
+    height: 1.5px;
+    margin-top: 10px;
+    background: linear-gradient(90deg, var(--gd-or), transparent);
+    transform-origin: left;
+    transform: scaleX(0.35);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.35s;
+  }
+  [data-revele='vu'] .presta-prix::after,
+  .presta:hover .presta-prix::after {
+    transform: scaleX(1);
+  }
+  .presta-fil {
+    transform-origin: left;
+    animation: presta-fil 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+  }
+  @keyframes presta-fil {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .presta-cadre,
+    [data-revele='cache'] .presta-cadre {
+      clip-path: inset(0 0 0 0 round 28px);
+      transition: none;
+    }
+    .presta-visuel,
+    .presta:hover .presta-visuel {
+      transform: none;
+      transition: none;
+    }
+    .presta-fil {
+      animation: none;
+    }
+  }
   /* Reflet d'or : une lumière traverse le visuel d'une carte produit au survol. */
   .reflet-or {
     background: linear-gradient(

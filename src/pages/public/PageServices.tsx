@@ -5,7 +5,6 @@ import { Squelette } from '@/components/ui/Chargeur'
 import { classesBouton } from '@/components/ui/classesBouton'
 import { EnTetePage } from '@/components/ui/EnTetePage'
 import { EtatErreur } from '@/components/ui/Etats'
-import { ListeServices } from '@/features/catalogue/ListeServices'
 import { useParametresPublics, useService } from '@/features/catalogue/requetes'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
@@ -20,38 +19,6 @@ function InfosSalon() {
     <p className="text-sm text-encre-3">
       {[parametres.data.ville_salon, parametres.data.horaires_salon].filter(Boolean).join(' · ')}
     </p>
-  )
-}
-
-/** Liste des prestations du salon. */
-export function PageServices() {
-  useTitreDocument('Services')
-  return (
-    <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-10">
-      <EnTetePage
-        teinte="sable"
-        titre="Services"
-        intro={
-          <>
-            <p>Les prestations du salon Glorious Destiny.</p>
-            <div className="mt-2">
-              <InfosSalon />
-            </div>
-          </>
-        }
-        actions={
-          <Link
-            to={CHEMINS.rendezVous}
-            className={classesBouton('principal', 'normal', 'no-underline')}
-          >
-            Prendre rendez-vous
-          </Link>
-        }
-      />
-      <div className="pb-10">
-        <ListeServices />
-      </div>
-    </div>
   )
 }
 
@@ -83,11 +50,11 @@ export function PageService() {
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6">
       <Link
-        to={CHEMINS.services}
+        to={CHEMINS.prestations}
         className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm text-encre-3 no-underline hover:text-encre [&_svg]:size-4"
       >
         <ArrowLeft aria-hidden="true" />
-        Services
+        Prestations
       </Link>
       <EnTetePage
         teinte="sable"

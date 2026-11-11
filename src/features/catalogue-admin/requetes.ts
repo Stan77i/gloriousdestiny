@@ -5,7 +5,10 @@ import {
   listerProduitsAdmin,
   listerServicesAdmin,
   modifierProduit,
+  modifierPrestation,
   modifierService,
+  televerserPhotoPrestation,
+  type schemaPrestation,
   type schemaProduit,
   type schemaService,
 } from '@/services/catalogueAdmin.service'
@@ -34,6 +37,7 @@ function useRafraichir() {
         ['produit'],
         ['services'],
         ['service'],
+        ['prestations'],
         ['disponibilites'],
         ['parametres'],
       ].map((queryKey) => client.invalidateQueries({ queryKey })),
@@ -63,6 +67,27 @@ export function useEnregistrerHoraires() {
   return useMutation({
     mutationFn: (v: { jours: Parameters<typeof enregistrerHoraires>[0]; resume: string }) =>
       enregistrerHoraires(v.jours, v.resume),
+    onSuccess: rafraichir,
+  })
+}
+
+/** Prestation sur demande ; une nouvelle photo est envoyée avant l'enregistrement. */
+export function useModifierPrestation() {
+  const rafraichir = useRafraichir()
+  return useMutation({
+    mutationFn: async (v: {
+      id: string
+      saisie: z.output<typeof schemaPrestation>
+      photo: File | null
+      retirerPhoto: boolean
+    }) => {
+      const image = v.photo
+        ? await televerserPhotoPrestation(v.photo)
+        : v.retirerPhoto
+          ? null
+          : undefined
+      await modifierPrestation(v.id, v.saisie, image)
+    },
     onSuccess: rafraichir,
   })
 }

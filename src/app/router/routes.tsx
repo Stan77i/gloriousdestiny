@@ -1,4 +1,4 @@
-import type { RouteObject } from 'react-router'
+import { Navigate, type RouteObject } from 'react-router'
 import { EtatChargement } from '@/components/ui/Etats'
 import { LayoutPublic } from '@/layouts/LayoutPublic'
 import { PageErreurRoute } from '@/pages/errors/PageErreurRoute'
@@ -14,7 +14,8 @@ import { PagePresence } from '@/pages/public/PagePresence'
 import { PagePerruques } from '@/pages/public/PagePerruques'
 import { PageProduit } from '@/pages/public/PageProduit'
 import { PageRendezVous } from '@/pages/public/PageRendezVous'
-import { PageService, PageServices } from '@/pages/public/PageServices'
+import { PagePrestations } from '@/pages/public/PagePrestations'
+import { PageService } from '@/pages/public/PageServices'
 import { PageSuiviCommande } from '@/pages/public/PageSuiviCommande'
 import { PageSuiviRendezVous } from '@/pages/public/PageSuiviRendezVous'
 import { CHEMINS } from './chemins'
@@ -47,7 +48,8 @@ export const routes: RouteObject[] = [
           { path: CHEMINS.perruques, element: <PagePerruques /> },
           { path: `${CHEMINS.perruques}/:slug`, element: <PageProduit /> },
           { path: CHEMINS.cils, element: <PageCils /> },
-          { path: CHEMINS.services, element: <PageServices /> },
+          { path: CHEMINS.prestations, element: <PagePrestations /> },
+          { path: CHEMINS.services, element: <Navigate to={CHEMINS.prestations} replace /> },
           { path: `${CHEMINS.services}/:slug`, element: <PageService /> },
           { path: CHEMINS.rendezVous, element: <PageRendezVous /> },
           { path: `${CHEMINS.rendezVous}/:reference`, element: <PageSuiviRendezVous /> },

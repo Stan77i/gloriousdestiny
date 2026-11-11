@@ -25,6 +25,12 @@ const MOTS = {
     La: 'Votre rendez-vous',
     copiee: 'Message copié',
   },
+  prestation: {
+    objet: 'demande',
+    la: 'votre demande',
+    La: 'Votre demande',
+    copiee: 'Message copié',
+  },
 } as const
 
 export function EnvoiWhatsApp({
@@ -68,14 +74,14 @@ export function EnvoiWhatsApp({
       <div>
         <h2 id="titre-envoi-whatsapp" className="text-[19px] font-semibold text-encre">
           {ouvert
-            ? `${m.La} est prêt${objet === 'commande' ? 'e' : ''} sur WhatsApp`
+            ? `${m.La} est prêt${objet === 'rendez-vous' ? '' : 'e'} sur WhatsApp`
             : `Dernière étape : envoyez ${m.la}`}
         </h2>
         <p className="mt-1.5 text-[15px] leading-relaxed text-encre-2">
           {!lien
             ? `Copiez le message et envoyez-le à Glorious Destiny sur WhatsApp.`
             : lien.preRempli
-              ? `WhatsApp s’ouvre avec ${m.la} déjà écrit${objet === 'commande' ? 'e' : ''} : il ne vous reste qu’à appuyer sur Envoyer.`
+              ? `WhatsApp s’ouvre avec ${m.la} déjà écrit${objet === 'rendez-vous' ? '' : 'e'} : il ne vous reste qu’à appuyer sur Envoyer.`
               : 'Le message sera copié automatiquement. Dans WhatsApp, appuyez longuement dans la zone de message, choisissez « Coller », puis envoyez.'}
         </p>
       </div>

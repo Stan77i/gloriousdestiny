@@ -212,7 +212,7 @@ type LigneService = {
   nom: string
   description: string | null
   type: string
-  duree_minutes: number
+  duree_minutes: number | null
   prix_fcfa: number
 }
 
@@ -223,17 +223,19 @@ function versService(l: LigneService): Service {
     nom: l.nom,
     description: l.description,
     type: l.type as Service['type'],
-    dureeMinutes: l.duree_minutes,
+    dureeMinutes: l.duree_minutes ?? 0,
     prix: l.prix_fcfa,
   }
 }
 
 const CHAMPS_SERVICE = 'id, slug, nom, description, type, duree_minutes, prix_fcfa'
 
+/** Prestations réservables sur un créneau de l'agenda (pose de perruque, pose de cils…). */
 export async function listerServices(): Promise<Service[]> {
   const { data, error } = await supabase()
     .from('services')
     .select(CHAMPS_SERVICE)
+    .eq('mode_reservation', 'creneau')
     .order('prix_fcfa', { ascending: false })
   if (error) throw versErreurApp(error)
   return data.map(versService)
@@ -244,7 +246,43 @@ export async function serviceParSlug(slug: string): Promise<Service | null> {
     .from('services')
     .select(CHAMPS_SERVICE)
     .eq('slug', slug)
+    .eq('mode_reservation', 'creneau')
     .maybeSingle()
   if (error) throw versErreurApp(error)
   return data ? versService(data) : null
+}
+
+/** Prestation capillaire sur demande (rubrique « Nos prestations »). */
+export type Prestation = {
+  id: string
+  slug: string
+  nom: string
+  description: string | null
+  prix: number
+  /** URL publique de la photo, ou null tant qu'aucune photo n'a été déposée. */
+  photo: string | null
+}
+
+export function urlPhotoPrestation(chemin: string | null): string | null {
+  if (!chemin) return null
+  return supabase().storage.from('produits').getPublicUrl(chemin).data.publicUrl
+}
+
+export async function listerPrestations(): Promise<Prestation[]> {
+  const { data, error } = await supabase()
+    .from('services')
+    .select('id, slug, nom, description, prix_fcfa, image')
+    .eq('mode_reservation', 'demande')
+    .eq('publie', true)
+    .is('archive_at', null)
+    .order('ordre')
+  if (error) throw versErreurApp(error)
+  return data.map((l) => ({
+    id: l.id,
+    slug: l.slug,
+    nom: l.nom,
+    description: l.description,
+    prix: l.prix_fcfa,
+    photo: urlPhotoPrestation(l.image),
+  }))
 }

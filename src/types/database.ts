@@ -578,6 +578,68 @@ export type Database = {
           },
         ]
       }
+      demandes_prestations: {
+        Row: {
+          cle_idempotence: string
+          created_at: string
+          date_souhaitee: string
+          heure_souhaitee: string
+          id: string
+          nom_cliente: string
+          nom_prestation: string
+          precision: string | null
+          prix_fcfa: number
+          reference: string
+          service_id: string
+          statut: string
+          telephone: string
+          traitee_at: string | null
+          traitee_par: string | null
+        }
+        Insert: {
+          cle_idempotence: string
+          created_at?: string
+          date_souhaitee: string
+          heure_souhaitee: string
+          id?: string
+          nom_cliente: string
+          nom_prestation: string
+          precision?: string | null
+          prix_fcfa: number
+          reference: string
+          service_id: string
+          statut?: string
+          telephone: string
+          traitee_at?: string | null
+          traitee_par?: string | null
+        }
+        Update: {
+          cle_idempotence?: string
+          created_at?: string
+          date_souhaitee?: string
+          heure_souhaitee?: string
+          id?: string
+          nom_cliente?: string
+          nom_prestation?: string
+          precision?: string | null
+          prix_fcfa?: number
+          reference?: string
+          service_id?: string
+          statut?: string
+          telephone?: string
+          traitee_at?: string | null
+          traitee_par?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "demandes_prestations_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deverrouillages_stock: {
         Row: {
           auteur_id: string | null
@@ -1180,6 +1242,7 @@ export type Database = {
           debut?: string
           fin?: string | null
           id?: string
+          libelle?: string | null
           mode: string
           produit_id: string
           updated_at?: string
@@ -1193,6 +1256,7 @@ export type Database = {
           debut?: string
           fin?: string | null
           id?: string
+          libelle?: string | null
           mode?: string
           produit_id?: string
           updated_at?: string
@@ -1447,9 +1511,12 @@ export type Database = {
           archive_at: string | null
           created_at: string
           description: string | null
-          duree_minutes: number
+          duree_minutes: number | null
           id: string
+          image: string | null
+          mode_reservation: string
           nom: string
+          ordre: number
           prix_fcfa: number
           publie: boolean
           slug: string
@@ -1462,9 +1529,12 @@ export type Database = {
           archive_at?: string | null
           created_at?: string
           description?: string | null
-          duree_minutes: number
+          duree_minutes?: number | null
           id?: string
+          image?: string | null
+          mode_reservation?: string
           nom: string
+          ordre?: number
           prix_fcfa: number
           publie?: boolean
           slug: string
@@ -1477,9 +1547,12 @@ export type Database = {
           archive_at?: string | null
           created_at?: string
           description?: string | null
-          duree_minutes?: number
+          duree_minutes?: number | null
           id?: string
+          image?: string | null
+          mode_reservation?: string
           nom?: string
+          ordre?: number
           prix_fcfa?: number
           publie?: boolean
           slug?: string
@@ -1797,6 +1870,7 @@ export type Database = {
         }
         Returns: string
       }
+      demander_prestation: { Args: { p: Json }; Returns: Json }
       desactiver_promotion: { Args: { p_id: string }; Returns: undefined }
       deverrouiller_stock: {
         Args: { p_motif: string; p_variante_id: string }
@@ -1866,7 +1940,7 @@ export type Database = {
         Args: never
         Returns: {
           fin: string
-          libelle: string | null
+          libelle: string
           prix_base: number
           prix_promo: number
           reduction: number
@@ -1913,6 +1987,10 @@ export type Database = {
       }
       tableau_de_bord: { Args: { p_au: string; p_du: string }; Returns: Json }
       tableau_stock: { Args: never; Returns: Json }
+      traiter_demande_prestation: {
+        Args: { p_id: string; p_statut: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

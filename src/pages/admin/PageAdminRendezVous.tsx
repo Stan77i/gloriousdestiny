@@ -37,6 +37,7 @@ import {
   useRappels,
   useReport,
 } from '@/features/rendez-vous/requetes'
+import { DemandesPrestations } from '@/features/rendez-vous/DemandesPrestations'
 import { useMaintenant } from '@/hooks/useMaintenant'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { cx } from '@/lib/cx'
@@ -727,6 +728,7 @@ export function PageAdminRendezVous() {
       </div>
 
       <Rappels />
+      <DemandesPrestations />
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-[19px] font-semibold">Semaine du {formaterJour(lundi)}</p>

@@ -7,6 +7,7 @@ export const CHEMINS = {
   perruques: '/perruques',
   perruque: (slug: string) => `/perruques/${slug}`,
   cils: '/cils',
+  prestations: '/prestations',
   services: '/services',
   service: (slug: string) => `/services/${slug}`,
   rendezVous: '/rendez-vous',
@@ -25,10 +26,10 @@ export const CHEMINS = {
 
 /** Navigation principale du site public (en-tête et menu mobile). */
 export const NAVIGATION_PUBLIQUE = [
-  { vers: CHEMINS.catalogue, libelle: 'Catalogue' },
+  { vers: CHEMINS.catalogue, libelle: 'Boutique' },
   { vers: CHEMINS.perruques, libelle: 'Perruques' },
   { vers: CHEMINS.cils, libelle: 'Cils' },
-  { vers: CHEMINS.services, libelle: 'Services' },
+  { vers: CHEMINS.prestations, libelle: 'Prestations' },
   { vers: CHEMINS.presence, libelle: 'Dans le monde' },
   { vers: CHEMINS.contact, libelle: 'Contact' },
 ] as const
