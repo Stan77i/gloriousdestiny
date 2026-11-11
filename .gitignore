@@ -32,3 +32,6 @@ coverage
 # Captures de revue de design (régénérables)
 .impeccable/review/
 .impeccable/*.local.json
+
+# Copies de travail des agents (Claude Code)
+.claude/worktrees/
