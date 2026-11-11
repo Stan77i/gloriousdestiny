@@ -13,16 +13,17 @@
 
 :root {
   color-scheme: light;
-  --gd-fond: #ecebe7;
-  --gd-carte: #ffffff;
-  --gd-carte-2: #f4f3f0;
-  --gd-carte-3: #e6e4df;
-  --gd-filet: #1918161a;
-  --gd-filet-fort: #1918162e;
-  --gd-filet-champ: #8c867b;
-  --gd-encre: #1a1816;
-  --gd-encre-2: #3b3833;
-  --gd-encre-3: #66625b;
+  /* Jour : ivoire, blanc cassé, encre noire, or. */
+  --gd-fond: #f3efe6;
+  --gd-carte: #fffdf8;
+  --gd-carte-2: #f6f1e7;
+  --gd-carte-3: #ebe4d6;
+  --gd-filet: #1a16101a;
+  --gd-filet-fort: #1a16102e;
+  --gd-filet-champ: #8a8376;
+  --gd-encre: #17140f;
+  --gd-encre-2: #3a352d;
+  --gd-encre-3: #645e53;
   --gd-or: #d6a756;
   --gd-or-texte: #8a5d10;
   --gd-or-fonce: #b8862c;
@@ -52,16 +53,17 @@
 
 :root[data-theme='sombre'] {
   color-scheme: dark;
-  --gd-fond: #111110;
-  --gd-carte: #1b1a19;
-  --gd-carte-2: #242322;
-  --gd-carte-3: #2e2d2b;
+  /* Nuit : noir profond, texte clair, or. */
+  --gd-fond: #0f0f0e;
+  --gd-carte: #1a1918;
+  --gd-carte-2: #232220;
+  --gd-carte-3: #2d2c29;
   --gd-filet: #ffffff14;
   --gd-filet-fort: #ffffff26;
   --gd-filet-champ: #77736b;
-  --gd-encre: #f2f0ec;
-  --gd-encre-2: #d5d2cb;
-  --gd-encre-3: #a29f98;
+  --gd-encre: #f4f1ea;
+  --gd-encre-2: #d6d2ca;
+  --gd-encre-3: #a5a198;
   --gd-or: #dcae5f;
   --gd-or-texte: #ecc887;
   --gd-or-fonce: #b8862c;
@@ -198,6 +200,20 @@
 
   p {
     text-wrap: pretty;
+  }
+
+  /* Changement de thème : fondu court des couleurs, sur tous les composants à la fois. */
+  html.theme-en-transition,
+  html.theme-en-transition *,
+  html.theme-en-transition *::before,
+  html.theme-en-transition *::after {
+    transition:
+      background-color 0.32s var(--ease-sortie),
+      border-color 0.32s var(--ease-sortie),
+      color 0.32s var(--ease-sortie),
+      fill 0.32s var(--ease-sortie),
+      stroke 0.32s var(--ease-sortie),
+      box-shadow 0.32s var(--ease-sortie) !important;
   }
 
   dialog::backdrop {

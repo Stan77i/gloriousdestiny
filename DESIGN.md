@@ -217,7 +217,7 @@ Source de vérité : `src/index.css` (variables `--gd-*` par thème, jetons `@th
 
 Stratégie **neutres chauds + un accent + teintes de rôle**. Chaque jeton a deux valeurs (clair · sombre) ; les noms disent le rôle, pas la couleur.
 
-- **Fonds** : `fond` (page, pierre chaude #ecebe7 · #111110), `carte` (blanc · #1b1a19), `carte-2` (survol, pastilles), `carte-3` (pistes de jauges, badges neutres).
+- **Fonds** : `fond` (page, ivoire #f3efe6 · noir profond #0f0f0e), `carte` (blanc cassé #fffdf8 · #1a1918), `carte-2` (survol, pastilles), `carte-3` (pistes de jauges, badges neutres).
 - **Filets** : `filet` (séparateurs), `filet-fort` (contour des pilules secondaires, en ombre interne 1 px), `filet-champ` (bord des champs, ≥ 3:1).
 - **Encre** : `encre` (texte et fond de l'action principale ; s'inverse en sombre), `encre-2` (secondaire), `encre-3` (discret, ≥ 4,7:1 sur toutes les cartes).
 - **Or** : `or` (fond : point actif, compteur du panier, tuile « à traiter », bouton d'accent `or`), `or-texte` (or lisible en texte : prix, mot d'accent du titre ; 4,5:1 minimum), `or-fonce` (appui), `sur-or` (texte sur l'or, 8,4:1).
@@ -226,6 +226,13 @@ Stratégie **neutres chauds + un accent + teintes de rôle**. Chaque jeton a deu
 - **Teintes d'univers** : `rose` (perruques), `lilas` (cils), `sauge` (produits de pose), `sable` (salon, services). Fonds uniquement, texte toujours en encre dessus (≥ 4,6:1 même pour `encre-3`). Correspondance en code : `TEINTE_TYPE_PRODUIT`, `TEINTE_SALON`.
 - **États** (réservés, toujours avec un mot ou une icône) : `succes`, `alerte`, `danger`, `info`, utilisés en texte et en fond à 12 %.
 - **Séries de graphiques** : `serie-1` à `serie-4` en ordre fixe (Douala, Yaoundé, Garoua, Abidjan), une valeur par thème.
+
+### Thème jour / nuit (v2.2)
+
+- Trois choix : **appareil** (par défaut, suit `prefers-color-scheme` en direct), **clair**, **sombre**. Composant unique `SelecteurTheme` (admin : barre du haut ; site : en-tête dès 1280 px, menu mobile et pied de page).
+- Le choix est mémorisé sur l'appareil (`gd-theme`, absent = appareil) et appliqué par `index.html` avant le premier rendu.
+- Changement en fondu de 0,32 s sur tous les composants (`html.theme-en-transition`), supprimé si le mouvement est réduit.
+- Contrastes vérifiés : `encre-3` ≥ 4,9:1 sur tous les fonds clairs et ≥ 5,4:1 en sombre ; `or-texte` ≥ 4,5:1 sur fond, cartes et sable ; bord des champs ≥ 3,2:1. À corriger plus tard : `or-texte` sur `rose` et `lilas` (4,4:1).
 
 ## Typography
 

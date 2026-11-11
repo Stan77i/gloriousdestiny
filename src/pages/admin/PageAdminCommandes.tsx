@@ -122,7 +122,7 @@ export function PageAdminCommandes() {
       </div>
 
       {!recherche && (
-        <nav aria-label="Statuts" className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <nav aria-label="Statuts" className="-mx-3 overflow-x-auto px-3 sm:mx-0 sm:px-0">
           <ul className="flex gap-2">
             {ONGLETS.map((o) => {
               const actif = o.valeur === statut

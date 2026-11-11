@@ -9,9 +9,7 @@ import {
   Inbox,
   LayoutGrid,
   LogOut,
-  Moon,
   Palette,
-  Sun,
   Tags,
   Users,
 } from 'lucide-react'
@@ -27,7 +25,7 @@ import { useAuth } from '@/features/auth/useAuth'
 import { useCompteurs } from '@/features/commandes-admin/requetes'
 import { CentreEquipe } from '@/features/notifications/CentreEquipe'
 import { useDemandesRdv } from '@/features/rendez-vous/requetes'
-import { appliquerTheme, themeActuel, type Theme } from '@/features/theme/theme'
+import { SelecteurTheme } from '@/features/theme/SelecteurTheme'
 import { cx } from '@/lib/cx'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { useMaintenant } from '@/hooks/useMaintenant'
@@ -155,47 +153,6 @@ function LienModule({ m, onClick }: { m: Module; onClick?: () => void }) {
   )
 }
 
-/** Bascule de thème en deux segments (soleil / lune), l'actif en pastille d'encre. */
-function SegmentTheme() {
-  const [theme, setTheme] = useState<Theme>(themeActuel)
-  const choisir = (t: Theme) => {
-    appliquerTheme(t)
-    setTheme(t)
-  }
-  return (
-    <div
-      role="radiogroup"
-      aria-label="Thème"
-      className="inline-flex items-center gap-0.5 rounded-full bg-carte p-1 shadow-panneau"
-    >
-      {(
-        [
-          ['clair', <Sun key="s" />, 'Thème clair'],
-          ['sombre', <Moon key="l" />, 'Thème sombre'],
-        ] as const
-      ).map(([t, icone, libelle]) => (
-        <button
-          key={t}
-          type="button"
-          role="radio"
-          aria-checked={theme === t}
-          aria-label={libelle}
-          title={libelle}
-          onClick={() => {
-            choisir(t)
-          }}
-          className={cx(
-            'grid size-9 place-items-center rounded-full transition-colors duration-200 [&_svg]:size-4',
-            theme === t ? 'bg-encre text-fond' : 'text-encre-3 hover:text-encre',
-          )}
-        >
-          {icone}
-        </button>
-      ))}
-    </div>
-  )
-}
-
 function initiales(nom: string): string {
   return nom
     .split(/\s+/)
@@ -302,7 +259,7 @@ export function LayoutAdmin() {
             </p>
             <div className="ml-auto flex items-center gap-2">
               {role !== null && <CentreEquipe role={role} />}
-              <SegmentTheme />
+              <SelecteurTheme />
               {profil && (
                 <span className="flex items-center gap-2.5 rounded-full bg-carte py-1 pr-4 pl-1 shadow-panneau lg:hidden">
                   <span

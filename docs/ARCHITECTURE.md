@@ -647,6 +647,14 @@ Règle de séquence : on ne saute pas de phase. Une décision qui touche plusieu
 
 ---
 
+## N bis. Mission « exécution » du 12/11/2026
+
+- **Agenda v2** : blocage manuel de créneaux (verrou partagé avec les réservations), report par l'équipe vers un créneau libre, rappels WhatsApp préparés et tracés, ouverture jusqu'à 23 h 59.
+- **Notifications** : déclencheurs en base, rôle destinataire, unicité, lu / non lu par personne, préférences, abonnement push préparé (envoi : clé VAPID et fonction serveur à ajouter), « Prévenez-moi » avec consentement ; centre de notifications de la visiteuse calculé sur ses propres données.
+- **Carte des ventes** : Monde → Pays → Ville → Quartier, fonction `carte_activite`, grilles Natural Earth générées par `scripts/generer-points-carte.mjs`.
+- **Contenus** : bucket `contenus`, publication contrôlée (complétude, accord de la cliente), affichage public des seuls contenus publiés.
+- **Thème** : appareil / clair / sombre, palette ivoire.
+
 ## O. Décisions et questions à valider
 
 Ces points changent le modèle ou le travail. Merci de répondre avant la Phase 2.

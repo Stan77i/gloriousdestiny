@@ -8,14 +8,19 @@
       content="Glorious Destiny : perruques, pose de cils et produits professionnels."
     />
     <!-- Préparation PWA (Phase 12) : couleur de la barre du navigateur mobile. -->
-    <meta name="theme-color" content="#ecebe7" />
+    <meta name="theme-color" content="#f3efe6" />
     <meta name="color-scheme" content="light dark" />
-    <!-- Thème choisi par la visiteuse, appliqué avant le premier rendu (src/features/theme). -->
+    <!-- Thème (src/features/theme) appliqué avant le premier rendu : choix mémorisé,
+         sinon le réglage clair / sombre de l'appareil. -->
     <script>
       try {
-        if (localStorage.getItem('gd-theme') === 'sombre') {
+        var t = localStorage.getItem('gd-theme')
+        if (
+          t === 'sombre' ||
+          (t !== 'clair' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
           document.documentElement.dataset.theme = 'sombre'
-          document.querySelector('meta[name="theme-color"]').content = '#111110'
+          document.querySelector('meta[name="theme-color"]').content = '#0f0f0e'
         }
       } catch (e) {}
     </script>

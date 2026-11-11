@@ -12,7 +12,7 @@ import { useAuth } from '@/features/auth/useAuth'
 import { useParametresPublics } from '@/features/catalogue/requetes'
 import { usePanier } from '@/features/panier/usePanier'
 import { CentreCliente } from '@/features/notifications/cliente/CentreCliente'
-import { BoutonTheme } from '@/features/theme/BoutonTheme'
+import { SelecteurTheme } from '@/features/theme/SelecteurTheme'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { cx } from '@/lib/cx'
 
@@ -85,6 +85,7 @@ function PiedDePage() {
         <Link to={CHEMINS.connexion} className="text-encre-3 hover:text-encre">
           Espace équipe
         </Link>
+        <SelecteurTheme />
       </div>
     </footer>
   )
@@ -137,7 +138,9 @@ export function LayoutPublic() {
                 Administration
               </Link>
             )}
-            <BoutonTheme className="hidden sm:inline-flex" />
+            <div className="hidden xl:block">
+              <SelecteurTheme />
+            </div>
             <CentreCliente />
             <LienPanier />
             <BoutonIcone
@@ -187,7 +190,7 @@ export function LayoutPublic() {
         </nav>
         <div className="mt-8 flex items-center gap-3">
           <BoutonWhatsApp />
-          <BoutonTheme />
+          <SelecteurTheme />
         </div>
       </Modale>
 
