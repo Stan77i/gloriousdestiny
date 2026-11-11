@@ -434,6 +434,7 @@ export function PageRendezVous() {
             </p>
           )}
           <Bouton
+            variante="or"
             taille="grand"
             icone={<CalendarCheck />}
             enCours={reservation.isPending}

@@ -61,3 +61,12 @@ export function graduation(max: number): number {
   const pas = [1, 2, 5, 10].find((p) => p * puissance >= max) ?? 10
   return pas * puissance
 }
+
+/** « 47 500 » → « 47,5 k » ; « 1 250 000 » → « 1,3 M ». */
+export function montantCompact(n: number): string {
+  const f = (x: number) =>
+    new Intl.NumberFormat('fr-FR', { maximumFractionDigits: x < 10 ? 1 : 0 }).format(x)
+  if (n >= 1_000_000) return `${f(n / 1_000_000)} M`
+  if (n >= 1000) return `${f(n / 1000)} k`
+  return String(n)
+}

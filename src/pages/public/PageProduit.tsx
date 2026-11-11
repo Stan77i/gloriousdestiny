@@ -249,6 +249,7 @@ export function PageProduit() {
               onChange={setQuantite}
             />
             <Bouton
+              variante="or"
               taille="grand"
               icone={<ShoppingBag />}
               disabled={epuise || dispo.isPending}
@@ -384,6 +385,7 @@ export function PageProduit() {
           <span className="block text-[17px] font-semibold text-or-texte">{prix}</span>
         </span>
         <Bouton
+          variante="or"
           icone={<ShoppingBag />}
           disabled={epuise || dispo.isPending}
           tabIndex={achatPasse ? 0 : -1}

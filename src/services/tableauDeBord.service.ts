@@ -10,6 +10,9 @@ import { supabase } from '@/services/supabase/client'
 
 const entier = z.number().int()
 
+const schemaPoint = z.object({ debut: z.string(), ca_fcfa: entier, nombre: entier })
+export type PointPouls = z.infer<typeof schemaPoint>
+
 const schemaTableau = z.object({
   du: z.string(),
   au: z.string(),
@@ -24,6 +27,11 @@ const schemaTableau = z.object({
     a_encaisser_fcfa: entier,
   }),
   serie: z.array(z.object({ jour: z.string(), ca_fcfa: entier, nombre: entier })),
+  pouls: z.object({
+    jours: z.array(schemaPoint),
+    semaines: z.array(schemaPoint),
+    mois: z.array(schemaPoint),
+  }),
   commandes_par_statut: z.record(z.string(), entier),
   par_ville: z.array(z.object({ ville: z.string(), nombre: entier, ca_fcfa: entier })),
   produits: z.array(
@@ -59,6 +67,7 @@ const schemaTableau = z.object({
     en_cours_de_livraison: entier,
   }),
   stock: z.object({
+    articles: entier,
     epuises: entier,
     bientot_epuises: entier,
     unites_disponibles: entier,
@@ -69,6 +78,19 @@ const schemaTableau = z.object({
     aujourdhui: entier,
     sept_jours: entier,
     a_confirmer: entier,
+    periode_confirmes: entier,
+    periode_demandes: entier,
+    liste_jour: z.array(
+      z.object({
+        id: z.uuid(),
+        reference: z.string(),
+        debut: z.string(),
+        fin: z.string(),
+        statut: z.enum(['demande', 'confirme', 'termine', 'absent']),
+        service: z.string(),
+        cliente: z.string(),
+      }),
+    ),
     periode_termines: entier,
     periode_absentes: entier,
     periode_ca_fcfa: entier,

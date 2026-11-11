@@ -294,6 +294,7 @@ export function PageCommande() {
           {erreur && <Alerte ton="danger" titre={erreur} />}
           <Bouton
             type="submit"
+            variante="or"
             taille="grand"
             enCours={isSubmitting}
             disabled={bloquantes.length > 0 || produits.isPending}

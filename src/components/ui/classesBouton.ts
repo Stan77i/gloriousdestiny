@@ -6,8 +6,9 @@ export type TailleBouton = 'petit' | 'normal' | 'grand'
 const VARIANTES: Record<VarianteBouton, string> = {
   // L'encre agit : pilule pleine, inversée en thème sombre. Une seule par écran.
   principal: 'bg-encre text-fond hover:bg-encre-2 active:bg-encre',
-  // L'or souligne ce qui compte pour la cliente (commander, réserver) : à réserver au site public.
-  or: 'bg-or text-sur-or hover:bg-[color-mix(in_oklab,var(--color-or)_88%,white)] active:bg-or-fonce',
+  // Le lingot : l'action qui rapporte (commander, réserver, l'action vedette de l'admin).
+  // Dégradé d'or et halo doux ; une seule par écran.
+  or: 'degrade-or text-sur-or shadow-or hover:brightness-[1.04] hover:shadow-[0_1px_2px_#8a5d1026,0_20px_40px_-18px_#b07a22b3] active:brightness-95',
   // Sur une tuile menthe (bloc livraison) : l'encre verte de la tuile.
   'sur-menthe': 'bg-sur-menthe text-menthe hover:bg-sur-menthe/85',
   secondaire:

@@ -212,13 +212,13 @@ export function PagePanier() {
               </Alerte>
             )}
             {indisponibles > 0 || produits.isPending ? (
-              <Bouton taille="grand" disabled className="w-full">
+              <Bouton variante="or" taille="grand" disabled className="w-full">
                 Commander
               </Bouton>
             ) : (
               <Link
                 to={CHEMINS.commande}
-                className={classesBouton('principal', 'grand', 'w-full no-underline')}
+                className={classesBouton('or', 'grand', 'w-full no-underline')}
               >
                 Commander
               </Link>

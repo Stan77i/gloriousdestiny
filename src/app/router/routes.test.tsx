@@ -62,6 +62,11 @@ vi.mock('@/services/tableauDeBord.service', () => ({
         { jour: du, ca_fcfa: 5000, nombre: 1 },
         { jour: au, ca_fcfa: 30500, nombre: 3 },
       ],
+      pouls: {
+        jours: [{ debut: au, ca_fcfa: 30500, nombre: 3 }],
+        semaines: [{ debut: du, ca_fcfa: 35500, nombre: 4 }],
+        mois: [{ debut: du, ca_fcfa: 35500, nombre: 4 }],
+      },
       commandes_par_statut: { nouvelle: 1 },
       par_ville: [{ ville: 'Douala', nombre: 2, ca_fcfa: 14500 }],
       produits: [],
@@ -74,6 +79,7 @@ vi.mock('@/services/tableauDeBord.service', () => ({
         en_cours_de_livraison: 0,
       },
       stock: {
+        articles: 7,
         epuises: 0,
         bientot_epuises: 0,
         unites_disponibles: 10,
@@ -84,6 +90,9 @@ vi.mock('@/services/tableauDeBord.service', () => ({
         aujourdhui: 0,
         sept_jours: 0,
         a_confirmer: 2,
+        periode_confirmes: 0,
+        periode_demandes: 0,
+        liste_jour: [],
         periode_termines: 0,
         periode_absentes: 0,
         periode_ca_fcfa: 0,
@@ -237,9 +246,11 @@ describe('routes', () => {
       profil: { id: 'u1', nom: 'Awa', role: 'ventes' },
     })
     expect(await screen.findByRole('heading', { name: 'Bonjour Awa' })).toBeInTheDocument()
-    expect(await screen.findByRole('heading', { name: 'Ventes par ville' })).toBeInTheDocument()
-    expect(await screen.findByText('35 500 FCFA')).toBeInTheDocument()
-    expect(screen.getByText('+274 %')).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Où en est la boutique' }),
+    ).toBeInTheDocument()
+    expect((await screen.findAllByText('35 500 FCFA')).length).toBeGreaterThan(0)
+    expect(screen.getByText(/\+274 %/)).toBeInTheDocument()
     expect(screen.queryByText('Stock à surveiller')).not.toBeInTheDocument()
   })
 

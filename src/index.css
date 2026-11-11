@@ -26,6 +26,10 @@
   --gd-or: #d6a756;
   --gd-or-texte: #8a5d10;
   --gd-or-fonce: #b8862c;
+  --gd-or-clair: #f3d89f;
+  --gd-or-profond: #b07a22;
+  --gd-or-doux: #d6a75633;
+  --gd-ombre-or: 0 1px 2px #8a5d1026, 0 16px 34px -18px #b07a22a6;
   --gd-sur-or: #1a1206;
   --gd-menthe: #57d9a6;
   --gd-sur-menthe: #0d2a1e;
@@ -61,6 +65,10 @@
   --gd-or: #dcae5f;
   --gd-or-texte: #ecc887;
   --gd-or-fonce: #b8862c;
+  --gd-or-clair: #f2d18e;
+  --gd-or-profond: #b07a22;
+  --gd-or-doux: #dcae5f2e;
+  --gd-ombre-or: 0 1px 2px #00000066, 0 18px 40px -20px #b07a228c;
   --gd-sur-or: #1a1206;
   --gd-menthe: #17402f;
   --gd-sur-menthe: #c9f5e1;
@@ -103,6 +111,9 @@
   --color-or-texte: var(--gd-or-texte);
   --color-or-fonce: var(--gd-or-fonce);
   --color-sur-or: var(--gd-sur-or);
+  --color-or-clair: var(--gd-or-clair);
+  --color-or-profond: var(--gd-or-profond);
+  --color-or-doux: var(--gd-or-doux);
 
   /* Menthe : ce qui est fait, livré, réussi (tuile pleine) */
   --color-menthe: var(--gd-menthe);
@@ -128,6 +139,7 @@
 
   --shadow-panneau: var(--gd-ombre);
   --shadow-flottant: var(--gd-ombre-flottant);
+  --shadow-or: var(--gd-ombre-or);
 }
 
 @theme {
@@ -222,6 +234,28 @@
     to {
       stroke-dashoffset: 0;
     }
+  }
+  /* Lingot : dégradé d'or (clair → or → profond), pour l'élément vedette d'un écran et l'action
+     qui rapporte (commander, réserver). Texte dessus : sur-or. Un seul par écran. */
+  .degrade-or {
+    background-image: linear-gradient(
+      135deg,
+      var(--gd-or-clair),
+      var(--gd-or) 52%,
+      var(--gd-or-profond)
+    );
+  }
+  /* Or en mouvement : segment « en cours » des barres de progression (pâle → or). */
+  .degrade-or-doux {
+    background-image: linear-gradient(90deg, var(--gd-or-doux), var(--gd-or));
+  }
+  /* Hachures : la capacité, l'échelle ou ce qui n'est pas encore rempli. */
+  .hachures {
+    background-image: repeating-linear-gradient(
+      135deg,
+      var(--gd-filet-fort) 0 1.5px,
+      transparent 1.5px 7px
+    );
   }
   /* Grand titre : Urbanist semi-gras, approche serrée (comme les titres d'affiche de la marque) */
   .titre-affiche {

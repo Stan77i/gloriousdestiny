@@ -221,6 +221,7 @@ Stratégie **neutres chauds + un accent + teintes de rôle**. Chaque jeton a deu
 - **Filets** : `filet` (séparateurs), `filet-fort` (contour des pilules secondaires, en ombre interne 1 px), `filet-champ` (bord des champs, ≥ 3:1).
 - **Encre** : `encre` (texte et fond de l'action principale ; s'inverse en sombre), `encre-2` (secondaire), `encre-3` (discret, ≥ 4,7:1 sur toutes les cartes).
 - **Or** : `or` (fond : point actif, compteur du panier, tuile « à traiter », bouton d'accent `or`), `or-texte` (or lisible en texte : prix, mot d'accent du titre ; 4,5:1 minimum), `or-fonce` (appui), `sur-or` (texte sur l'or, 8,4:1).
+- **Lingot d'or** (v2.1, inspiré du tableau de bord Marlo) : `or-clair` → `or` → `or-profond` en dégradé à 135° (`.degrade-or`), avec le halo `shadow-or`. Réservé à **l'élément vedette** d'un écran : le bouton qui rapporte (Ajouter au panier, Commander, Valider ma commande, Réserver ce créneau, Commandes en admin) et la carte du chiffre d'affaires du tableau de bord. `or-doux` → `or` (`.degrade-or-doux`) : segment « en cours » des barres. `.hachures` : la piste ou l'échelle qui n'est pas remplie.
 - **Menthe** : `menthe` + `sur-menthe` : tuile pleine « fait / disponible / livré » et bloc livraison.
 - **Teintes d'univers** : `rose` (perruques), `lilas` (cils), `sauge` (produits de pose), `sable` (salon, services). Fonds uniquement, texte toujours en encre dessus (≥ 4,6:1 même pour `encre-3`). Correspondance en code : `TEINTE_TYPE_PRODUIT`, `TEINTE_SALON`.
 - **États** (réservés, toujours avec un mot ou une icône) : `succes`, `alerte`, `danger`, `info`, utilisés en texte et en fond à 12 %.
@@ -266,7 +267,7 @@ Une courbe : `cubic-bezier(0.22, 1, 0.36, 1)` (`--ease-sortie`), 300 ms pour les
 
 ## Components
 
-- **Bouton** : `principal` (pilule d'encre, **une par écran**), `or` (accent, rare), `secondaire` (carte blanche + contour interne 1 px), `fantome`, `danger`, `sur-menthe` (sur une tuile menthe). Tailles 36 / 44 / 52 px.
+- **Bouton** : `principal` (pilule d'encre, **une par écran**), `or` (lingot : l'action qui rapporte, une par écran), `secondaire` (carte blanche + contour interne 1 px), `fantome`, `danger`, `sur-menthe` (sur une tuile menthe). Tailles 36 / 44 / 52 px.
 - **Champs** : pilules de 48 px (zone de texte 18 px) ; focus = bord encre + halo doré 4 px ; case cochée en encre, interrupteur actif en menthe.
 - **Navigation** : barre de pilules blanche, actif en encre plein (inversé en sombre), au public comme en admin. `Onglets` : filet d'encre sous l'actif.
 - **TuileChiffre** : fond `carte`, `or` (à traiter : commandes à confirmer), `menthe` (disponible, fait) ou une teinte (stock bas = sable, épuisé = rose, à expédier = sauge). La couleur ne s'allume que si la valeur l'exige.
@@ -275,12 +276,14 @@ Une courbe : `cubic-bezier(0.22, 1, 0.36, 1)` (`--ease-sortie`), 300 ms pour les
 - **Premier écran** : titre en affiche, un mot en or ; photo en carte 28 px avec légende en pilule flottante et flèche d'encre.
 - **Rituel de pose** : quatre cartes teintées, numéro en pastille blanche.
 - **Bloc livraison** : grande tuile menthe, villes en pastilles.
+- **Administration** (v2.1) : menu latéral (carte 26 px, groupes Boutique / Pilotage, actif en encre, compteurs à confirmer en or), barre du haut (date avec point d'or, thème en deux segments soleil / lune, profil avec initiales sur le lingot), barre d'onglets en bas sur téléphone (4 modules + « Plus »).
+- **Tableau de bord** : barres d'état en pilules (encre = réglé, or = en cours, gris = à traiter, nombre écrit dans la pilule, légende en mots), pouls des ventes en colonnes pilules dans une piste hachurée avec étiquettes reliées d'un fil (période en cours en or, encre au-dessus de la moyenne, gris en dessous), anneau à bouts arrondis, frise des rendez-vous du jour.
 - **Badge**, **Alerte**, **Modale**, **Tableau**, **États**, **Notifications** : inchangés dans leur rôle, redessinés aux nouveaux jetons.
 
 ## Do's and Don'ts
 
 **À faire**
-- Une seule pilule d'encre pleine par écran ; l'or plein reste rare et signifiant.
+- Une seule pilule d'encre pleine par écran ; un seul lingot d'or (l'action ou le chiffre qui rapporte).
 - Colorer une tuile seulement quand sa valeur appelle une action ou dit une réussite.
 - Garder la correspondance univers → teinte partout (carte produit, en-tête, rituel).
 - Vérifier chaque écran dans les deux thèmes, à 390 px et 1440 px.

@@ -123,6 +123,20 @@ begin
     select disponible from public.stocks s join public.variantes va on va.id = s.variante_id where va.sku = 'GD-LG-STD'
   ), 'valeur du stock au dernier coût connu';
   assert (t -> 'stock' ->> 'articles_sans_cout')::int = 6, '6 articles sans coût saisi';
+  assert (t -> 'stock' ->> 'articles')::int = 7, '7 articles suivis';
+  assert jsonb_array_length(t -> 'pouls' -> 'jours') = 7 and jsonb_array_length(t -> 'pouls' -> 'semaines') = 8
+    and jsonb_array_length(t -> 'pouls' -> 'mois') = 6, 'pouls : 7 jours, 8 semaines, 6 mois';
+  assert (t -> 'pouls' -> 'jours' -> 6 ->> 'debut')::date = (now() at time zone 'Africa/Douala')::date, 'le pouls finit aujourd''hui';
+  assert jsonb_typeof(t -> 'rendez_vous' -> 'liste_jour') = 'array', 'rendez-vous du jour';
+end $$;
+
+-- Pouls : une vente confirmée aujourd'hui apparaît dans le dernier jour, la semaine et le mois en cours.
+select public.confirmer_commande((select g from c));
+do $$
+declare p jsonb := public.tableau_de_bord('2025-03-01', '2025-03-31') -> 'pouls';
+begin
+  assert (p -> 'jours' -> 6 ->> 'ca_fcfa')::int = 6000 and (p -> 'jours' -> 6 ->> 'nombre')::int = 1, 'vente du jour : ' || (p -> 'jours' -> 6)::text;
+  assert (p -> 'semaines' -> 7 ->> 'ca_fcfa')::int = 6000 and (p -> 'mois' -> 5 ->> 'ca_fcfa')::int = 6000, 'semaine et mois en cours';
 end $$;
 
 select pg_temp.attendre_erreur($q$select public.tableau_de_bord('2025-03-31', '2025-03-01')$q$, 'VALIDATION');
