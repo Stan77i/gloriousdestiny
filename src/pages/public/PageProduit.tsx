@@ -21,7 +21,7 @@ import { EtatErreur } from '@/components/ui/Etats'
 import { SelecteurQuantite } from '@/components/ui/SelecteurQuantite'
 import { GrilleProduits } from '@/features/catalogue/GrilleProduits'
 import { useDisponibilites, useProduit, useProduits } from '@/features/catalogue/requetes'
-import { visuelProduit } from '@/features/catalogue/visuels'
+import { SLUG_LA_GAMME, visuelProduit } from '@/features/catalogue/visuels'
 import { QUANTITE_MAX } from '@/features/panier/panier'
 import { usePanier } from '@/features/panier/usePanier'
 import { ContenusPublics } from '@/features/contenus/ContenusPublics'
@@ -148,15 +148,25 @@ export function PageProduit() {
       </Link>
 
       <div className="grid gap-10 pt-4 pb-16 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-        {/* Visuels */}
-        <div className="flex flex-col gap-3">
+        {/* Visuels (La gamme : la photo d'ensemble sur toute la largeur) */}
+        <div className={cx('flex flex-col gap-3', p.slug === SLUG_LA_GAMME && 'lg:col-span-2')}>
           <div
             className={cx(
-              'relative aspect-square overflow-hidden rounded-panneau',
-              FOND_TEINTE[teinte],
+              'relative overflow-hidden rounded-panneau',
+              visuel.pleine ? 'bg-carte-2' : cx('aspect-square', FOND_TEINTE[teinte]),
             )}
+            style={visuel.pleine ? { aspectRatio: visuel.pleine.ratio } : undefined}
           >
-            {vue === 'usage' && visuel.photo ? (
+            {visuel.pleine ? (
+              <img
+                src={visuel.pleine.grande}
+                srcSet={`${visuel.pleine.petite} 800w, ${visuel.pleine.grande} 1600w`}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                alt={visuel.pleine.alt}
+                fetchPriority="high"
+                className="absolute inset-0 size-full object-cover"
+              />
+            ) : vue === 'usage' && visuel.photo ? (
               <img
                 src={visuel.photo.grande}
                 srcSet={`${visuel.photo.petite} 800w, ${visuel.photo.grande} 1600w`}

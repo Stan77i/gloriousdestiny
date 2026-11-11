@@ -10,7 +10,8 @@ import { TEINTE_TYPE_PRODUIT } from '@/domain/univers'
 import type { Produit } from '@/services/catalogue.service'
 import { lienProduit } from './liens'
 import { useDisponibilites } from './requetes'
-import { visuelProduit } from './visuels'
+import { SLUG_LA_GAMME, visuelProduit } from './visuels'
+import { cx } from '@/lib/cx'
 
 /**
  * Grille de produits reliée aux données : prix de la base, disponibilité vivante,
@@ -63,6 +64,7 @@ export function GrilleProduits({
         const variante = p.variantes[0]
         const plusieurs = p.variantes.length > 1
         const visuel = visuelProduit(p.slug)
+        const large = p.slug === SLUG_LA_GAMME
         // Plusieurs formats : disponible si l'un d'eux l'est ; le choix se fait sur la fiche.
         const statuts = p.variantes.map((v) => dispo.data?.get(v.id) ?? 'epuise')
         const statut = statuts.includes('disponible')
@@ -73,7 +75,7 @@ export function GrilleProduits({
               ? 'epuise'
               : undefined
         return (
-          <li key={p.id} className="h-full">
+          <li key={p.id} className={cx('h-full', large && 'col-span-full')}>
             <CarteProduit
               nom={p.nom}
               format={
@@ -86,6 +88,8 @@ export function GrilleProduits({
               categorie={p.categorie.nom}
               teinte={TEINTE_TYPE_PRODUIT[p.type]}
               detoure={visuel.detoure}
+              pleine={large ? visuel.pleine?.grande : visuel.pleine?.petite}
+              large={large}
               photo={visuel.photo?.petite}
               prix={
                 plusieurs

@@ -2,6 +2,8 @@ import { Link, useSearchParams } from 'react-router'
 import { CHEMINS } from '@/app/router/chemins'
 import { EnTetePage } from '@/components/ui/EnTetePage'
 import { EtatVide } from '@/components/ui/Etats'
+import { HeroLaGamme } from '@/features/catalogue/HeroLaGamme'
+import { SLUG_LA_GAMME } from '@/features/catalogue/visuels'
 import { GrilleProduits } from '@/features/catalogue/GrilleProduits'
 import { useProduits } from '@/features/catalogue/requetes'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
@@ -28,7 +30,7 @@ export function PageCatalogue({ gammeSeule = false }: { gammeSeule?: boolean }) 
   const produits = useProduits()
 
   const filtres = produits.data?.filter((p) => {
-    if (gammeSeule) return p.type === 'produit'
+    if (gammeSeule) return p.type === 'produit' && p.slug !== SLUG_LA_GAMME
     return categorie === null || p.categorie.slug === categorie
   })
   const libelle = FILTRES.find((f) => f.valeur === categorie)?.libelle
@@ -40,6 +42,11 @@ export function PageCatalogue({ gammeSeule = false }: { gammeSeule?: boolean }) 
         titre={gammeSeule ? 'Produits' : 'Catalogue'}
         intro="La gamme professionnelle Glorious Destiny : pose de perruque, coiffage et cils. Livraison au Cameroun, en Côte d’Ivoire, au Gabon, au Congo, au Sénégal, en Guinée, au Canada et au Royaume-Uni."
       />
+      {gammeSeule && (
+        <div className="mb-8">
+          <HeroLaGamme produit={produits.data?.find((p) => p.slug === SLUG_LA_GAMME)} />
+        </div>
+      )}
       {!gammeSeule && (
         <nav aria-label="Catégories" className="-mx-4 mb-8 overflow-x-auto px-4 sm:mx-0 sm:px-0">
           <ul className="flex gap-2">

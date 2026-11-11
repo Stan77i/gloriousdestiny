@@ -10,6 +10,8 @@ import { classesBouton } from '@/components/ui/classesBouton'
 import { FOND_TEINTE, type Teinte } from '@/domain/univers'
 import { GAMME } from '@/features/catalogue/gamme'
 import { GrilleProduits } from '@/features/catalogue/GrilleProduits'
+import { HeroLaGamme } from '@/features/catalogue/HeroLaGamme'
+import { SLUG_LA_GAMME } from '@/features/catalogue/visuels'
 import { useParametresPublics, useProduits, useServices } from '@/features/catalogue/requetes'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
@@ -202,7 +204,8 @@ function PresenceAccueil() {
 export function PageAccueil() {
   useTitreDocument()
   const produits = useProduits()
-  const gamme = produits.data?.filter((p) => p.type === 'produit')
+  const gamme = produits.data?.filter((p) => p.type === 'produit' && p.slug !== SLUG_LA_GAMME)
+  const laGamme = produits.data?.find((p) => p.slug === SLUG_LA_GAMME)
   const vedette = GAMME.find((p) => p.slug === 'lace-melting-spray')?.photo
 
   return (
@@ -286,6 +289,9 @@ export function PageAccueil() {
               Tout le catalogue
               <ArrowRight aria-hidden="true" />
             </Link>
+          </div>
+          <div className="mb-8">
+            <HeroLaGamme produit={laGamme} />
           </div>
           <GrilleProduits
             produits={gamme}

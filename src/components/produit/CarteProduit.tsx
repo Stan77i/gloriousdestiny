@@ -19,6 +19,8 @@ export function CarteProduit({
   format,
   categorie,
   detoure,
+  pleine,
+  large = false,
   photo,
   prix,
   disponibilite,
@@ -31,6 +33,10 @@ export function CarteProduit({
   format: string | null
   categorie: string
   detoure: string | null
+  /** Photo de la cliente telle quelle (sans détourage), en plein cadre. */
+  pleine?: string | undefined
+  /** Carte vedette sur toute la largeur de la grille (La gamme). */
+  large?: boolean
   photo?: string | undefined
   prix: string | null
   disponibilite: Disponibilite | undefined
@@ -43,9 +49,21 @@ export function CarteProduit({
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-panneau bg-carte p-2 shadow-panneau transition-[box-shadow,transform] duration-300 ease-(--ease-sortie) focus-within:shadow-flottant hover:-translate-y-1 hover:shadow-flottant">
       <div
-        className={cx('relative aspect-[4/5] overflow-hidden rounded-[22px]', FOND_TEINTE[teinte])}
+        className={cx(
+          'relative overflow-hidden rounded-[22px]',
+          large ? 'aspect-[16/9]' : 'aspect-[4/5]',
+          pleine ? 'bg-carte-2' : FOND_TEINTE[teinte],
+        )}
       >
-        {detoure ? (
+        {pleine ? (
+          <img
+            src={pleine}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-(--ease-sortie) group-hover:scale-[1.03]"
+          />
+        ) : detoure ? (
           <img
             src={detoure}
             alt=""
