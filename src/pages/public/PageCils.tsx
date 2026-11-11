@@ -7,7 +7,7 @@ import { ListeServices } from '@/features/catalogue/ListeServices'
 import { useProduits } from '@/features/catalogue/requetes'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 
-/** Cils : la prestation au salon ; les accessoires apparaissent dès qu'ils sont au catalogue. */
+/** Cils : la prestation au salon, puis les cils et accessoires vendus en ligne. */
 export function PageCils() {
   useTitreDocument('Cils')
   const produits = useProduits()
@@ -18,7 +18,7 @@ export function PageCils() {
       <EnTetePage
         teinte="lilas"
         titre="Cils"
-        intro="Pose de cils au salon, adaptée à la forme de vos yeux."
+        intro="Pose de cils au salon, adaptée à la forme de vos yeux, et nos cils à poser vous-même."
         actions={
           <Link
             to={CHEMINS.rendezVous}
@@ -37,7 +37,7 @@ export function PageCils() {
       {accessoires && accessoires.length > 0 && (
         <section aria-labelledby="titre-accessoires" className="border-t border-filet py-16">
           <h2 id="titre-accessoires" className="titre-affiche mb-8 text-[34px] text-encre">
-            Accessoires
+            Cils et accessoires
           </h2>
           <GrilleProduits
             produits={accessoires}

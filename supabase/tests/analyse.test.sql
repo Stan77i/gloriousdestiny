@@ -7,6 +7,7 @@
 -- • Nouveau : entrée de 10 à T-5, 3 ventes : historique trop court.
 \set ON_ERROR_STOP 1
 begin;
+\ir prix_reference.inc.sql
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000e1', 'stock@test.local'),

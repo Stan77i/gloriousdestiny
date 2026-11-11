@@ -19,7 +19,7 @@ import melting from '@/assets/produits/lace-melting-spray.webp'
 import waxStick from '@/assets/produits/wax-stick.webp'
 
 /**
- * La gamme officielle : exactement 7 produits (brief client). Ne pas en ajouter ici :
+ * Les 7 produits d’origine (brief client), avec leurs photos d’usage. Ne pas en ajouter ici :
  * les futurs produits sont créés depuis l'administration (table `produits`).
  * Ce fichier ne porte que l'identité visuelle fournie par le client (détourés + photos),
  * en attendant le stockage des images dans Supabase (Phase 4). Aucun prix ici.

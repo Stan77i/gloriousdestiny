@@ -1,6 +1,7 @@
 -- Tests Phase 5 : commande de bout en bout, concurrence logique, droits, expiration.
 \set ON_ERROR_STOP 1
 begin;
+\ir prix_reference.inc.sql
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000a1', 'ventes@test.local'),

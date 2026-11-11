@@ -61,26 +61,46 @@ export function GrilleProduits({
     <ul className={`grid gap-3 sm:gap-4 ${colonnes}`}>
       {produits.map((p) => {
         const variante = p.variantes[0]
+        const plusieurs = p.variantes.length > 1
         const visuel = visuelProduit(p.slug)
-        const statut = variante ? dispo.data?.get(variante.id) : undefined
+        // Plusieurs formats : disponible si l'un d'eux l'est ; le choix se fait sur la fiche.
+        const statuts = p.variantes.map((v) => dispo.data?.get(v.id) ?? 'epuise')
+        const statut = statuts.includes('disponible')
+          ? 'disponible'
+          : statuts.includes('bientot_epuise')
+            ? 'bientot_epuise'
+            : variante
+              ? 'epuise'
+              : undefined
         return (
           <li key={p.id} className="h-full">
             <CarteProduit
               nom={p.nom}
-              format={variante && variante.libelle !== 'Format standard' ? variante.libelle : null}
+              format={
+                plusieurs
+                  ? p.variantes.map((v) => v.libelle).join(' · ')
+                  : variante && variante.libelle !== 'Format standard'
+                    ? variante.libelle
+                    : null
+              }
               categorie={p.categorie.nom}
               teinte={TEINTE_TYPE_PRODUIT[p.type]}
               detoure={visuel.detoure}
               photo={visuel.photo?.petite}
-              prix={formaterFcfa(variante?.prix ?? p.prix)}
+              prix={
+                plusieurs
+                  ? `Dès ${formaterFcfa(variante?.prix ?? p.prix)}`
+                  : formaterFcfa(variante?.prix ?? p.prix)
+              }
               disponibilite={dispo.isPending ? undefined : (statut ?? 'epuise')}
               vers={lienProduit(p)}
-              {...(variante && {
-                onAjouter: () => {
-                  panier.ajouter(variante.id)
-                  notifier(`${p.nom} ajouté au panier.`, 'succes')
-                },
-              })}
+              {...(variante &&
+                !plusieurs && {
+                  onAjouter: () => {
+                    panier.ajouter(variante.id)
+                    notifier(`${p.nom} ajouté au panier.`, 'succes')
+                  },
+                })}
             />
           </li>
         )

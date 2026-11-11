@@ -1,6 +1,7 @@
 -- Tests pays desservis : téléphones par pays, commandes hors zone CFA en FCFA, cohérence ville / pays.
 \set ON_ERROR_STOP 1
 begin;
+\ir prix_reference.inc.sql
 
 create function pg_temp.attendre_erreur(sql text, attendu text) returns void language plpgsql as $$
 begin

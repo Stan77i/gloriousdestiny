@@ -86,8 +86,10 @@ export function PageProduit() {
   const [quantite, setQuantite] = useState(1)
   const [vue, setVue] = useState<'produit' | 'usage'>('produit')
   const [refAchat, achatPasse] = useHorsEcran()
-  const variante = produit.data?.variantes[0]
-  const dispo = useDisponibilites(variante ? [variante.id] : [])
+  const [idVariante, setIdVariante] = useState<string | null>(null)
+  const variantes = produit.data?.variantes ?? []
+  const variante = variantes.find((v) => v.id === idVariante) ?? variantes[0]
+  const dispo = useDisponibilites(variantes.map((v) => v.id))
   useTitreDocument(produit.data?.nom)
 
   if (produit.isPending) {
@@ -128,7 +130,8 @@ export function PageProduit() {
   const ajouter = () => {
     if (!variante) return
     panier.ajouter(variante.id, quantite)
-    notifier(`${p.nom} ajouté au panier (${String(quantite)}).`, 'succes')
+    const format = variantes.length > 1 ? ` ${variante.libelle}` : ''
+    notifier(`${p.nom}${format} ajouté au panier (${String(quantite)}).`, 'succes')
   }
   const prix = formaterFcfa(variante?.prix ?? p.prix)
   const faq = [...f.faq, ...FAQ_COMMUNE]
@@ -164,7 +167,7 @@ export function PageProduit() {
             ) : visuel.detoure ? (
               <img
                 src={visuel.detoure}
-                alt={`${p.nom}, flacon Glorious Destiny`}
+                alt={`${p.nom}, Glorious Destiny`}
                 fetchPriority="high"
                 className="absolute inset-0 size-full object-contain p-[10%]"
               />
@@ -242,6 +245,51 @@ export function PageProduit() {
                 </li>
               ))}
             </ul>
+          )}
+
+          {variantes.length > 1 && (
+            <fieldset className="mt-8">
+              <legend className="text-[13px] font-semibold text-encre-2">Format</legend>
+              <div className="mt-2.5 flex flex-wrap gap-2">
+                {variantes.map((v) => {
+                  const choisi = v.id === variante?.id
+                  const st = dispo.data?.get(v.id)
+                  return (
+                    <label
+                      key={v.id}
+                      className={cx(
+                        'relative flex min-h-12 cursor-pointer flex-col justify-center rounded-[16px] px-4 py-2 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-or',
+                        choisi
+                          ? 'bg-encre text-fond'
+                          : 'bg-carte text-encre shadow-[inset_0_0_0_1px_var(--color-filet-fort)] hover:bg-carte-2',
+                      )}
+                    >
+                      <input
+                        type="radio"
+                        name="format"
+                        value={v.id}
+                        checked={choisi}
+                        onChange={() => {
+                          setIdVariante(v.id)
+                          setQuantite(1)
+                        }}
+                        className="sr-only"
+                      />
+                      <span className="text-[15px] font-semibold">{v.libelle}</span>
+                      <span
+                        className={cx(
+                          'chiffres text-[13px]',
+                          choisi ? 'opacity-80' : 'text-or-texte',
+                        )}
+                      >
+                        {formaterFcfa(v.prix)}
+                        {st === 'epuise' && ' · épuisé'}
+                      </span>
+                    </label>
+                  )
+                })}
+              </div>
+            </fieldset>
           )}
 
           <div ref={refAchat} className="mt-8 flex flex-wrap items-center gap-3">

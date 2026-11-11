@@ -90,7 +90,9 @@ function versProduit(l: LigneProduit): Produit {
     creeLe: l.created_at,
     variantes: l.variantes
       .filter((v) => v.actif)
-      .map((v) => ({ id: v.id, sku: v.sku, libelle: v.libelle, prix: v.prix_fcfa ?? l.prix_fcfa })),
+      .map((v) => ({ id: v.id, sku: v.sku, libelle: v.libelle, prix: v.prix_fcfa ?? l.prix_fcfa }))
+      // Du plus petit format au plus grand (le prix suit la contenance).
+      .sort((a, b) => a.prix - b.prix || a.sku.localeCompare(b.sku)),
   }
 }
 

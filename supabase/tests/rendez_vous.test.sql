@@ -2,6 +2,7 @@
 -- atomique et idempotente, anti-abus, transitions de l'équipe, annulation par la cliente.
 \set ON_ERROR_STOP 1
 begin;
+\ir prix_reference.inc.sql
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000d1', 'ventes-rdv@test.local'),

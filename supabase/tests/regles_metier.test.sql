@@ -1,6 +1,7 @@
 -- Tests des règles de base (stock, sécurité, rendez-vous). Exécuté par scripts/test-db.sh.
 \set ON_ERROR_STOP 1
 begin;
+\ir prix_reference.inc.sql
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-000000000001', 'owner@test.local'),
@@ -159,11 +160,14 @@ do $$ begin
   assert (select prix_fcfa from public.produits where id = '20000000-0000-0000-0000-000000000001') = 1500, 'ventes ne modifie pas les prix';
 end $$;
 
--- 21. La gamme officielle compte exactement 7 produits, sans Silkening Mist.
+-- 21. Les 7 produits d'origine sont toujours là ; Silkening Mist n'est jamais publié sans
+--     confirmation de la cliente ; chaque stock initial passe par un mouvement.
 do $$ begin
-  assert (select count(*) from public.produits where sku like 'GD-%') = 7, 'exactement 7 produits officiels';
-  assert not exists (select 1 from public.produits where nom ilike '%silkening%'), 'pas de Silkening Mist';
-  assert (select count(*) from public.mouvements_stock where cle_idempotence like 'stock-initial-%') = 7, 'stock initial par mouvements';
+  assert (select count(*) from public.produits where slug in ('hair-curl-mousse', 'glue-residue-remover-shampoo',
+    'lace-melting-spray', 'lace-glue', 'wax-stick', 'lace-glue-remover-spray', 'braid-gel')) = 7, 'les 7 produits d''origine';
+  assert not exists (select 1 from public.produits where nom ilike '%silkening%' and publie), 'Silkening Mist non publié';
+  assert (select count(*) from public.mouvements_stock where cle_idempotence like 'stock-initial-%')
+       = (select count(*) from public.variantes v where v.sku like 'GD-%'), 'stock initial par mouvements, un par format';
 end $$;
 
 select 'TOUS LES TESTS SQL SONT PASSÉS' as resultat;

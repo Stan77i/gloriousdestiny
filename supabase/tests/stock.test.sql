@@ -1,6 +1,7 @@
 -- Tests Phase 7 : réception, perte, inventaire (double validation), retour, droits, vue de pilotage.
 \set ON_ERROR_STOP 1
 begin;
+\ir prix_reference.inc.sql
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000c1', 'stock@test.local'),

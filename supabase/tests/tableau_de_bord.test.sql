@@ -2,6 +2,7 @@
 -- Période testée : mars 2025 (31 jours) ; période précédente : 29 janvier – 28 février 2025.
 \set ON_ERROR_STOP 1
 begin;
+\ir prix_reference.inc.sql
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000d1', 'ventes@test.local'),
@@ -107,8 +108,10 @@ begin
 
   assert t -> 'produits' -> 0 ->> 'produit' = 'Lace Glue', 'meilleure vente';
   assert (t -> 'produits' -> 0 ->> 'quantite')::int = 2 and (t -> 'produits' -> 0 ->> 'ca_fcfa')::int = 19000, 'Lace Glue net des retours';
-  assert jsonb_array_length(t -> 'produits') = 7, 'les 7 produits, vendus ou non';
-  assert (select count(*) from jsonb_array_elements(t -> 'produits') x where (x ->> 'quantite')::int = 0) = 3, '3 produits sans vente';
+  -- Tous les formats actifs du catalogue, vendus ou non (4 formats vendus dans ce scénario).
+  assert jsonb_array_length(t -> 'produits') = (select count(*) from public.variantes va join public.produits p on p.id = va.produit_id where va.actif and p.publie and p.archive_at is null), 'tous les formats en vente, vendus ou non';
+  assert (select count(*) from jsonb_array_elements(t -> 'produits') x where (x ->> 'quantite')::int = 0)
+       = (select count(*) from public.variantes va join public.produits p on p.id = va.produit_id where va.actif and p.publie and p.archive_at is null) - 4, 'formats sans vente';
 
   assert (t -> 'clientes' ->> 'actives')::int = 3, 'clientes actives';
   assert (t -> 'clientes' ->> 'nouvelles')::int = 2, 'nouvelles : Awa et Chantal';
@@ -122,8 +125,8 @@ begin
   assert (t -> 'stock' ->> 'valeur_fcfa')::int = 4000 * (
     select disponible from public.stocks s join public.variantes va on va.id = s.variante_id where va.sku = 'GD-LG-STD'
   ), 'valeur du stock au dernier coût connu';
-  assert (t -> 'stock' ->> 'articles_sans_cout')::int = 6, '6 articles sans coût saisi';
-  assert (t -> 'stock' ->> 'articles')::int = 7, '7 articles suivis';
+  assert (t -> 'stock' ->> 'articles_sans_cout')::int = (t -> 'stock' ->> 'articles')::int - 1, 'un seul article avec coût saisi';
+  assert (t -> 'stock' ->> 'articles')::int = (select count(*) from public.variantes va join public.produits p on p.id = va.produit_id where va.actif and p.archive_at is null), 'tous les formats suivis (publiés ou non)';
   assert jsonb_array_length(t -> 'pouls' -> 'jours') = 7 and jsonb_array_length(t -> 'pouls' -> 'semaines') = 8
     and jsonb_array_length(t -> 'pouls' -> 'mois') = 6, 'pouls : 7 jours, 8 semaines, 6 mois';
   assert (t -> 'pouls' -> 'jours' -> 6 ->> 'debut')::date = (now() at time zone 'Africa/Douala')::date, 'le pouls finit aujourd''hui';

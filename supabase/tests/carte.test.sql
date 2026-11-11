@@ -1,6 +1,7 @@
 -- Tests carte : activité réelle par pays, ville et quartier ; zéros sans invention ; droits.
 \set ON_ERROR_STOP 1
 begin;
+\ir prix_reference.inc.sql
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000b7', 'ventes-carte@test.local'),

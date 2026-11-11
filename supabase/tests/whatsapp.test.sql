@@ -1,6 +1,7 @@
 -- Tests Phase 6 : message WhatsApp construit par le serveur, ouverture tracée.
 \set ON_ERROR_STOP 1
 begin;
+\ir prix_reference.inc.sql
 
 insert into auth.users (id, email) values ('00000000-0000-0000-0000-0000000000b1', 'ventes@test.local'),
   ('00000000-0000-0000-0000-0000000000b2', 'stock@test.local');
