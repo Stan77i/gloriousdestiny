@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 import { CHEMINS } from '@/app/router/chemins'
@@ -86,6 +86,23 @@ export function Rituel({
   const naviguer = useNavigate()
   const [ouverte, setOuverte] = useState<string | null>('soin')
   const [reference, setReference] = useState('')
+  // Les dessins s'animent dès que la liste arrive à l'écran (l'œil cligne à l'arrivée).
+  const refListe = useRef<HTMLOListElement>(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const el = refListe.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e) setVisible(e.isIntersecting)
+      },
+      { threshold: 0.2 },
+    )
+    obs.observe(el)
+    return () => {
+      obs.disconnect()
+    }
+  }, [])
   const jour = new Date().toLocaleDateString('fr-FR', {
     weekday: 'long',
     day: 'numeric',
@@ -108,8 +125,16 @@ export function Rituel({
       teinte: 'bg-sable',
       dessin: (
         <Dessin>
-          <circle className="trace-fil" pathLength={1} cx={24} cy={18} r={13} />
-          <path className="trace-fil" pathLength={1} d="M24 31v13M17 44h14M18 12c2-3 6-4 9-3" />
+          <g className="rituel-miroir">
+            <circle className="trace-fil" pathLength={1} cx={24} cy={18} r={13} />
+            <path className="trace-fil" pathLength={1} d="M24 31v13M17 44h14" />
+            <path
+              className="rituel-reflet"
+              pathLength={1}
+              d="M17 13c2-4 6-5 10-4"
+              strokeWidth={1.8}
+            />
+          </g>
         </Dessin>
       ),
       contenu: (
@@ -144,10 +169,19 @@ export function Rituel({
       teinte: 'bg-sauge',
       dessin: (
         <Dessin>
+          <g className="rituel-pompe">
+            <path className="trace-fil" pathLength={1} d="M21 6h7v4h-4v3" />
+          </g>
           <path
             className="trace-fil"
             pathLength={1}
-            d="M21 6h7v4h-4v3M18 13h12v28a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2Z"
+            d="M18 13h12v28a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2Z"
+          />
+          <path
+            className="rituel-goutte"
+            d="M30 8c1 1.4 1.6 2.2 1.6 2.9a1.6 1.6 0 0 1-3.2 0c0-.7.6-1.5 1.6-2.9Z"
+            fill="currentColor"
+            stroke="none"
           />
         </Dessin>
       ),
@@ -162,17 +196,18 @@ export function Rituel({
       teinte: 'bg-lilas',
       dessin: (
         <Dessin>
-          <path
-            className="trace-fil"
-            pathLength={1}
-            d="M4 26c10-11 30-11 40 0c-10 10-30 10-40 0Z"
-          />
-          <circle className="trace-fil" pathLength={1} cx={24} cy={26} r={4} />
-          <path
-            className="trace-fil"
-            pathLength={1}
-            d="M12 18l-2-4M19 15l-1-5M29 15l1-5M36 18l2-4"
-          />
+          <path className="trace-fil" pathLength={1} d="M4 26c10 10 30 10 40 0" />
+          <g className="rituel-iris">
+            <circle className="trace-fil" pathLength={1} cx={24} cy={26} r={4} />
+          </g>
+          <g className="rituel-paupiere">
+            <path className="trace-fil" pathLength={1} d="M4 26c10-11 30-11 40 0" />
+            <path
+              className="trace-fil"
+              pathLength={1}
+              d="M12 18l-2-4M19 15l-1-5M29 15l1-5M36 18l2-4"
+            />
+          </g>
         </Dessin>
       ),
       contenu: <Produits liste={cils} vers={CHEMINS.cils} libelle="Voir tous les cils" />,
@@ -186,11 +221,15 @@ export function Rituel({
       teinte: 'bg-rose',
       dessin: (
         <Dessin>
-          <path
-            className="trace-fil"
-            pathLength={1}
-            d="M12 44V20a12 12 0 0 1 24 0v24M18 44V22a6 6 0 0 1 12 0v22M24 8v36"
-          />
+          <g className="rituel-meche">
+            <path className="trace-fil" pathLength={1} d="M12 44V20a12 12 0 0 1 24 0v24" />
+          </g>
+          <g className="rituel-meche rituel-meche-2">
+            <path className="trace-fil" pathLength={1} d="M18 44V22a6 6 0 0 1 12 0v22" />
+          </g>
+          <g className="rituel-meche rituel-meche-3">
+            <path className="trace-fil" pathLength={1} d="M24 8v36" />
+          </g>
         </Dessin>
       ),
       contenu: perruquesEpuisees ? (
@@ -224,13 +263,13 @@ export function Rituel({
         Que faisons-nous <span className="text-or-texte">aujourd’hui</span> ?
       </h2>
 
-      <ol className="mt-5 flex flex-col">
+      <ol ref={refListe} className={cx('mt-5 flex flex-col', visible && 'rituel-actif')}>
         {intentions.map((it, i) => {
           const ouv = ouverte === it.id
           return (
             <li
               key={it.id}
-              style={{ zIndex: intentions.length - i }}
+              style={{ zIndex: intentions.length - i, ['--r' as string]: `${String(i * 0.25)}s` }}
               className={cx(
                 'relative rounded-[28px] shadow-[0_-10px_30px_-18px_rgb(20_18_12/0.35)] transition-[padding] duration-500 ease-(--ease-sortie)',
                 it.teinte,
@@ -248,7 +287,12 @@ export function Rituel({
                   ouv ? 'pt-5 pb-3' : 'py-4',
                 )}
               >
-                <span className="chiffres grid size-10 shrink-0 place-items-center rounded-full bg-carte text-[15px] font-bold text-encre">
+                <span
+                  className={cx(
+                    'rituel-num chiffres grid size-10 shrink-0 place-items-center rounded-full text-[15px] font-bold transition-colors duration-500',
+                    ouv ? 'degrade-or text-sur-or shadow-or' : 'bg-carte text-encre',
+                  )}
+                >
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <span className="min-w-0 flex-1">
@@ -262,7 +306,16 @@ export function Rituel({
                   </span>
                   <span className="block text-[14px] leading-snug text-encre-2">{it.sous}</span>
                 </span>
-                {it.dessin}
+                {/* Ouverte : le dessin se retrace et grandit (clé = état). */}
+                <span
+                  key={ouv ? 'ouvert' : 'ferme'}
+                  className={cx(
+                    'grid shrink-0 place-items-center transition-transform duration-500 ease-(--ease-sortie)',
+                    ouv && 'scale-[1.18]',
+                  )}
+                >
+                  {it.dessin}
+                </span>
               </button>
               <div
                 className={cx(

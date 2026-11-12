@@ -1127,3 +1127,174 @@ html[data-app] [class*='overflow-x-auto'] {
   touch-action: pan-x pan-y;
   overscroll-behavior-x: contain;
 }
+/* Accueil Rituel : dessins vivants, synchronisés sur 2 s, décalés d'une carte à l'autre (--r).
+   Ils ne jouent qu'à l'écran (.rituel-actif) ; l'œil cligne dès l'arrivée. */
+@layer components {
+  .rituel-paupiere,
+  .rituel-iris,
+  .rituel-pompe,
+  .rituel-goutte,
+  .rituel-meche,
+  .rituel-miroir {
+    transform-box: fill-box;
+  }
+  .rituel-actif .rituel-paupiere {
+    transform-origin: 50% 100%;
+    animation: rituel-cligne 2s cubic-bezier(0.55, 0, 0.3, 1) var(--r) infinite;
+  }
+  .rituel-actif .rituel-iris {
+    transform-origin: center;
+    animation: rituel-iris 2s cubic-bezier(0.55, 0, 0.3, 1) var(--r) infinite;
+  }
+  @keyframes rituel-cligne {
+    0%,
+    100% {
+      transform: scaleY(1);
+    }
+    6% {
+      transform: scaleY(-0.55);
+    }
+    13% {
+      transform: scaleY(1);
+    }
+  }
+  @keyframes rituel-iris {
+    0%,
+    100% {
+      transform: scaleY(1);
+    }
+    5%,
+    8% {
+      transform: scaleY(0.1);
+    }
+    14% {
+      transform: scaleY(1);
+    }
+  }
+  .rituel-reflet {
+    stroke-dasharray: 0.35 1;
+    stroke-dashoffset: 1.35;
+    color: var(--gd-or);
+  }
+  .rituel-actif .rituel-reflet {
+    animation: rituel-reflet 2s ease-in-out var(--r) infinite;
+  }
+  @keyframes rituel-reflet {
+    0% {
+      stroke-dashoffset: 1.35;
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    60%,
+    100% {
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+  }
+  .rituel-actif .rituel-miroir {
+    transform-origin: 50% 100%;
+    animation: rituel-balance 4s ease-in-out var(--r) infinite;
+  }
+  @keyframes rituel-balance {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(-4deg);
+    }
+  }
+  .rituel-actif .rituel-pompe {
+    animation: rituel-pompe 2s cubic-bezier(0.34, 1.56, 0.64, 1) var(--r) infinite;
+  }
+  @keyframes rituel-pompe {
+    0%,
+    30%,
+    100% {
+      transform: translateY(0);
+    }
+    12% {
+      transform: translateY(2.5px);
+    }
+  }
+  .rituel-goutte {
+    opacity: 0;
+  }
+  .rituel-actif .rituel-goutte {
+    animation: rituel-goutte 2s ease-in var(--r) infinite;
+  }
+  @keyframes rituel-goutte {
+    0%,
+    12% {
+      opacity: 0;
+      transform: translateY(0) scale(0.6);
+    }
+    18% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    55% {
+      opacity: 0;
+      transform: translateY(14px) scale(0.8);
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  .rituel-actif .rituel-meche {
+    transform-origin: 50% 0%;
+    animation: rituel-meche 2s ease-in-out var(--r) infinite;
+  }
+  .rituel-actif .rituel-meche-2 {
+    animation-delay: calc(var(--r) + 0.15s);
+  }
+  .rituel-actif .rituel-meche-3 {
+    animation-delay: calc(var(--r) + 0.3s);
+  }
+  @keyframes rituel-meche {
+    0%,
+    100% {
+      transform: skewX(0deg);
+    }
+    50% {
+      transform: skewX(-6deg);
+    }
+  }
+  .rituel-actif .rituel-num {
+    animation: rituel-num 2s ease-out var(--r) infinite;
+  }
+  @keyframes rituel-num {
+    0% {
+      box-shadow: 0 0 0 0 rgb(214 167 86 / 0.55);
+    }
+    40%,
+    100% {
+      box-shadow: 0 0 0 9px rgb(214 167 86 / 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rituel-actif .rituel-paupiere,
+    .rituel-actif .rituel-iris,
+    .rituel-actif .rituel-reflet,
+    .rituel-actif .rituel-miroir,
+    .rituel-actif .rituel-pompe,
+    .rituel-actif .rituel-goutte,
+    .rituel-actif .rituel-meche,
+    .rituel-actif .rituel-num {
+      animation: none;
+    }
+  }
+}
+/* App installée : la barre d'état (heure, batterie) garde un fond, le contenu passe dessous. */
+html[data-app] body::before {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top);
+  z-index: 60;
+  background: color-mix(in srgb, var(--gd-fond) 88%, transparent);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
