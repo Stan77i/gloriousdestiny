@@ -29,6 +29,7 @@ export function CarteProduit({
   prix,
   reduction,
   badges = [],
+  dansPanier = 0,
   disponibilite,
   vers,
   onApercu,
@@ -55,6 +56,8 @@ export function CarteProduit({
   reduction?: number | undefined
   /** Badges vrais (voir BadgesArticle), déjà triés et limités. */
   badges?: TypeBadge[]
+  /** Quantité de ce produit déjà dans le panier (tous formats) : compteur sur le bouton. */
+  dansPanier?: number
   disponibilite: Disponibilite | undefined
   vers?: string
   /** Ouvre l'aperçu (explications, formats) au toucher de la carte. */
@@ -108,66 +111,71 @@ export function CarteProduit({
 
   return (
     <article className="group relative flex h-full flex-col rounded-[24px] bg-carte p-1.5 shadow-panneau transition-[box-shadow,transform] duration-500 ease-(--ease-sortie) focus-within:ring-2 focus-within:ring-or/60 hover:-translate-y-0.5 hover:shadow-flottant active:scale-[0.985] motion-reduce:transform-none">
-      <div
-        className={cx(
-          'relative isolate overflow-hidden rounded-[19px]',
-          large
-            ? 'aspect-[4/3] sm:aspect-[16/9]'
-            : univers === 'perruque'
-              ? 'aspect-[4/5]'
-              : 'aspect-square',
-          pleine ? 'bg-carte-2' : 'socle-produit',
-        )}
-      >
-        {pleine ? (
-          <img
-            src={pleine}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className="absolute inset-0 size-full object-cover transition-transform duration-[1200ms] ease-(--ease-sortie) group-hover:scale-[1.05] motion-reduce:group-hover:scale-100"
-          />
-        ) : detoure ? (
-          <>
-            <span
-              aria-hidden="true"
-              className="absolute inset-x-[24%] bottom-[8%] h-[6%] rounded-[50%] bg-encre/15 blur-md"
-            />
+      <div className="relative">
+        <div
+          className={cx(
+            'relative isolate overflow-hidden rounded-[19px]',
+            large
+              ? 'aspect-[4/3] sm:aspect-[16/9]'
+              : univers === 'perruque'
+                ? 'aspect-[4/5]'
+                : 'aspect-square',
+            pleine ? 'bg-carte-2' : 'socle-produit',
+          )}
+        >
+          {pleine ? (
             <img
-              src={detoure}
+              src={pleine}
               alt=""
               loading="lazy"
               decoding="async"
-              className="absolute inset-0 size-full object-contain p-[10%] transition-transform duration-700 ease-(--ease-sortie) group-hover:-translate-y-1.5 group-hover:scale-[1.04] motion-reduce:group-hover:transform-none"
+              className="absolute inset-0 size-full object-cover transition-transform duration-[1200ms] ease-(--ease-sortie) group-hover:scale-[1.05] motion-reduce:group-hover:scale-100"
             />
-          </>
-        ) : (
-          <Monogramme nom={nom} />
-        )}
-        {photo && (
-          <img
-            src={photo}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 [@media(hover:none)]:hidden"
+          ) : detoure ? (
+            <>
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-[24%] bottom-[8%] h-[6%] rounded-[50%] bg-encre/15 blur-md"
+              />
+              <img
+                src={detoure}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 size-full object-contain p-[10%] transition-transform duration-700 ease-(--ease-sortie) group-hover:-translate-y-1.5 group-hover:scale-[1.04] motion-reduce:group-hover:transform-none"
+              />
+            </>
+          ) : (
+            <Monogramme nom={nom} />
+          )}
+          {photo && (
+            <img
+              src={photo}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 [@media(hover:none)]:hidden"
+            />
+          )}
+          {bulles && <Bulles />}
+          <span
+            aria-hidden="true"
+            className="reflet-or pointer-events-none absolute inset-0 z-10"
           />
-        )}
-        {bulles && <Bulles />}
-        <span aria-hidden="true" className="reflet-or pointer-events-none absolute inset-0 z-10" />
-        <div className="absolute top-2 left-2 z-20 flex flex-col items-start gap-1">
-          {reduction !== undefined && <BadgePromo reduction={reduction} />}
-          {badges.map((b, i) => (
-            <BadgeArticle key={b} type={b} indice={i + (reduction === undefined ? 0 : 1)} />
-          ))}
-        </div>
-        {epuise && (
-          <div className="absolute inset-0 z-10 grid place-items-center bg-fond/55 backdrop-blur-[2px]">
-            <span className="rounded-full bg-carte px-3 py-1 text-[12px] font-semibold text-encre-2 shadow-panneau">
-              Épuisé
-            </span>
+          <div className="absolute top-2 left-2 z-20 flex flex-col items-start gap-1">
+            {reduction !== undefined && <BadgePromo reduction={reduction} />}
+            {badges.map((b, i) => (
+              <BadgeArticle key={b} type={b} indice={i + (reduction === undefined ? 0 : 1)} />
+            ))}
           </div>
-        )}
+          {epuise && (
+            <div className="absolute inset-0 z-10 grid place-items-center bg-fond/55 backdrop-blur-[2px]">
+              <span className="rounded-full bg-carte px-3 py-1 text-[12px] font-semibold text-encre-2 shadow-panneau">
+                Épuisé
+              </span>
+            </div>
+          )}
+        </div>
         {/* Bouton rond : ajout direct, ou choix du format quand il y en a plusieurs. */}
         {onAjouter && !epuise ? (
           <button
@@ -196,6 +204,16 @@ export function CarteProduit({
             <ChevronRight aria-hidden="true" />
           </button>
         ) : null}
+        {/* Compteur : combien sont déjà dans le panier (rebondit à chaque ajout). */}
+        {dansPanier > 0 && (
+          <span
+            key={dansPanier}
+            aria-label={`${String(dansPanier)} dans le panier`}
+            className="pastille-rebond chiffres absolute right-1 bottom-[42px] z-30 grid h-6 min-w-6 place-items-center rounded-full bg-or px-1.5 text-[12px] font-bold text-sur-or shadow-[0_3px_10px_rgb(0_0_0/0.25)] ring-2 ring-carte"
+          >
+            {dansPanier}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col gap-2 px-2 pt-2.5 pb-1.5">

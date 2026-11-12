@@ -10,11 +10,16 @@ const pays = feature(monde, monde.objects.countries).features
 const terres = feature(monde, monde.objects.land)
 // Tracés : frontières entre pays et côtes (110m pour les grandes vues, 50m pour les pays).
 const monde110 = JSON.parse(readFileSync('node_modules/world-atlas/countries-110m.json', 'utf8'))
+// Frontières : seulement le contour des pays desservis (pas celles du monde entier).
 const traces = (m) => ({
-  frontieres: mesh(m, m.objects.countries, (a, b) => a !== b),
+  frontieres: mesh(m, {
+    type: 'GeometryCollection',
+    geometries: m.objects.countries.geometries.filter((g) =>
+      DESSERVIS.some(([, iso]) => iso === g.id),
+    ),
+  }),
   cotes: mesh(m, m.objects.land),
 })
-const TRACES = { 50: traces(monde), 110: traces(monde110) }
 
 /** Tracé SVG d'une géométrie dans les unités de la grille (colonne, ligne), découpé au cadre. */
 function trace(geo, v, colonnes, lignes) {
@@ -44,6 +49,7 @@ const DESSERVIS = [
   ['CA', '124'],
   ['GB', '826'],
 ]
+const TRACES = { 50: traces(monde), 110: traces(monde110) }
 const formes = DESSERVIS.map(([code, iso]) => {
   const f = pays.find((p) => p.id === iso)
   if (!f) throw new Error(`Pays introuvable : ${code}`)

@@ -152,6 +152,21 @@ export function ApercuProduit({
             {DISPO[statut].libelle}
           </p>
 
+          {(() => {
+            const ids = new Set(p.variantes.map((v) => v.id))
+            const n = panier.lignes
+              .filter((l) => ids.has(l.varianteId))
+              .reduce((t, l) => t + l.quantite, 0)
+            return n > 0 ? (
+              <p className="mt-2 inline-flex items-center gap-2 self-start rounded-full bg-or-doux px-3 py-1 text-[13px] font-semibold text-or-texte">
+                <span className="chiffres grid size-5 place-items-center rounded-full bg-or text-[11px] text-sur-or">
+                  {n}
+                </span>
+                déjà dans votre panier
+              </p>
+            ) : null
+          })()}
+
           {p.variantes.length > 1 && (
             <fieldset className="mt-4">
               <legend className="mb-2 text-[13px] font-semibold text-encre">Format</legend>

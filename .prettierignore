@@ -10,3 +10,4 @@ src/assets/**/*.json
 .impeccable
 DESIGN.md
 PRODUCT.md
+src/features/carte/points-carte.json

@@ -106,6 +106,11 @@ export function GrilleProduits({
           // Meilleure réduction réelle parmi les formats (badge de l'image).
           const reductions = p.variantes.flatMap((v) => (v.promo ? [v.promo.reduction] : []))
           const reduction = reductions.length > 0 ? Math.max(...reductions) : undefined
+          // Combien de ce produit (tous formats) sont déjà dans le panier.
+          const ids = new Set(p.variantes.map((v) => v.id))
+          const dansPanier = panier.lignes
+            .filter((l) => ids.has(l.varianteId))
+            .reduce((t, l) => t + l.quantite, 0)
           const badges = choisirBadges(
             { ...p.badges, stockLimite: !dispo.isPending && statut === 'bientot_epuise' },
             reduction === undefined ? 2 : 1,
@@ -141,6 +146,7 @@ export function GrilleProduits({
                 }}
                 reduction={reduction}
                 badges={badges}
+                dansPanier={dansPanier}
                 disponibilite={dispo.isPending ? undefined : (statut ?? 'epuise')}
                 vers={lienProduit(p)}
                 choisir={plusieurs}

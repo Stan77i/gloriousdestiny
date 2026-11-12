@@ -28,8 +28,8 @@ export function PointsCarte({ g, rayon = 0.34 }: { g: Grille; rayon?: number }) 
           d={g.cotes}
           fill="none"
           className="stroke-encre-2"
-          strokeWidth={1.1}
-          strokeOpacity={0.7}
+          strokeWidth={1}
+          strokeOpacity={0.45}
           strokeLinejoin="round"
           vectorEffect="non-scaling-stroke"
         />
@@ -39,8 +39,8 @@ export function PointsCarte({ g, rayon = 0.34 }: { g: Grille; rayon?: number }) 
           d={g.frontieres}
           fill="none"
           className="stroke-or"
-          strokeWidth={1}
-          strokeOpacity={0.75}
+          strokeWidth={1.3}
+          strokeOpacity={0.9}
           strokeLinejoin="round"
           vectorEffect="non-scaling-stroke"
         />
