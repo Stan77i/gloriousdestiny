@@ -10,8 +10,14 @@ type Props = {
   description?: string
   children: ReactNode
   pied?: ReactNode
-  /** `centre` : décision ou confirmation. `tiroir` : panneau latéral (détail, formulaire long). */
-  forme?: 'centre' | 'tiroir'
+  /**
+   * `centre` : décision ou confirmation. `tiroir` : panneau latéral (détail, formulaire long).
+   * `feuille` : feuille qui monte du bas sur téléphone (aperçu, comme dans une application),
+   * fenêtre centrée sur ordinateur.
+   */
+  forme?: 'centre' | 'tiroir' | 'feuille'
+  /** Masque l'en-tête (titre visible pour les lecteurs d'écran seulement). */
+  sansEntete?: boolean
 }
 
 /**
@@ -27,6 +33,7 @@ export function Modale({
   children,
   pied,
   forme = 'centre',
+  sansEntete = false,
 }: Props) {
   const ref = useRef<HTMLDialogElement>(null)
   const id = useId()
@@ -52,12 +59,19 @@ export function Modale({
         'm-0 bg-carte p-0 text-encre shadow-flottant backdrop:transition-opacity open:flex',
         forme === 'centre' &&
           'inset-x-4 top-1/2 mx-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg -translate-y-1/2 rounded-panneau transition-[opacity,translate] duration-300 ease-(--ease-sortie) starting:open:translate-y-[-46%] starting:open:opacity-0',
+        forme === 'feuille' &&
+          'inset-x-0 top-auto bottom-0 max-h-[92dvh] w-full max-w-none rounded-t-[28px] transition-[opacity,translate] duration-300 ease-(--ease-sortie) md:inset-x-4 md:top-1/2 md:bottom-auto md:mx-auto md:max-h-[88dvh] md:w-[calc(100%-2rem)] md:max-w-3xl md:-translate-y-1/2 md:rounded-panneau starting:open:translate-y-16 starting:open:opacity-0',
         forme === 'tiroir' &&
           'inset-y-0 right-0 left-auto h-dvh max-h-none w-full max-w-md rounded-l-panneau transition-[opacity,translate] duration-300 ease-(--ease-sortie) starting:open:translate-x-8 starting:open:opacity-0',
       )}
     >
       <div className="flex max-h-[inherit] w-full flex-col">
-        <header className="flex items-start justify-between gap-4 border-b border-filet px-6 py-5">
+        <header
+          className={cx(
+            'flex items-start justify-between gap-4 border-b border-filet px-6 py-5',
+            sansEntete && 'sr-only',
+          )}
+        >
           <div>
             <h2 id={`${id}-titre`} className="text-[21px] font-semibold tracking-[-0.02em]">
               {titre}
@@ -77,7 +91,12 @@ export function Modale({
             <X />
           </BoutonIcone>
         </header>
-        <div className="flex-1 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-encre-2">
+        <div
+          className={cx(
+            'flex-1 overflow-y-auto text-sm leading-relaxed text-encre-2',
+            !sansEntete && 'px-6 py-5',
+          )}
+        >
           {children}
         </div>
         {pied && (

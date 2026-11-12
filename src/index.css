@@ -398,6 +398,16 @@
       transform: translateY(4%) scale(1.08);
     }
   }
+  /* Aperçu produit : la section dépliée glisse doucement en place. */
+  details[open] > .depliable-contenu {
+    animation: depliable-ouvre 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes depliable-ouvre {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
   /* Barre d'onglets (téléphone) : au-dessus de la zone du geste d'accueil. */
   .barre-onglets {
     bottom: calc(0.75rem + env(safe-area-inset-bottom));

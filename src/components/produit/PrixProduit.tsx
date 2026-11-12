@@ -155,3 +155,69 @@ function PrixPromo({
     </div>
   )
 }
+
+/** « 4 000 FCFA » → chiffres et devise séparés, pour les composer en bloc. */
+function morceaux(montant: number): [string, string] {
+  const t = formaterFcfa(montant)
+  return [t.replace(/\s*FCFA$/, ''), 'FCFA']
+}
+
+/**
+ * Bloc de prix de la carte produit, comme une étiquette d'application : le montant en grand,
+ * la devise en petites capitales or. Promotion réelle : bloc or, ancien prix barré à côté.
+ */
+export function BlocPrix({
+  prix,
+  promo,
+  des = false,
+}: {
+  prix: number
+  promo: PromoAffichee | null
+  des?: boolean
+}) {
+  const [chiffres, devise] = morceaux(prix)
+  return (
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <p
+        className={cx(
+          'chiffres inline-flex items-baseline gap-1 rounded-[12px] px-2.5 py-1.5',
+          promo ? 'degrade-or text-sur-or shadow-or' : 'bg-or-doux text-encre ring-1 ring-or/25',
+        )}
+      >
+        {promo && (
+          <span className="sr-only">
+            Prix promotionnel {formaterFcfa(prix)} au lieu de {formaterFcfa(promo.prixBase)}
+          </span>
+        )}
+        {des && (
+          <span
+            aria-hidden={promo ? true : undefined}
+            className="text-[11px] font-medium opacity-75"
+          >
+            Dès
+          </span>
+        )}
+        <span aria-hidden={promo ? true : undefined} className="text-[17px] leading-none font-bold">
+          {chiffres}
+        </span>
+        <span
+          aria-hidden={promo ? true : undefined}
+          className={cx(
+            'text-[10px] leading-none font-semibold tracking-[0.08em]',
+            promo ? 'text-sur-or/80' : 'text-or-texte',
+          )}
+        >
+          {devise}
+        </span>
+      </p>
+      {promo && (
+        <span
+          aria-hidden="true"
+          className="chiffres text-[12px] text-encre-3 line-through decoration-or decoration-[1.5px]"
+        >
+          {formaterFcfa(promo.prixBase)}
+        </span>
+      )}
+    </div>
+  )
+}

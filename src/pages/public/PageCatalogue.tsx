@@ -1,6 +1,6 @@
+import { SITE } from '@/config/site'
 import { Link, useSearchParams } from 'react-router'
 import { CHEMINS } from '@/app/router/chemins'
-import { EnTetePage } from '@/components/ui/EnTetePage'
 import { EtatVide } from '@/components/ui/Etats'
 import { HeroLaGamme } from '@/features/catalogue/HeroLaGamme'
 import { SLUG_LA_GAMME } from '@/features/catalogue/visuels'
@@ -37,18 +37,32 @@ export function PageCatalogue({ gammeSeule = false }: { gammeSeule?: boolean }) 
 
   return (
     <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-10">
-      <EnTetePage
-        teinte="sable"
-        titre={gammeSeule ? 'Produits' : 'Catalogue'}
-        intro="La gamme professionnelle Glorious Destiny : pose de perruque, coiffage et cils. Livraison au Cameroun, en Côte d’Ivoire, au Gabon, au Congo, au Sénégal, en Guinée, au Canada et au Royaume-Uni."
-      />
+      {/* En-tête compact, comme un écran d'application : titre, nombre d'articles, livraison. */}
+      <header className="flex items-end justify-between gap-4 pt-4 pb-5 sm:pt-8">
+        <div>
+          <h1 className="titre-affiche text-[40px] text-encre sm:text-[52px]">
+            {gammeSeule ? 'Produits' : 'Boutique'}
+          </h1>
+          <p className="mt-1 text-[14px] text-encre-3">
+            Livraison dans {SITE.paysLivres.length} pays · paiement à la livraison
+          </p>
+        </div>
+        {filtres && (
+          <p className="chiffres shrink-0 rounded-full bg-or-doux px-3 py-1.5 text-[13px] font-semibold text-or-texte">
+            {filtres.length} article{filtres.length > 1 ? 's' : ''}
+          </p>
+        )}
+      </header>
       {gammeSeule && (
         <div className="mb-8">
           <HeroLaGamme produit={produits.data?.find((p) => p.slug === SLUG_LA_GAMME)} />
         </div>
       )}
       {!gammeSeule && (
-        <nav aria-label="Catégories" className="-mx-4 mb-8 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <nav
+          aria-label="Catégories"
+          className="-mx-4 mb-5 [scrollbar-width:none] overflow-x-auto px-4 sm:mx-0 sm:px-0"
+        >
           <ul className="flex gap-2">
             {FILTRES.map((f) => {
               const actif = f.valeur === categorie
