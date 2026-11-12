@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Menu, ShoppingBag } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 import { Link, NavLink, Outlet, ScrollRestoration } from 'react-router'
 import { CHEMINS, NAVIGATION_PUBLIQUE } from '@/app/router/chemins'
 import { BandeauHorsLigne } from '@/components/feedback/BandeauHorsLigne'
 import { Signature } from '@/components/marque/Signature'
 import { VeineOr } from '@/components/marque/VeineOr'
-import { BoutonIcone } from '@/components/ui/Bouton'
 import { Modale } from '@/components/ui/Modale'
 import { SITE } from '@/config/site'
 import { useAuth } from '@/features/auth/useAuth'
@@ -15,6 +14,7 @@ import { CentreCliente } from '@/features/notifications/cliente/CentreCliente'
 import { SelecteurTheme } from '@/features/theme/SelecteurTheme'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { cx } from '@/lib/cx'
+import { BarreOnglets } from './BarreOnglets'
 
 function LienPanier() {
   const { nombreArticles } = usePanier()
@@ -121,7 +121,7 @@ export function LayoutPublic() {
   const membreEquipe = auth.statut === 'connecte' && auth.profil !== null
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col pb-(--barre-onglets)">
       <ScrollRestoration />
       <a
         href="#contenu"
@@ -165,16 +165,10 @@ export function LayoutPublic() {
               <SelecteurTheme />
             </div>
             <CentreCliente />
-            <LienPanier />
-            <BoutonIcone
-              libelle="Ouvrir le menu"
-              className="lg:hidden"
-              onClick={() => {
-                setMenu(true)
-              }}
-            >
-              <Menu />
-            </BoutonIcone>
+            {/* Téléphone : panier et menu sont dans la barre d'onglets du bas. */}
+            <div className="hidden lg:block">
+              <LienPanier />
+            </div>
           </div>
         </div>
       </header>
@@ -223,6 +217,12 @@ export function LayoutPublic() {
         <Outlet />
       </main>
       <PiedDePage />
+      <BarreOnglets
+        menuOuvert={menu}
+        onMenu={() => {
+          setMenu((m) => !m)
+        }}
+      />
     </div>
   )
 }

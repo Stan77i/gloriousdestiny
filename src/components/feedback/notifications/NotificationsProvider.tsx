@@ -49,7 +49,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       {children}
       <div
         aria-live="polite"
-        className="pointer-events-none fixed inset-x-4 bottom-4 z-50 flex flex-col items-end gap-2 sm:inset-x-auto sm:right-6"
+        className="pointer-events-none fixed inset-x-4 bottom-[calc(var(--barre-onglets)+1rem)] z-50 flex flex-col items-end gap-2 sm:inset-x-auto sm:right-6"
       >
         {liste.map((n) => (
           <div

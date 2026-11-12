@@ -164,6 +164,17 @@
   }
 }
 
+/* Hauteur réservée à la barre d'onglets du téléphone (0 sur ordinateur). Les barres et
+   messages fixés en bas s'en servent pour rester au-dessus. */
+:root {
+  --barre-onglets: 0px;
+}
+@media (max-width: 1023.98px) {
+  :root {
+    --barre-onglets: calc(5.25rem + env(safe-area-inset-bottom));
+  }
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
@@ -385,6 +396,21 @@
     }
     to {
       transform: translateY(4%) scale(1.08);
+    }
+  }
+  /* Barre d'onglets (téléphone) : au-dessus de la zone du geste d'accueil. */
+  .barre-onglets {
+    bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  }
+  .onglet-actif-icone {
+    animation: onglet-actif 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes onglet-actif {
+    0% {
+      transform: scale(0.82);
+    }
+    60% {
+      transform: scale(1.12);
     }
   }
   /* Panier : la pastille rebondit à chaque ajout, l'icône répond. */

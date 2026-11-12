@@ -59,7 +59,7 @@ export function BarreOffre({
     <aside
       aria-label="Offre en cours"
       className={
-        'zone-nuit fixed inset-x-3 bottom-3 z-40 mx-auto flex max-w-3xl items-center gap-3 rounded-[22px] bg-fond/95 px-4 py-2.5 text-encre shadow-flottant backdrop-blur-md transition-[opacity,transform] duration-500 ease-(--ease-sortie) sm:bottom-5 sm:px-5 ' +
+        'zone-nuit fixed inset-x-3 bottom-[calc(var(--barre-onglets)+0.75rem)] z-40 mx-auto flex max-w-3xl items-center gap-3 rounded-[22px] bg-fond/95 px-4 py-2.5 text-encre shadow-flottant backdrop-blur-md transition-[opacity,transform] duration-500 ease-(--ease-sortie) sm:bottom-[calc(var(--barre-onglets)+1.25rem)] sm:px-5 ' +
         (montree ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-6 opacity-0')
       }
     >

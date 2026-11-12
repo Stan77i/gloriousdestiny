@@ -469,7 +469,7 @@ export function PageProduit() {
       <div
         aria-hidden={!achatPasse}
         className={cx(
-          'fixed inset-x-3 bottom-3 z-30 flex items-center gap-3 rounded-full bg-carte/95 py-2 pr-2 pl-5 shadow-flottant backdrop-blur-md transition-[opacity,translate] duration-300 ease-(--ease-sortie) lg:hidden',
+          'fixed inset-x-3 bottom-[calc(var(--barre-onglets)+0.75rem)] z-30 flex items-center gap-3 rounded-full bg-carte/95 py-2 pr-2 pl-5 shadow-flottant backdrop-blur-md transition-[opacity,translate] duration-300 ease-(--ease-sortie) lg:hidden',
           achatPasse ? 'opacity-100' : 'pointer-events-none translate-y-4 opacity-0',
         )}
       >
