@@ -1007,3 +1007,92 @@
     line-height: 1;
   }
 }
+
+/* Application (téléphone) : voir src/layouts/LayoutApp.tsx. */
+:root[data-app] {
+  --barre-onglets: calc(5.25rem + env(safe-area-inset-bottom));
+}
+@layer components {
+  .app-haut {
+    padding-top: calc(env(safe-area-inset-top) + 0.75rem);
+  }
+  .app-entete {
+    padding-top: calc(env(safe-area-inset-top) + 0.5rem);
+  }
+  .barre-action {
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  }
+  /* Changement d'écran : fondu seul (une transformation déplacerait les barres fixes). */
+  .app-ecran {
+    animation: app-ecran 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes app-ecran {
+    from {
+      opacity: 0;
+    }
+  }
+  /* Dessin au fil d'or : le trait se trace (pathLength = 1). */
+  .trace-fil {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: trace-fil 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.25s forwards;
+  }
+  @keyframes trace-fil {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  /* Fil d'or vertical qui relie les étapes « Comment l'utiliser ». */
+  .fil-etapes {
+    transform-origin: top;
+    animation: fil-etapes 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+  }
+  @keyframes fil-etapes {
+    from {
+      transform: scaleY(0);
+    }
+  }
+  /* Carrousel de l'accueil : rideau qui s'ouvre, zoom lent, barre de progression (5 s). */
+  .diapo-rideau {
+    animation: diapo-rideau 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes diapo-rideau {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  .diapo-zoom {
+    animation: diapo-zoom 6s ease-out both;
+  }
+  @keyframes diapo-zoom {
+    from {
+      transform: scale(1.1);
+    }
+  }
+  .barre-progression {
+    animation: barre-progression 5s linear both;
+  }
+  @keyframes barre-progression {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .app-ecran,
+    .fil-etapes,
+    .diapo-rideau,
+    .diapo-zoom {
+      animation: none;
+    }
+    .trace-fil {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+}

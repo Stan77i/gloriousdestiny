@@ -8,6 +8,7 @@ export const CHEMINS = {
   perruque: (slug: string) => `/perruques/${slug}`,
   cils: '/cils',
   prestations: '/prestations',
+  prestation: (slug: string) => `/prestations/${slug}`,
   services: '/services',
   rendezVous: '/rendez-vous',
   suiviRendezVous: (reference: string) => `/rendez-vous/${reference}`,

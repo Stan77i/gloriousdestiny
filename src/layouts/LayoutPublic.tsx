@@ -18,6 +18,7 @@ import { BarreOnglets } from './BarreOnglets'
 import { BullesConversation } from '@/features/conversation/BullesConversation'
 import { ReglagesSite } from '@/features/sons/ReglagesSite'
 import { useSonsDuSite } from '@/features/sons/useSonsDuSite'
+import { affichageDetecte, basculerAffichage } from '@/features/app/mode'
 
 function LienPanier() {
   const { nombreArticles } = usePanier()
@@ -111,6 +112,16 @@ function PiedDePage() {
         <Link to={CHEMINS.connexion} className="text-encre-3 hover:text-encre">
           Espace équipe
         </Link>
+        {/* Téléphone passé en version ordinateur : le geste inverse, au même endroit. */}
+        {affichageDetecte() === 'app' && (
+          <button
+            type="button"
+            onClick={basculerAffichage}
+            className="min-h-11 font-semibold text-or-texte hover:text-or"
+          >
+            Version application
+          </button>
+        )}
         <SelecteurTheme />
       </div>
       <div className="flex justify-center px-4 pb-8">

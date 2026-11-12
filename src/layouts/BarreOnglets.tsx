@@ -65,7 +65,16 @@ function Onglet({
  * Barre d'onglets du téléphone, comme dans les applications beauté : les quatre destinations
  * principales et « Plus » (le menu complet), toujours à portée du pouce.
  */
-export function BarreOnglets({ menuOuvert, onMenu }: { menuOuvert: boolean; onMenu: () => void }) {
+export function BarreOnglets({
+  menuOuvert,
+  onMenu,
+  app = false,
+}: {
+  menuOuvert: boolean
+  onMenu: () => void
+  /** Application : la barre reste visible quelle que soit la largeur de l'écran. */
+  app?: boolean
+}) {
   const { pathname } = useLocation()
   const { nombreArticles } = usePanier()
   // Chaque ajout au panier fait rebondir la pastille (jamais au chargement).
@@ -90,7 +99,10 @@ export function BarreOnglets({ menuOuvert, onMenu }: { menuOuvert: boolean; onMe
   return (
     <nav
       aria-label="Navigation rapide"
-      className="barre-onglets fixed inset-x-3 z-40 rounded-[24px] bg-carte/95 p-1 shadow-flottant backdrop-blur-md lg:hidden"
+      className={cx(
+        'barre-onglets fixed inset-x-3 z-40 rounded-[24px] bg-carte/95 p-1 shadow-flottant backdrop-blur-md',
+        !app && 'lg:hidden',
+      )}
     >
       <ul className="flex items-stretch justify-around">
         <Onglet
@@ -141,7 +153,7 @@ export function BarreOnglets({ menuOuvert, onMenu }: { menuOuvert: boolean; onMe
             type="button"
             onClick={onMenu}
             aria-expanded={menuOuvert}
-            aria-label="Plus : tout le site"
+            aria-label={app ? 'Plus' : 'Plus : tout le site'}
             className={classes(plus)}
           >
             <Repere actif={plus} />

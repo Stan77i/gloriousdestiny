@@ -1,6 +1,11 @@
 import { Navigate, type RouteObject } from 'react-router'
 import { EtatChargement } from '@/components/ui/Etats'
-import { LayoutPublic } from '@/layouts/LayoutPublic'
+import { AppAccueil } from '@/features/app/AppAccueil'
+import { AppBoutique } from '@/features/app/AppBoutique'
+import { AppPanier } from '@/features/app/AppPanier'
+import { AppDemandePrestation, AppPrestations } from '@/features/app/AppPrestations'
+import { AppProduit } from '@/features/app/AppProduit'
+import { Adaptatif, LayoutAdaptatif } from '@/layouts/LayoutAdaptatif'
 import { PageErreurRoute } from '@/pages/errors/PageErreurRoute'
 import { PageIntrouvable } from '@/pages/errors/PageIntrouvable'
 import { PageAccueil } from '@/pages/public/PageAccueil'
@@ -37,16 +42,51 @@ export const routes: RouteObject[] = [
     hydrateFallbackElement: <EtatChargement />,
     children: [
       {
-        element: <LayoutPublic />,
+        element: <LayoutAdaptatif />,
         children: [
-          { path: CHEMINS.accueil, element: <PageAccueil /> },
-          { path: CHEMINS.catalogue, element: <PageCatalogue /> },
-          { path: CHEMINS.produits, element: <PageCatalogue gammeSeule /> },
-          { path: `${CHEMINS.produits}/:slug`, element: <PageProduit /> },
-          { path: CHEMINS.perruques, element: <PagePerruques /> },
-          { path: `${CHEMINS.perruques}/:slug`, element: <PageProduit /> },
-          { path: CHEMINS.cils, element: <PageCils /> },
-          { path: CHEMINS.prestations, element: <PagePrestations /> },
+          {
+            path: CHEMINS.accueil,
+            element: <Adaptatif site={<PageAccueil />} app={<AppAccueil />} />,
+          },
+          {
+            path: CHEMINS.catalogue,
+            element: <Adaptatif site={<PageCatalogue />} app={<AppBoutique />} />,
+          },
+          {
+            path: CHEMINS.produits,
+            element: <Adaptatif site={<PageCatalogue gammeSeule />} app={<AppBoutique />} />,
+          },
+          {
+            path: `${CHEMINS.produits}/:slug`,
+            element: <Adaptatif site={<PageProduit />} app={<AppProduit />} />,
+          },
+          {
+            path: CHEMINS.perruques,
+            element: (
+              <Adaptatif site={<PagePerruques />} app={<AppBoutique filtreInitial="perruques" />} />
+            ),
+          },
+          {
+            path: `${CHEMINS.perruques}/:slug`,
+            element: <Adaptatif site={<PageProduit />} app={<AppProduit />} />,
+          },
+          {
+            path: CHEMINS.cils,
+            element: <Adaptatif site={<PageCils />} app={<AppBoutique filtreInitial="cils" />} />,
+          },
+          {
+            path: CHEMINS.prestations,
+            element: <Adaptatif site={<PagePrestations />} app={<AppPrestations />} />,
+          },
+          {
+            path: `${CHEMINS.prestations}/:slug`,
+            element: (
+              <Adaptatif
+                site={<Navigate to={CHEMINS.prestations} replace />}
+                app={<AppDemandePrestation />}
+              />
+            ),
+          },
           { path: CHEMINS.services, element: <Navigate to={CHEMINS.prestations} replace /> },
           {
             path: `${CHEMINS.services}/:slug`,
@@ -56,7 +96,10 @@ export const routes: RouteObject[] = [
           { path: `${CHEMINS.rendezVous}/:reference`, element: <PageSuiviRendezVous /> },
           { path: CHEMINS.contact, element: <PageContact /> },
           { path: CHEMINS.presence, element: <PagePresence /> },
-          { path: CHEMINS.panier, element: <PagePanier /> },
+          {
+            path: CHEMINS.panier,
+            element: <Adaptatif site={<PagePanier />} app={<AppPanier />} />,
+          },
           { path: CHEMINS.commande, element: <PageCommande /> },
           { path: `${CHEMINS.commande}/:reference`, element: <PageSuiviCommande /> },
           { path: CHEMINS.connexion, element: <PageConnexion /> },
