@@ -15,7 +15,10 @@ export default defineConfig({
   preview: { port: 4173 },
   build: {
     sourcemap: false,
-    target: 'es2022',
+    // Téléphones plus anciens (iPhone sous iOS 15, Chrome des Android de 2022) : le code est
+    // réécrit pour eux. En dessous, les styles ne s'appliquent plus (couches CSS) : index.html
+    // affiche alors un message et le contact WhatsApp au lieu d'une page vide.
+    target: ['es2020', 'chrome99', 'edge99', 'firefox97', 'safari15'],
   },
   test: {
     environment: 'jsdom',

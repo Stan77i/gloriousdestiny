@@ -25,9 +25,145 @@
       } catch (e) {}
     </script>
     <title>Glorious Destiny</title>
+    <!-- Message de secours : navigateur trop ancien ou connexion trop lente. Styles simples,
+         hors couches CSS, pour s'afficher partout. Jamais de page vide. -->
+    <style>
+      #gd-secours {
+        display: none;
+        min-height: 100vh;
+        box-sizing: border-box;
+        padding: 48px 16px;
+        background: #0f0f0e;
+        color: #f4f1ea;
+        font-family: Georgia, 'Times New Roman', serif;
+        text-align: center;
+      }
+      #gd-secours.visible {
+        display: block;
+      }
+      #gd-secours .gd-boite {
+        max-width: 440px;
+        margin: 0 auto;
+      }
+      #gd-secours .gd-marque {
+        color: #d6a756;
+        font-size: 15px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+      #gd-secours h1 {
+        margin: 24px 0 12px;
+        font-size: 28px;
+        font-weight: normal;
+        line-height: 1.25;
+      }
+      #gd-secours p {
+        margin: 0 0 24px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
+        color: #d9d3c7;
+      }
+      #gd-secours a,
+      #gd-secours button {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 0 12px;
+        padding: 14px 20px;
+        border-radius: 999px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      #gd-secours a {
+        border: 1px solid #d6a756;
+        background: #d6a756;
+        color: #17140f;
+      }
+      #gd-secours button {
+        border: 1px solid #d6a756;
+        background: transparent;
+        color: #f4f1ea;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <div id="gd-secours" role="alert">
+      <div class="gd-boite">
+        <div class="gd-marque">Glorious Destiny</div>
+        <h1 id="gd-secours-titre">Le site ne s’ouvre pas sur ce navigateur</h1>
+        <p id="gd-secours-texte">
+          Votre téléphone ou votre navigateur est trop ancien pour afficher la boutique. Mettez à
+          jour votre téléphone ou ouvrez le lien dans Chrome ou Safari. Vous pouvez aussi nous
+          écrire directement sur WhatsApp.
+        </p>
+        <a
+          href="https://wa.me/237674350735?text=Bonjour%20Glorious%20Destiny%2C%20je%20n%E2%80%99arrive%20pas%20%C3%A0%20ouvrir%20le%20site."
+        >
+          Nous écrire sur WhatsApp
+        </a>
+        <button type="button" onclick="location.reload()">Réessayer</button>
+      </div>
+    </div>
+    <noscript>
+      <style>
+        #gd-secours {
+          display: block;
+        }
+      </style>
+    </noscript>
+    <script>
+      // Écrit pour tous les navigateurs (ES5). Le site appelle gdDemarre() dès qu'il démarre.
+      ;(function () {
+        var ancien = false
+        try {
+          ancien =
+            !('noModule' in document.createElement('script')) || !('CSSLayerBlockRule' in window)
+        } catch (e) {
+          ancien = true
+        }
+        function afficher(lent) {
+          var s = document.getElementById('gd-secours')
+          if (!s) return
+          if (lent) {
+            document.getElementById('gd-secours-titre').textContent =
+              'Le site met du temps à s’ouvrir'
+            document.getElementById('gd-secours-texte').textContent =
+              'La connexion semble lente ou interrompue. Réessayez dans un instant, ou écrivez-nous directement sur WhatsApp.'
+          }
+          s.className = 'visible'
+          document.getElementById('root').style.display = 'none'
+        }
+        window.gdDemarre = function () {
+          if (ancien) return
+          clearTimeout(minuterie)
+          document.getElementById('gd-secours').className = ''
+          document.getElementById('root').style.display = ''
+        }
+        if (ancien) {
+          afficher(false)
+          return
+        }
+        // Erreur de chargement ou de lecture du code avant le démarrage du site.
+        window.addEventListener(
+          'error',
+          function (e) {
+            if (window.gdPret) return
+            var t = e.target
+            if (t && t.tagName === 'SCRIPT') afficher(true)
+            else if (e.error instanceof SyntaxError) afficher(false)
+          },
+          true,
+        )
+        var minuterie = setTimeout(function () {
+          if (!window.gdPret) afficher(true)
+        }, 25000)
+      })()
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
