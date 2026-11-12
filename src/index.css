@@ -1112,3 +1112,18 @@
     }
   }
 }
+/* Application : pas d'élastique au bord, pas de glissement de côté, pas de zoom au double toucher. */
+html[data-app],
+html[data-app] body {
+  overscroll-behavior: none;
+  overflow-x: clip;
+  max-width: 100%;
+}
+html[data-app] body {
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+html[data-app] [class*='overflow-x-auto'] {
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
+}

@@ -238,12 +238,20 @@ export function AppAccueil() {
                     <Link to={lienProduit(p)} className="flex flex-col gap-2.5 no-underline">
                       <span className="socle-produit relative grid h-[250px] place-items-center overflow-hidden rounded-[28px] shadow-[inset_0_0_0_1px_var(--color-filet)]">
                         {v.detoure ? (
-                          <img
-                            src={v.detoure}
-                            alt=""
-                            loading="lazy"
-                            className="h-[200px] object-contain drop-shadow-[0_20px_20px_rgb(0_0_0/0.5)]"
-                          />
+                          <>
+                            {/* Ombre posée sous le produit : une ellipse floue (un filtre
+                                drop-shadow est coupé en rectangle par Safari sur iPhone). */}
+                            <span
+                              aria-hidden="true"
+                              className="absolute inset-x-[26%] bottom-[8%] h-4 rounded-[50%] bg-black/35 blur-[8px]"
+                            />
+                            <img
+                              src={v.detoure}
+                              alt=""
+                              loading="lazy"
+                              className="absolute top-3 left-3 h-[calc(90%-0.75rem)] w-[calc(100%-1.5rem)] object-contain object-bottom"
+                            />
+                          </>
                         ) : v.pleine ? (
                           <img
                             src={v.pleine.petite}

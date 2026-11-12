@@ -45,8 +45,16 @@ export function LayoutApp() {
 
   useEffect(() => {
     document.documentElement.dataset['app'] = ''
+    // Application : l'écran ne zoome pas et ne s'étire pas (comme une app native).
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]')
+    const avant = meta?.content
+    meta?.setAttribute(
+      'content',
+      'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover',
+    )
     return () => {
       delete document.documentElement.dataset['app']
+      if (meta && avant) meta.setAttribute('content', avant)
     }
   }, [])
 
