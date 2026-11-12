@@ -20,6 +20,8 @@ function ecranNatif(chemin: string): boolean {
       CHEMINS.cils,
       CHEMINS.panier,
       CHEMINS.prestations,
+      CHEMINS.compte,
+      CHEMINS.suivi,
     ].includes(chemin as never)
   )
     return true
@@ -50,6 +52,8 @@ export function LayoutApp() {
 
   const natif = ecranNatif(pathname)
   const action = avecBarreAction(pathname)
+  // Accueil « Écrin » : la photo monte jusque sous la barre d'état.
+  const pleinCadre = pathname === CHEMINS.accueil
 
   return (
     <div className="app-coquille flex min-h-dvh flex-col">
@@ -71,7 +75,11 @@ export function LayoutApp() {
       <main
         id="contenu"
         key={pathname}
-        className={`app-ecran flex-1 ${natif ? 'app-haut px-4' : ''} ${action ? 'pb-36' : 'pb-(--barre-onglets)'}`}
+        className={
+          pleinCadre
+            ? 'app-ecran flex-1'
+            : `app-ecran flex-1 ${natif ? 'app-haut px-4' : ''} ${action ? 'pb-36' : 'pb-(--barre-onglets)'}`
+        }
       >
         <Outlet />
       </main>

@@ -23,15 +23,7 @@ export function Signature({
           vivante && 'logo-vivant',
         )}
       >
-        <svg viewBox="0 0 24 24" className="size-5">
-          <path
-            d="M17.6 7.2A7 7 0 1 0 19 13h-6.2"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-          />
-        </svg>
+        <span className="text-[14px] leading-none font-bold tracking-[-0.04em]">GD</span>
       </span>
       {nom && (
         <span

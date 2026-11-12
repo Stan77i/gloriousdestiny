@@ -2,6 +2,7 @@ import { Navigate, type RouteObject } from 'react-router'
 import { EtatChargement } from '@/components/ui/Etats'
 import { AppAccueil } from '@/features/app/AppAccueil'
 import { AppBoutique } from '@/features/app/AppBoutique'
+import { AppCompte, AppSuivi } from '@/features/app/AppCompte'
 import { AppPanier } from '@/features/app/AppPanier'
 import { AppDemandePrestation, AppPrestations } from '@/features/app/AppPrestations'
 import { AppProduit } from '@/features/app/AppProduit'
@@ -103,6 +104,18 @@ export const routes: RouteObject[] = [
           { path: CHEMINS.commande, element: <PageCommande /> },
           { path: `${CHEMINS.commande}/:reference`, element: <PageSuiviCommande /> },
           { path: CHEMINS.connexion, element: <PageConnexion /> },
+          {
+            path: CHEMINS.compte,
+            element: (
+              <Adaptatif site={<Navigate to={CHEMINS.accueil} replace />} app={<AppCompte />} />
+            ),
+          },
+          {
+            path: CHEMINS.suivi,
+            element: (
+              <Adaptatif site={<Navigate to={CHEMINS.contact} replace />} app={<AppSuivi />} />
+            ),
+          },
           // En développement uniquement : en production, la vitrine est réservée au personnel.
           ...(import.meta.env.DEV ? [{ ...routeSystemeDesign, path: CHEMINS.systemeDesign }] : []),
           { path: '*', element: <PageIntrouvable /> },

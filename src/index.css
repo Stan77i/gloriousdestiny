@@ -1096,3 +1096,19 @@
     }
   }
 }
+@layer components {
+  /* Accueil Écrin : zoom lent de la photo affichée (2 s par photo). */
+  .ecrin-photo {
+    animation: ecrin-photo 2.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes ecrin-photo {
+    from {
+      transform: scale(1.08);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ecrin-photo {
+      animation: none;
+    }
+  }
+}

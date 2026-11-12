@@ -18,6 +18,8 @@ export const CHEMINS = {
   commande: '/commande',
   suiviCommande: (reference: string) => `/commande/${reference}`,
   connexion: '/connexion',
+  compte: '/compte',
+  suivi: '/suivi',
   admin: '/admin',
   systemeDesign: '/systeme-design',
   adminSystemeDesign: '/admin/systeme-design',

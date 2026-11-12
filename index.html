@@ -7,7 +7,14 @@
       name="description"
       content="Glorious Destiny : perruques, cils, prestations capillaires et produits professionnels pour la pose."
     />
-    <!-- Préparation PWA (Phase 12) : couleur de la barre du navigateur mobile. -->
+    <!-- Application (PWA) : installable sur l'écran d'accueil, icône GD. -->
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
+    <link rel="icon" type="image/png" href="%BASE_URL%icones/favicon-64.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%icones/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Glorious" />
     <meta name="theme-color" content="#f3efe6" />
     <meta name="color-scheme" content="light dark" />
     <!-- Thème (src/features/theme) appliqué avant le premier rendu : choix mémorisé,
