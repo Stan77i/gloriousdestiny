@@ -8,7 +8,8 @@ import { cx } from '@/lib/cx'
  *    l'extérieur (effet cat eye).
  * 2. Puis il vit : la paupière supérieure descend et se replie sur la paupière inférieure
  *    (les cils basculent vers le bas, comme un vrai clignement), l'iris s'efface, et tout se
- *    rouvre plus lentement qu'il ne s'est fermé. Intervalles irréguliers (2,4 à 6,5 s), parfois
+ *    rouvre plus lentement qu'il ne s'est fermé. Double clignement dès la fin du dessin, puis
+ *    intervalles irréguliers (2 à 4,6 s), parfois
  *    un double clignement, et de temps en temps le regard glisse sur le côté puis revient.
  * Hors écran ou onglet caché : rien ne tourne. Mouvement réduit : regard fixe, déjà dessiné.
  */
@@ -85,7 +86,7 @@ export function Regard({ className }: { className?: string }) {
 
     const suivant = () => {
       if (arrete) return
-      const attente = 2400 + Math.random() * 4100
+      const attente = 2000 + Math.random() * 2600
       minuteur = window.setTimeout(() => {
         compte += 1
         cligner(() => {
@@ -101,8 +102,14 @@ export function Regard({ className }: { className?: string }) {
         })
       }, attente)
     }
-    // Premier clignement après le dessin des cils.
-    minuteur = window.setTimeout(suivant, 1600)
+    // Dès que les cils sont dessinés : double clignement, pour montrer tout de suite que l'œil vit.
+    minuteur = window.setTimeout(() => {
+      cligner(() => {
+        minuteur = window.setTimeout(() => {
+          cligner(suivant)
+        }, 160)
+      })
+    }, 1500)
     return () => {
       arrete = true
       window.clearTimeout(minuteur)
