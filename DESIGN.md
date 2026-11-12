@@ -306,6 +306,10 @@ Mouvement réduit (`prefers-reduced-motion`) : tout est statique, rien ne se cac
 - Garder la correspondance univers → teinte partout (en-tête, rituel, pastilles) ; la carte produit reste sur le socle ivoire.
 - Vérifier chaque écran dans les deux thèmes, à 390 px et 1440 px.
 - Utiliser les vrais visuels ; marquer « Données d'exemple » toute démonstration.
+- **Règle de l'antagoniste** : toute action conçue avec son geste inverse, dans le même geste
+  et au même endroit, sans bouton de plus. Ajouter ↔ retirer (toucher la pastille du compteur),
+  ouvrir ↔ fermer (toucher à côté, glisser), activer ↔ désactiver (même interrupteur), suivre ↔
+  ne plus suivre. Le geste inverse a son propre retour : son descendant, vibration, message.
 
 **À ne pas faire**
 - Mettre du texte en or plein (`or`) : utiliser `or-texte`.

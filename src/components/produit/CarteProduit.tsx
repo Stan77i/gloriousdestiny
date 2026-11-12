@@ -30,6 +30,7 @@ export function CarteProduit({
   reduction,
   badges = [],
   dansPanier = 0,
+  onRetirer,
   disponibilite,
   vers,
   onApercu,
@@ -58,6 +59,8 @@ export function CarteProduit({
   badges?: TypeBadge[]
   /** Quantité de ce produit déjà dans le panier (tous formats) : compteur sur le bouton. */
   dansPanier?: number
+  /** Geste inverse de l'ajout : retire un article (toucher le compteur). */
+  onRetirer?: () => void
   disponibilite: Disponibilite | undefined
   vers?: string
   /** Ouvre l'aperçu (explications, formats) au toucher de la carte. */
@@ -206,15 +209,38 @@ export function CarteProduit({
           </button>
         ) : null}
         {/* Compteur : combien sont déjà dans le panier (rebondit à chaque ajout). */}
-        {dansPanier > 0 && (
-          <span
-            key={dansPanier}
-            aria-label={`${String(dansPanier)} dans le panier`}
-            className="pastille-rebond chiffres absolute right-1 bottom-[42px] z-30 grid h-6 min-w-6 place-items-center rounded-full bg-or px-1.5 text-[12px] font-bold text-sur-or shadow-[0_3px_10px_rgb(0_0_0/0.25)] ring-2 ring-carte"
-          >
-            {dansPanier}
-          </span>
-        )}
+        {/* Compteur : combien sont déjà dans le panier. C'est aussi le geste inverse de « + » :
+            le toucher retire un article (un « − » apparaît au survol), sans bouton de plus. */}
+        {dansPanier > 0 &&
+          (onRetirer ? (
+            <button
+              key={dansPanier}
+              type="button"
+              data-son="aucun"
+              onClick={onRetirer}
+              aria-label={`Retirer un ${nom} du panier (${String(dansPanier)} dans le panier)`}
+              title="Toucher pour en retirer un"
+              className="group/compteur pastille-rebond chiffres absolute right-0.5 bottom-[40px] z-30 grid h-7 min-w-7 place-items-center rounded-full bg-or px-1.5 text-[13px] font-bold text-sur-or shadow-[0_3px_10px_rgb(0_0_0/0.25)] ring-2 ring-carte transition-transform before:absolute before:-inset-2.5 before:content-[''] active:scale-90"
+            >
+              <span className="group-hover/compteur:hidden group-focus-visible/compteur:hidden">
+                {dansPanier}
+              </span>
+              <span
+                aria-hidden="true"
+                className="hidden text-[16px] leading-none group-hover/compteur:inline group-focus-visible/compteur:inline"
+              >
+                −
+              </span>
+            </button>
+          ) : (
+            <span
+              key={dansPanier}
+              aria-label={`${String(dansPanier)} dans le panier`}
+              className="pastille-rebond chiffres absolute right-1 bottom-[42px] z-30 grid h-6 min-w-6 place-items-center rounded-full bg-or px-1.5 text-[12px] font-bold text-sur-or shadow-[0_3px_10px_rgb(0_0_0/0.25)] ring-2 ring-carte"
+            >
+              {dansPanier}
+            </span>
+          ))}
       </div>
 
       <div className="flex flex-1 flex-col gap-2 px-2 pt-2.5 pb-1.5">

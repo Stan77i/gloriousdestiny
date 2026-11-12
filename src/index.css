@@ -256,6 +256,31 @@
     stroke-dashoffset: 1;
     animation: veine-trace 1.6s var(--ease-sortie) 0.2s forwards;
   }
+  /* Lueur qui parcourt le fil d'or, de gauche à droite, toutes les 5 s. */
+  .veine-lueur {
+    stroke-dasharray: 0.07 1.1;
+    stroke-dashoffset: 0.07;
+    filter: drop-shadow(0 0 4px rgb(243 216 159 / 0.9));
+    animation: veine-lueur 5s cubic-bezier(0.45, 0, 0.2, 1) 2.2s infinite;
+  }
+  @keyframes veine-lueur {
+    0% {
+      stroke-dashoffset: 0.07;
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    55% {
+      stroke-dashoffset: -1;
+      opacity: 1;
+    }
+    60%,
+    100% {
+      stroke-dashoffset: -1;
+      opacity: 0;
+    }
+  }
   .veine-trace-retard {
     animation-delay: 0.9s;
   }
@@ -591,6 +616,85 @@
       transform: scale(0.2);
     }
   }
+  /* Scène du salon (premier écran) : le dessin se trace, puis la coiffeuse peigne, les
+     mèches ondulent, des éclats scintillent. */
+  .scene-salon .scene-trait > :not(g),
+  .scene-salon path.scene-trait {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: scene-trace 1.2s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--d, 0s) + 0.2s) forwards;
+  }
+  .scene-cheveux {
+    transform-box: view-box;
+    transform-origin: 190px 168px;
+    animation: scene-ondule 5.5s ease-in-out 3s infinite;
+  }
+  .scene-bras {
+    transform-box: view-box;
+    transform-origin: 292px 182px;
+    animation: scene-peigne 3.4s ease-in-out 3s infinite;
+  }
+  .scene-eclat {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+    animation: scene-scintille 2.6s ease-in-out calc(var(--d, 0s) + 2.8s) infinite;
+  }
+  .scene-bulle {
+    animation: bulle-arrive 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: 100% 100%;
+  }
+  @keyframes scene-trace {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes scene-ondule {
+    50% {
+      transform: rotate(2deg) skewX(-2.5deg);
+    }
+  }
+  @keyframes scene-peigne {
+    0%,
+    100% {
+      transform: rotate(4deg);
+    }
+    50% {
+      transform: rotate(-20deg);
+    }
+  }
+  @keyframes scene-scintille {
+    0%,
+    100% {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  /* Titre : le mot final change (sublimée, révélée…) en montant d'un flou. */
+  .mot-tournant {
+    animation: mot-entre 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes mot-entre {
+    from {
+      opacity: 0;
+      transform: translateY(0.35em);
+      filter: blur(6px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scene-salon .scene-trait > :not(g),
+    .scene-salon path.scene-trait {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+    .scene-eclat {
+      opacity: 0.8;
+    }
+  }
   /* Barre d'onglets (téléphone) : au-dessus de la zone du geste d'accueil. */
   .barre-onglets {
     bottom: calc(0.75rem + env(safe-area-inset-bottom));
@@ -782,6 +886,9 @@
   .regard-haut {
     transform-box: view-box;
     transform-origin: 200px 118px;
+  }
+  .regard-suivi {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .regard-iris-groupe {
     transform-box: view-box;

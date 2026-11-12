@@ -19,6 +19,8 @@ import { PrestationsAccueil } from '@/features/accueil/PrestationsAccueil'
 import { Univers } from '@/features/accueil/Univers'
 import { BarreOffre } from '@/features/accueil/BarreOffre'
 import { SoieOr } from '@/components/marque/SoieOr'
+import { MotTournant } from '@/features/accueil/MotTournant'
+import { SceneSalon } from '@/features/accueil/SceneSalon'
 import { Revele } from '@/components/marque/Revele'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { cx } from '@/lib/cx'
@@ -151,31 +153,38 @@ export function PageAccueil() {
           aria-hidden="true"
           className="absolute inset-0 -z-10 bg-gradient-to-b from-fond from-25% via-fond/75 via-50% to-transparent to-80% lg:bg-gradient-to-r lg:from-fond lg:from-20% lg:via-fond/70 lg:via-45% lg:to-transparent lg:to-75%"
         />
-        <div className="mx-auto flex min-h-[88svh] max-w-7xl flex-col px-4 pt-10 pb-16 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:justify-center lg:px-10 lg:py-16">
-          <h1 className="titre-affiche text-[56px] text-encre sm:text-[84px] xl:text-[96px]">
-            Votre pose,
-            <br />
-            <span className="text-or-texte">sublimée.</span>
-          </h1>
-          <VeineOr className="mt-7 max-w-md" />
-          <p className="mt-7 max-w-lg text-[17px] leading-relaxed text-encre-2">
-            Perruques, cils, prestations capillaires et une gamme professionnelle pensée pour la
-            pose, de la colle au shampoing anti-résidus.
-          </p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Link
-              to={CHEMINS.catalogue}
-              className={classesBouton('principal', 'grand', 'no-underline')}
-            >
-              Découvrir la gamme
-            </Link>
-            <Link
-              to={CHEMINS.prestations}
-              className={classesBouton('secondaire', 'grand', 'no-underline')}
-            >
-              Nos prestations
-            </Link>
+        <div className="mx-auto grid min-h-[88svh] max-w-7xl items-center gap-6 px-4 pt-10 pb-16 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:px-10 lg:py-16">
+          <div className="self-start lg:self-center">
+            <h1 className="titre-affiche text-[56px] text-encre sm:text-[84px] xl:text-[96px]">
+              Votre pose,
+              <br />
+              <MotTournant
+                className="text-or-texte"
+                mots={['sublimée.', 'révélée.', 'magnifiée.', 'parfaite.']}
+              />
+            </h1>
+            <VeineOr className="mt-7 max-w-md" vivante />
+            <p className="mt-7 max-w-lg text-[17px] leading-relaxed text-encre-2">
+              Perruques, cils, prestations capillaires et une gamme professionnelle pensée pour la
+              pose, de la colle au shampoing anti-résidus.
+            </p>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link
+                to={CHEMINS.catalogue}
+                className={classesBouton('principal', 'grand', 'no-underline')}
+              >
+                Découvrir la gamme
+              </Link>
+              <Link
+                to={CHEMINS.prestations}
+                className={classesBouton('secondaire', 'grand', 'no-underline')}
+              >
+                Nos prestations
+              </Link>
+            </div>
           </div>
+          {/* La scène du salon, au fil d'or, à droite du titre (dessous sur téléphone). */}
+          <SceneSalon className="mx-auto aspect-[420/470] w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[520px]" />
         </div>
       </section>
 

@@ -3,7 +3,7 @@
  * télécharger, rien de plus pour les connexions lentes. Volume bas, sons courts et doux.
  * - tic : toucher d'un bouton ou d'un lien ;
  * - bascule : interrupteur, choix d'onglet ;
- * - ajout : un produit rejoint le panier (petit carillon) ;
+ * - ajout : un produit rejoint le panier (petit carillon) ; retrait : son inverse, descendant ;
  * - bulle : une bulle de conversation arrive ;
  * - touche : une frappe de clavier, très discrète (le « G » écrit).
  * Réglages (sons, vibrations) gardés sur l'appareil ; les navigateurs n'autorisent le son
@@ -108,7 +108,7 @@ function frappe(c: AudioContext, debut: number) {
   s.start(debut)
 }
 
-export type NomSon = 'tic' | 'bascule' | 'ajout' | 'bulle' | 'touche'
+export type NomSon = 'tic' | 'bascule' | 'ajout' | 'retrait' | 'bulle' | 'touche'
 
 export function jouer(nom: NomSon) {
   if (!reglages.sons) return
@@ -126,6 +126,11 @@ export function jouer(nom: NomSon) {
       // Carillon : deux notes or (do, mi aigus), la seconde plus douce.
       note(c, 1046.5, t, 0.22, 0.06, 'sine')
       note(c, 1318.5, t + 0.09, 0.32, 0.045, 'sine')
+      break
+    case 'retrait':
+      // Inverse du carillon d'ajout : deux notes qui descendent.
+      note(c, 1318.5, t, 0.16, 0.04, 'sine')
+      note(c, 880, t + 0.08, 0.24, 0.035, 'sine')
       break
     case 'bulle':
       note(c, 660, t, 0.12, 0.04, 'sine', 990)

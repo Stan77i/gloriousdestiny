@@ -33,6 +33,34 @@ export function Regard({ className }: { className?: string }) {
   const { ref, visible } = useAEcran<SVGSVGElement>()
   const haut = useRef<SVGGElement>(null)
   const iris = useRef<SVGGElement>(null)
+  const suivi = useRef<SVGGElement>(null)
+
+  // Ordinateur : l'œil suit la souris, et cligne quand on s'en approche.
+  useEffect(() => {
+    const svg = ref.current
+    const g = suivi.current
+    if (!visible || !svg || !g) return
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let image = 0
+    const bouger = (e: PointerEvent) => {
+      cancelAnimationFrame(image)
+      image = requestAnimationFrame(() => {
+        const r = svg.getBoundingClientRect()
+        const dx = e.clientX - (r.left + r.width / 2)
+        const dy = e.clientY - (r.top + r.height / 2)
+        const d = Math.hypot(dx, dy) || 1
+        const force = Math.min(1, d / 500)
+        g.style.transform = `translate(${String((dx / d) * 16 * force)}px, ${String((dy / d) * 8 * force)}px)`
+      })
+    }
+    window.addEventListener('pointermove', bouger, { passive: true })
+    return () => {
+      cancelAnimationFrame(image)
+      window.removeEventListener('pointermove', bouger)
+      g.style.transform = ''
+    }
+  }, [visible, ref])
 
   useEffect(() => {
     const paupiere = haut.current
@@ -86,7 +114,7 @@ export function Regard({ className }: { className?: string }) {
 
     const suivant = () => {
       if (arrete) return
-      const attente = 2000 + Math.random() * 2600
+      const attente = 1500 + Math.random() * 2200
       minuteur = window.setTimeout(() => {
         compte += 1
         cligner(() => {
@@ -110,7 +138,19 @@ export function Regard({ className }: { className?: string }) {
         }, 160)
       })
     }, 1500)
+    // Survoler l'œil : il cligne aussitôt, comme surpris.
+    const svg = ref.current
+    let occupe = false
+    const surpris = () => {
+      if (occupe) return
+      occupe = true
+      cligner(() => {
+        occupe = false
+      })
+    }
+    svg?.addEventListener('pointerenter', surpris)
     return () => {
+      svg?.removeEventListener('pointerenter', surpris)
       arrete = true
       window.clearTimeout(minuteur)
       paupiere.getAnimations().forEach((x) => {
@@ -120,7 +160,7 @@ export function Regard({ className }: { className?: string }) {
         x.cancel()
       })
     }
-  }, [visible])
+  }, [visible, ref])
 
   return (
     <svg ref={ref} aria-hidden="true" viewBox="0 0 400 220" className={cx('regard', className)}>
@@ -135,31 +175,34 @@ export function Regard({ className }: { className?: string }) {
           style={{ animationDelay: '0.2s' }}
         />
         {/* Iris : s'efface au clignement, glisse quand le regard se déplace. */}
-        <g ref={iris} className="regard-iris-groupe">
-          <circle
-            cx={200}
-            cy={112}
-            r={34}
-            strokeWidth={1.4}
-            opacity={0.75}
-            className="regard-iris"
-          />
-          <circle
-            cx={200}
-            cy={112}
-            r={13}
-            fill="var(--gd-or)"
-            stroke="none"
-            className="regard-iris"
-          />
-          <circle
-            cx={208}
-            cy={104}
-            r={4}
-            fill="var(--gd-or-clair)"
-            stroke="none"
-            className="regard-iris"
-          />
+        {/* Le regard suit le pointeur (ordinateur) : enveloppe déplacée en douceur. */}
+        <g ref={suivi} className="regard-suivi">
+          <g ref={iris} className="regard-iris-groupe">
+            <circle
+              cx={200}
+              cy={112}
+              r={34}
+              strokeWidth={1.4}
+              opacity={0.75}
+              className="regard-iris"
+            />
+            <circle
+              cx={200}
+              cy={112}
+              r={13}
+              fill="var(--gd-or)"
+              stroke="none"
+              className="regard-iris"
+            />
+            <circle
+              cx={208}
+              cy={104}
+              r={4}
+              fill="var(--gd-or-clair)"
+              stroke="none"
+              className="regard-iris"
+            />
+          </g>
         </g>
         {/* Paupière supérieure et cils : se referment ensemble. */}
         <g ref={haut} className="regard-haut">

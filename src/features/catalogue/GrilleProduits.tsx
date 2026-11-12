@@ -10,6 +10,7 @@ import { EtatErreur } from '@/components/ui/Etats'
 import { usePanier } from '@/features/panier/usePanier'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import type { Produit } from '@/services/catalogue.service'
+import { jouer, vibrer } from '@/features/sons/sons'
 import { ApercuProduit } from './ApercuProduit'
 import { lienProduit } from './liens'
 import { useDisponibilites } from './requetes'
@@ -147,6 +148,21 @@ export function GrilleProduits({
                 reduction={reduction}
                 badges={badges}
                 dansPanier={dansPanier}
+                onRetirer={() => {
+                  // Retire un article du dernier format ajouté de ce produit.
+                  const ligne = panier.lignes.filter((l) => ids.has(l.varianteId)).at(-1)
+                  if (!ligne) return
+                  if (ligne.quantite > 1) panier.modifier(ligne.varianteId, ligne.quantite - 1)
+                  else panier.retirer(ligne.varianteId)
+                  jouer('retrait')
+                  vibrer(10)
+                  notifier(
+                    dansPanier > 1
+                      ? `Un ${p.nom} retiré : ${String(dansPanier - 1)} dans le panier.`
+                      : `${p.nom} retiré du panier.`,
+                    'info',
+                  )
+                }}
                 disponibilite={dispo.isPending ? undefined : (statut ?? 'epuise')}
                 vers={lienProduit(p)}
                 choisir={plusieurs}
