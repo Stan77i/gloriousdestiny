@@ -15,6 +15,7 @@ import { SelecteurTheme } from '@/features/theme/SelecteurTheme'
 import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { cx } from '@/lib/cx'
 import { BarreOnglets } from './BarreOnglets'
+import { BullesConversation } from '@/features/conversation/BullesConversation'
 
 function LienPanier() {
   const { nombreArticles } = usePanier()
@@ -133,7 +134,7 @@ export function LayoutPublic() {
       <header className="sticky top-0 z-40 bg-fond/85 backdrop-blur-md">
         <div className="mx-auto flex h-20 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-10">
           <Link to={CHEMINS.accueil} className="no-underline" aria-label={`${SITE.nom}, accueil`}>
-            <Signature />
+            <Signature vivante />
           </Link>
           <nav aria-label="Navigation principale" className="ml-auto hidden lg:block">
             <ul className="flex items-center gap-1 rounded-full bg-carte p-1 shadow-panneau">
@@ -212,6 +213,8 @@ export function LayoutPublic() {
           <SelecteurTheme />
         </div>
       </Modale>
+
+      <BullesConversation />
 
       <main id="contenu" className="flex-1">
         <Outlet />

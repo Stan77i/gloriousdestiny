@@ -7,6 +7,9 @@ export type Grille = {
   lignes: number
   /** Triplets à plat : colonne, ligne, code (0 autre terre, sinon pays desservi). */
   points: number[]
+  /** Tracés SVG (unités de grille) : frontières entre pays et côtes. */
+  frontieres?: string
+  cotes?: string
 }
 
 /** « monde », « afrique » ou le code d'un pays desservi (CM, CI, GA…). */

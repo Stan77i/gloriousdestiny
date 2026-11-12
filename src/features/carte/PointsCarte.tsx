@@ -20,5 +20,32 @@ export function PointsCarte({ g, rayon = 0.34 }: { g: Grille; rayon?: number }) 
     }
     return liste
   }, [g, rayon])
-  return <g>{cercles}</g>
+  return (
+    <g>
+      {/* Côtes et frontières tracées au fil fin : on lit chaque pays d'un coup d'œil. */}
+      {g.cotes && (
+        <path
+          d={g.cotes}
+          fill="none"
+          className="stroke-encre-2"
+          strokeWidth={1.1}
+          strokeOpacity={0.7}
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      )}
+      {g.frontieres && (
+        <path
+          d={g.frontieres}
+          fill="none"
+          className="stroke-or"
+          strokeWidth={1}
+          strokeOpacity={0.75}
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      )}
+      {cercles}
+    </g>
+  )
 }

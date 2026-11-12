@@ -449,6 +449,127 @@
       transform: translateY(-2px) rotate(-4deg);
     }
   }
+  /* Guide de la carte : il glisse d'une escale à l'autre en sautant, respire, cligne. */
+  .guide-carte {
+    transition:
+      left 0.75s cubic-bezier(0.45, 0, 0.2, 1),
+      top 0.75s cubic-bezier(0.45, 0, 0.2, 1);
+  }
+  .guide-saut {
+    animation: guide-saut 0.75s cubic-bezier(0.45, 0, 0.2, 1);
+  }
+  .guide-flacon {
+    animation: guide-respire 3s ease-in-out 1s infinite;
+  }
+  .guide-yeux {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: guide-cligne 4.2s infinite;
+  }
+  .guide-point {
+    animation: guide-point 1s ease-in-out infinite;
+  }
+  @keyframes guide-saut {
+    15% {
+      transform: scale(1.1, 0.88);
+    }
+    50% {
+      transform: translateY(-26px) scale(0.95, 1.06);
+    }
+    85% {
+      transform: scale(1.08, 0.92);
+    }
+  }
+  @keyframes guide-respire {
+    50% {
+      transform: translateY(-2px);
+    }
+  }
+  @keyframes guide-cligne {
+    0%,
+    90%,
+    100% {
+      transform: scaleY(1);
+    }
+    94% {
+      transform: scaleY(0.1);
+    }
+  }
+  @keyframes guide-point {
+    0%,
+    60%,
+    100% {
+      opacity: 0.3;
+      transform: none;
+    }
+    30% {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+  }
+  /* Logo vivant (en-tête) : un arc de lumière dorée tourne autour du « G » ; de temps en
+     temps, un reflet d'or traverse le nom. Lent, jamais clignotant. */
+  .logo-vivant {
+    position: relative;
+    isolation: isolate;
+  }
+  .logo-vivant::before {
+    content: '';
+    position: absolute;
+    inset: -2.5px;
+    z-index: -1;
+    border-radius: 9999px;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0 62%,
+      rgb(243 216 159 / 0.2) 72%,
+      #f3d89f 88%,
+      #d6a756 95%,
+      transparent 100%
+    );
+    animation: logo-tourne 5.5s linear infinite;
+  }
+  .logo-nom {
+    background: linear-gradient(
+        100deg,
+        var(--gd-encre) 42%,
+        var(--gd-or-clair) 50%,
+        var(--gd-or) 53%,
+        var(--gd-encre) 61%
+      )
+      no-repeat;
+    background-size: 260% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: logo-reflet 8s cubic-bezier(0.45, 0, 0.2, 1) 1.5s infinite;
+  }
+  /* Bulles de conversation : glissent depuis le logo. */
+  .bulle-conversation {
+    animation: bulle-arrive 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: 1.5rem 0;
+  }
+  @keyframes logo-tourne {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes logo-reflet {
+    0% {
+      background-position: 100% 0;
+    }
+    22%,
+    100% {
+      background-position: 0% 0;
+    }
+  }
+  @keyframes bulle-arrive {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.94);
+    }
+  }
   /* Barre d'onglets (téléphone) : au-dessus de la zone du geste d'accueil. */
   .barre-onglets {
     bottom: calc(0.75rem + env(safe-area-inset-bottom));

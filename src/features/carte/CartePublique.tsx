@@ -8,6 +8,8 @@ import { cx } from '@/lib/cx'
 import type { CartePublique as Donnees, VillePublique } from '@/services/carte.service'
 import { AFRIQUE, centre, positionDansCadre, ratioCadre, useGrilles, type Grilles } from './fond'
 import { useVisible, type EtatCarte } from './etat'
+import { GuideCarte, type Escale } from './GuideCarte'
+import { paroleVille, paroleZone } from './paroles'
 import { PointsCarte } from './PointsCarte'
 import { arc, projeter } from './projection'
 import { useCartePublique } from './requetes'
@@ -158,7 +160,7 @@ export function ScenePresence({
           className="aspect-[16/9] w-full animate-pulse-doux rounded-[22px] bg-carte"
         />
       ) : (
-        <Cadre d={d} grilles={grilles} etat={etat} hauteur={hauteur} />
+        <Cadre d={d} grilles={grilles} etat={etat} hauteur={hauteur} actif={visible} />
       )}
     </div>
   )
@@ -169,11 +171,13 @@ function Cadre({
   grilles,
   etat,
   hauteur,
+  actif,
 }: {
   d: Donnees
   grilles: Grilles
   etat: EtatCarte
   hauteur: 'normale' | 'immersive'
+  actif: boolean
 }) {
   const { vue, setVue, choisie, setChoisie } = etat
   const g = grilles[vue]
@@ -243,6 +247,54 @@ function Cadre({
               route: v.en_route > 0,
             }))
   const echelle = g.colonnes / 100
+
+  // Le guide : ses escales et ses phrases, tirées des mêmes données que la carte.
+  const escales: Escale[] =
+    vue === 'monde'
+      ? regions.map((r) => ({
+          cle: r.id,
+          p: r.p,
+          parole: paroleZone({
+            code: r.id,
+            nom: r.nom,
+            villes: d.villes.filter((v) => r.codes.includes(v.pays)).map((v) => v.nom),
+            livrees: r.livrees,
+            en_route: r.en_route,
+            pays: r.codes.length,
+          }),
+        }))
+      : vue === 'afrique'
+        ? d.pays
+            .filter((x) => AFRIQUE.has(x.code))
+            .flatMap((x) => {
+              const vs = d.villes.filter((v) => v.pays === x.code)
+              const c = centre(vs)
+              const p = c ? projeter(g, c.longitude, c.latitude) : null
+              if (!p) return []
+              return [
+                {
+                  cle: x.code,
+                  p,
+                  parole: paroleZone({
+                    code: x.code,
+                    nom: x.nom,
+                    villes: vs.map((v) => v.nom),
+                    livrees: vs.reduce((t, v) => t + v.livrees, 0),
+                    en_route: vs.reduce((t, v) => t + v.en_route, 0),
+                  }),
+                },
+              ]
+            })
+        : villes.map(({ v, p }) => ({
+            cle: String(v.id),
+            p,
+            parole: paroleVille({
+              nom: v.nom,
+              livrees: v.livrees,
+              en_route: v.en_route,
+              salon: v.nom === salon?.ville,
+            }),
+          }))
 
   const pilules = [
     { id: 'monde', libelle: 'Monde' },
@@ -407,6 +459,13 @@ function Cadre({
               </button>
             )
           })}
+
+        <GuideCarte
+          g={g}
+          escales={escales}
+          focus={choisie === null ? null : String(choisie)}
+          actif={actif}
+        />
 
         {/* Fenêtre d'information près du repère (écrans larges). */}
         {ville && placee && (
