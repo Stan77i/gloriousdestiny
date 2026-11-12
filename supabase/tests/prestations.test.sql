@@ -31,15 +31,16 @@ language sql as $$
 $$;
 grant execute on function pg_temp.demande(text, text, text, int, text) to anon, authenticated;
 
--- 1. Les quatre prestations et leurs prix, visibles du public.
+-- 1. Les cinq prestations et leurs prix, visibles du public.
 set local role anon;
 do $$ begin
-  assert (select count(*) from public.services where mode_reservation = 'demande' and publie) = 4, '4 prestations';
+  assert (select count(*) from public.services where mode_reservation = 'demande' and publie) = 5, '5 prestations';
   assert (select prix_fcfa from public.services where slug = 'pose-frontale') = 5000, 'pose frontale 5 000';
   assert (select prix_fcfa from public.services where slug = 'traitement-de-perruque') = 3000, 'traitement 3 000';
   assert (select prix_fcfa from public.services where slug = 'coloration-de-perruque') = 10000, 'coloration 10 000';
   assert (select prix_fcfa from public.services where slug = 'montage-de-perruque') = 2000, 'montage 2 000';
-  assert (select count(*) from public.services where publie) = 4, 'les quatre prestations sont les seuls services';
+  assert (select prix_fcfa from public.services where slug = 'ventilation-frontale-perruque') = 3000, 'ventilation 3 000';
+  assert (select count(*) from public.services where publie) = 5, 'les cinq prestations sont les seuls services';
   assert not exists (select 1 from public.services where slug = 'pose-de-perruque'), 'anciens services masqués au public';
 end $$;
 select pg_temp.attendre_erreur('select * from public.demandes_prestations', 'permission');

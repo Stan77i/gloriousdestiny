@@ -69,7 +69,7 @@ export function DemandesPrestations() {
   return (
     <Panneau
       titre={`Demandes de prestations${enAttente.length > 0 ? ` (${String(enAttente.length)} en attente)` : ''}`}
-      sousTitre="Pose frontale, traitement, coloration, montage. La cliente attend votre réponse : acceptez ou refusez, puis prévenez-la sur WhatsApp."
+      sousTitre="Pose frontale, traitement, coloration, montage, ventilation. La cliente attend votre réponse : acceptez ou refusez, puis prévenez-la sur WhatsApp."
       className={enAttente.length > 0 ? 'bg-sable' : ''}
     >
       <ul className="flex flex-col divide-y divide-filet">

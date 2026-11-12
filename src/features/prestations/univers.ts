@@ -27,6 +27,11 @@ const UNIVERS: Record<string, UniversPrestation> = {
     nuit: false,
     accroche: 'Une nouvelle nuance, posée avec soin',
   },
+  'ventilation-frontale-perruque': {
+    fond: 'radial-gradient(110% 80% at 50% 30%, #fffdf8 0%, #f6ecdb 60%, #e9d9bd 100%)',
+    nuit: false,
+    accroche: 'Votre frontale revit, prête à porter',
+  },
   'montage-de-perruque': {
     fond: 'radial-gradient(120% 90% at 60% 20%, #3a3128 0%, #17140f 60%, #0b0a08 100%)',
     nuit: true,

@@ -16,6 +16,8 @@ import { BoutonWhatsApp } from '@/features/whatsapp/BoutonWhatsApp'
 import { cx } from '@/lib/cx'
 import { BarreOnglets } from './BarreOnglets'
 import { BullesConversation } from '@/features/conversation/BullesConversation'
+import { ReglagesSite } from '@/features/sons/ReglagesSite'
+import { useSonsDuSite } from '@/features/sons/useSonsDuSite'
 
 function LienPanier() {
   const { nombreArticles } = usePanier()
@@ -111,6 +113,9 @@ function PiedDePage() {
         </Link>
         <SelecteurTheme />
       </div>
+      <div className="flex justify-center px-4 pb-8">
+        <ReglagesSite className="flex-row flex-wrap items-center gap-x-6 [&>legend]:sr-only" />
+      </div>
     </footer>
   )
 }
@@ -119,6 +124,7 @@ function PiedDePage() {
 export function LayoutPublic() {
   const [menu, setMenu] = useState(false)
   const auth = useAuth()
+  useSonsDuSite()
   const membreEquipe = auth.statut === 'connecte' && auth.profil !== null
 
   return (
@@ -212,6 +218,7 @@ export function LayoutPublic() {
           <BoutonWhatsApp />
           <SelecteurTheme />
         </div>
+        <ReglagesSite className="mt-8" />
       </Modale>
 
       <BullesConversation />

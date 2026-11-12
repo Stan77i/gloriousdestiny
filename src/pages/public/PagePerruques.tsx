@@ -23,7 +23,7 @@ export function PagePerruques() {
       <HeroUnivers
         titre="Perruques,"
         accent="pose parfaite."
-        intro="Pose frontale, traitement, coloration et montage de perruque, avec les produits professionnels qui font tenir la pose."
+        intro="Pose frontale, traitement, coloration, montage et ventilation de perruque, avec les produits professionnels qui font tenir la pose."
         fond="bg-rose"
         image={
           photo
@@ -77,7 +77,8 @@ export function PagePerruques() {
                   <p className="mt-4 max-w-lg text-[16px] leading-relaxed text-encre-2">
                     Dites-nous la perruque que vous cherchez : nous vous prévenons sur WhatsApp dès
                     le retour des modèles qui vous correspondent. Pose frontale, traitement,
-                    coloration et montage restent disponibles pour votre propre perruque.
+                    coloration, montage et ventilation restent disponibles pour votre propre
+                    perruque.
                   </p>
                   <div className="mt-7 flex flex-wrap gap-3">
                     <BoutonWhatsApp

@@ -52,8 +52,8 @@ export function PrestationsAccueil() {
               Nos <span className="text-or">prestations</span>
             </h2>
             <p className="mt-4 text-[17px] leading-relaxed text-encre-2">
-              Pose frontale, traitement, coloration et montage de perruque : un savoir-faire dédié à
-              la mise en valeur de vos cheveux.
+              Pose frontale, traitement, coloration, montage et ventilation : un savoir-faire dédié
+              à la mise en valeur de vos cheveux.
             </p>
           </div>
           <Link to={CHEMINS.prestations} className={classesBouton('or', 'grand', 'no-underline')}>
@@ -61,7 +61,7 @@ export function PrestationsAccueil() {
             <ArrowRight aria-hidden="true" />
           </Link>
         </div>
-        <ul className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 lg:gap-6">
+        <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 lg:gap-6 max-sm:[&>li:last-child:nth-child(odd)]:col-span-2 max-sm:[&>li:last-child:nth-child(odd)]:mx-auto max-sm:[&>li:last-child:nth-child(odd)]:w-[calc(50%-0.5rem)]">
           {prestations.data.map((p, i) => (
             <Vignette key={p.id} p={p} indice={i} />
           ))}

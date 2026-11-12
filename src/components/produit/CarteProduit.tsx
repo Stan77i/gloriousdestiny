@@ -181,6 +181,7 @@ export function CarteProduit({
           <button
             type="button"
             onClick={ajouter}
+            data-son="aucun"
             disabled={disponibilite === undefined || enCours}
             aria-label={ajoute ? `${nom} ajouté au panier` : `Ajouter ${nom} au panier`}
             className={cx(

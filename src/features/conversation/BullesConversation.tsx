@@ -7,6 +7,7 @@ import { useParametresPublics, useProduits } from '@/features/catalogue/requetes
 import { lienWhatsApp } from '@/features/whatsapp/lienWhatsApp'
 import { useMouvementReduit } from '@/hooks/useMouvementReduit'
 import { cx } from '@/lib/cx'
+import { jouer } from '@/features/sons/sons'
 import { composerMessages } from './messages'
 
 const CLE = 'gd-conversation'
@@ -79,6 +80,21 @@ export function BullesConversation() {
       window.clearTimeout(t)
     }
   }, [calme, messages.length, rang])
+
+  // Bruit de clavier discret pendant que le « G » écrit, puis un petit son quand la phrase arrive.
+  useEffect(() => {
+    if (rang === null || ecrit) return
+    jouer('bulle')
+    let t = 0
+    const frappe = () => {
+      jouer('touche')
+      t = window.setTimeout(frappe, 70 + Math.random() * 110)
+    }
+    t = window.setTimeout(frappe, 180)
+    return () => {
+      window.clearTimeout(t)
+    }
+  }, [rang, ecrit])
 
   // « en train d'écrire… », puis la phrase ; elle s'efface seule (sauf survol).
   useEffect(() => {

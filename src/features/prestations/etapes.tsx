@@ -51,7 +51,54 @@ const ciseaux = i(
   </>,
 )
 
+const goutte = i(
+  <>
+    <path d="M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.5 2-5 5-9Z" />
+    <path d="M9.5 13a2.5 2.5 0 0 0 2.5 2.5" />
+  </>,
+)
+
 export const ETAPES: Record<string, Etape[]> = {
+  // Ventilation : les cheveux sont noués un à un dans la dentelle, au crochet à ventiler.
+  'ventilation-frontale-perruque': [
+    {
+      nom: 'Examiner',
+      texte: 'On repère les zones clairsemées et la dentelle usée.',
+      icone: i(
+        <>
+          <circle cx={10.5} cy={10.5} r={6} />
+          <path d="m15 15 5.5 5.5" />
+          <path d="M8 10.5h5M10.5 8v5" strokeDasharray="1.5 1.5" />
+        </>,
+      ),
+    },
+    { nom: 'Nettoyer', texte: 'Lavage doux et démêlage avant le travail.', icone: goutte },
+    {
+      nom: 'Ventiler',
+      texte: 'Au crochet, les cheveux sont noués un à un dans la dentelle.',
+      icone: i(
+        <>
+          <path d="M5 19 17 7" />
+          <path d="M17 7c1.5-1.5 3.5-.5 3 1.3-.3 1-1.4 1.4-2.2.9" />
+          <path d="M4 21l2-2" />
+          <path d="M14 17c1 1.5 3 1.5 4 0" strokeDasharray="1.5 2" />
+        </>,
+      ),
+    },
+    {
+      nom: 'Densifier',
+      texte: 'Les manques sont comblés, la ligne frontale redessinée.',
+      icone: i(
+        <>
+          <path d="M4 16c3-6 13-6 16 0" />
+          <path d="M6.5 13.5v-3M9.5 11.8V8M12 11.2V7.5M14.5 11.8V8M17.5 13.5v-3" />
+          <circle cx={6.5} cy={9.5} r={0.8} />
+          <circle cx={17.5} cy={9.5} r={0.8} />
+        </>,
+      ),
+    },
+    { nom: 'Prête à porter', texte: 'Coiffage final : elle revit, prête à porter.', icone: eclat },
+  ],
   'pose-frontale': [
     {
       nom: 'Préparer',
