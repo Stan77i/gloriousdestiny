@@ -76,7 +76,7 @@ function PiedDePage() {
           <Signature />
           <VeineOr className="max-w-[220px]" animee={false} />
           <p className="max-w-xs text-sm leading-relaxed text-encre-3">
-            Perruques, pose de cils et produits professionnels.
+            Perruques, cils, prestations capillaires et produits professionnels.
           </p>
           <BoutonWhatsApp taille="petit" className="self-start" />
         </div>

@@ -221,6 +221,7 @@ export function PageAccueil() {
             erreur={produits.error}
             onReessayer={() => void produits.refetch()}
             vide={null}
+            colonnes="-mx-4 grid-flow-col auto-cols-[46%] overflow-x-auto snap-x snap-mandatory scroll-px-4 px-4 pb-3 [scrollbar-width:none] [&>li]:snap-start sm:auto-cols-[31%] md:mx-0 md:grid-flow-row md:auto-cols-auto md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-4"
           />
         </div>
       </section>
