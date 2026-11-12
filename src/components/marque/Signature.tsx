@@ -18,10 +18,7 @@ export function Signature({
     <span className={cx('inline-flex items-center gap-2.5 text-encre', className)}>
       <span
         aria-hidden="true"
-        className={cx(
-          'grid size-10 shrink-0 place-items-center rounded-full bg-encre text-or',
-          vivante && 'logo-vivant',
-        )}
+        className={cx('grid size-10 shrink-0 place-items-center rounded-full bg-encre text-or')}
       >
         <span className="text-[14px] leading-none font-bold tracking-[-0.04em]">GD</span>
       </span>

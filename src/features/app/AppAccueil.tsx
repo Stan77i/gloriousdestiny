@@ -1,11 +1,10 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowRight, Truck } from 'lucide-react'
 import { Link } from 'react-router'
 import { CHEMINS } from '@/app/router/chemins'
 import { VeineOr } from '@/components/marque/VeineOr'
 import { BadgePromo } from '@/components/produit/PrixProduit'
 import { SITE } from '@/config/site'
-import { usePrestations } from '@/features/catalogue/prestations'
 import { lienProduit } from '@/features/catalogue/liens'
 import { useDisponibilites, useProduits } from '@/features/catalogue/requetes'
 import { SLUG_LA_GAMME, visuelProduit } from '@/features/catalogue/visuels'
@@ -20,6 +19,7 @@ import { statutProduit } from './catalogueApp'
 import { classesCta } from './classes'
 import { BoutonTheme } from './elements'
 import { PrixApp } from './produits'
+import { Rituel } from './Rituel'
 
 /** Photos d'usage qui défilent derrière le titre (une toutes les 2 s). */
 const PHOTOS = [
@@ -104,7 +104,7 @@ function Ecrin({ produits, offre }: { produits: Produit[]; offre: Offre | null }
         <Link
           to={CHEMINS.accueil}
           aria-label={`${SITE.nom}, accueil`}
-          className="logo-vivant grid size-11 shrink-0 place-items-center rounded-full bg-[#0f0f0e] text-[14px] font-bold tracking-[-0.04em] text-or no-underline"
+          className="grid size-11 shrink-0 place-items-center rounded-full bg-[#0f0f0e] text-[14px] font-bold tracking-[-0.04em] text-or no-underline"
         >
           GD
         </Link>
@@ -161,50 +161,10 @@ function Ecrin({ produits, offre }: { produits: Produit[]; offre: Offre | null }
   )
 }
 
-function Tuile({
-  vers,
-  teinte,
-  titre,
-  detail,
-  dessin,
-}: {
-  vers: string
-  teinte: string
-  titre: string
-  detail: string
-  dessin: ReactNode
-}) {
-  return (
-    <Link
-      to={vers}
-      className={cx(
-        'relative flex h-[84px] flex-col justify-end overflow-hidden rounded-[24px] p-3.5 no-underline transition-transform active:scale-[0.97]',
-        teinte,
-      )}
-    >
-      <svg
-        viewBox="0 0 48 48"
-        aria-hidden="true"
-        className="absolute top-2.5 right-2.5 size-8 text-or-texte"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.4}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        {dessin}
-      </svg>
-      <span className="text-[15px] font-semibold text-encre">{titre}</span>
-      <span className="truncate text-[12px] text-encre-2">{detail}</span>
-    </Link>
-  )
-}
-
 /** Accueil « Écrin » de l'application (maquette 1b). */
 export function AppAccueil() {
   useTitreDocument()
   const produits = useProduits()
-  const prestations = usePrestations()
   const liste = produits.data ?? []
   const perruques = liste.filter((p) => p.type === 'perruque')
   const dispo = useDisponibilites(perruques.flatMap((p) => p.variantes.map((v) => v.id)))
@@ -213,193 +173,135 @@ export function AppAccueil() {
     (perruques.length === 0 ||
       (dispo.data !== undefined &&
         perruques.every((p) => statutProduit(p, dispo.data) === 'epuise')))
-  const cils = liste.filter((p) => p.categorie.slug === 'cils').length
   const gamme = liste.filter((p) => p.type === 'produit' && p.slug !== SLUG_LA_GAMME)
   const offre = meilleureOffre(liste)
 
   return (
-    <div className="zone-nuit -mx-0 min-h-dvh bg-fond pb-(--barre-onglets) text-encre">
-      <Ecrin produits={liste} offre={offre} />
+    <div className="min-h-dvh bg-fond pb-(--barre-onglets) text-encre">
+      <div className="zone-nuit bg-fond pb-12 text-encre">
+        <Ecrin produits={liste} offre={offre} />
 
-      <div className="flex gap-2.5 px-5 pt-2">
-        <Link to={CHEMINS.catalogue} className={cx(classesCta('or'), 'min-h-[52px] flex-1')}>
-          La boutique
-        </Link>
-        <Link
-          to={CHEMINS.prestations}
-          className="flex min-h-[52px] flex-1 items-center justify-center rounded-full bg-carte text-[16px] font-semibold text-encre no-underline shadow-[inset_0_0_0_1px_var(--color-filet-fort)] active:scale-[0.98]"
-        >
-          Le salon
-        </Link>
-      </div>
-
-      {offre && (
-        <Link
-          to={lienProduit(offre.produit)}
-          className="mx-5 mt-4 flex items-center gap-3 rounded-full bg-carte py-2 pr-2 pl-2.5 no-underline shadow-panneau"
-        >
-          <BadgePromo reduction={offre.reduction} />
-          <span className="min-w-0 flex-1">
-            <span className="chiffres block truncate text-[14px] font-semibold text-encre">
-              {offre.produit.nom} · {formaterFcfa(offre.variante.prix)}
-            </span>
-            {offre.fin && (
-              <span className="block text-[12px] text-encre-3">
-                <FinDans fin={offre.fin} />
-              </span>
-            )}
-          </span>
-          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-encre text-fond">
-            <ArrowRight aria-hidden="true" className="size-4" />
-          </span>
-        </Link>
-      )}
-
-      {gamme.length > 0 && (
-        <section className="mt-7">
-          <div className="flex items-baseline justify-between gap-3 px-5 pb-3">
-            <h2 className="text-[28px] font-semibold tracking-[-0.03em] text-encre">La gamme</h2>
-            <Link
-              to={CHEMINS.produits}
-              className="text-[13px] font-semibold text-or-texte no-underline"
-            >
-              {gamme.length} essentiels
-            </Link>
-          </div>
-          <ul className="flex [scrollbar-width:none] gap-3 overflow-x-auto px-5 pb-2">
-            {gamme.map((p) => {
-              const v = visuelProduit(p.slug)
-              const variante = p.variantes.find((x) => x.promo) ?? p.variantes[0]
-              return (
-                <li key={p.id} className="w-[200px] shrink-0">
-                  <Link to={lienProduit(p)} className="flex flex-col gap-2.5 no-underline">
-                    <span className="socle-produit relative grid h-[250px] place-items-center overflow-hidden rounded-[28px] shadow-[inset_0_0_0_1px_var(--color-filet)]">
-                      {v.detoure ? (
-                        <img
-                          src={v.detoure}
-                          alt=""
-                          loading="lazy"
-                          className="h-[200px] object-contain drop-shadow-[0_20px_20px_rgb(0_0_0/0.5)]"
-                        />
-                      ) : v.pleine ? (
-                        <img
-                          src={v.pleine.petite}
-                          alt=""
-                          loading="lazy"
-                          className="absolute inset-0 size-full object-cover"
-                        />
-                      ) : (
-                        <span className="text-[64px] font-semibold text-or/60">
-                          {p.nom.charAt(0)}
-                        </span>
-                      )}
-                      {variante?.promo && (
-                        <BadgePromo
-                          reduction={variante.promo.reduction}
-                          className="absolute top-3 left-3"
-                        />
-                      )}
-                    </span>
-                    <span className="flex items-baseline justify-between gap-2 px-1.5">
-                      <span className="truncate text-[17px] font-semibold text-encre">{p.nom}</span>
-                    </span>
-                    <span className="-mt-1.5 px-1.5">
-                      <PrixApp produit={p} variante={variante} />
-                    </span>
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-        </section>
-      )}
-
-      <nav aria-label="Univers" className="mt-6 grid grid-cols-2 gap-2.5 px-5">
-        <Tuile
-          vers={CHEMINS.perruques}
-          teinte="bg-rose"
-          titre="Perruques"
-          detail={
-            perruquesEpuisees
-              ? 'Être prévenue du retour'
-              : `${String(perruques.length)} modèle${perruques.length > 1 ? 's' : ''}`
-          }
-          dessin={
-            <path
-              className="trace-fil"
-              pathLength={1}
-              d="M12 44V22a12 12 0 0 1 24 0v22M18 44V24a6 6 0 0 1 12 0v20"
-            />
-          }
-        />
-        <Tuile
-          vers={CHEMINS.cils}
-          teinte="bg-lilas"
-          titre="Cils"
-          detail={cils > 0 ? `${String(cils)} accessoires` : 'Grappes, bandes, kit'}
-          dessin={
-            <>
-              <path className="trace-fil" pathLength={1} d="M4 26c10-10 30-10 40 0" />
-              <path className="trace-fil" pathLength={1} d="M4 26c10 8 30 8 40 0" />
-              <path
-                className="trace-fil"
-                pathLength={1}
-                d="M10 20l-3-5M17 17l-2-6M24 16v-6M31 17l2-6M38 20l3-5"
-              />
-            </>
-          }
-        />
-        <Tuile
-          vers={CHEMINS.catalogue}
-          teinte="bg-sauge"
-          titre="Produits de pose"
-          detail="Lace Glue, sprays, gel"
-          dessin={
-            <path
-              className="trace-fil"
-              pathLength={1}
-              d="M20 6h8v6h-8zM18 12h12l2 6v22a3 3 0 0 1-3 3H19a3 3 0 0 1-3-3V18Z"
-            />
-          }
-        />
-        <Tuile
-          vers={CHEMINS.prestations}
-          teinte="bg-sable"
-          titre="Le salon"
-          detail={
-            prestations.data ? `${String(prestations.data.length)} prestations` : 'Sur demande'
-          }
-          dessin={
-            <>
-              <ellipse className="trace-fil" pathLength={1} cx={24} cy={18} rx={11} ry={13} />
-              <path className="trace-fil" pathLength={1} d="M24 31v12M17 44h14" />
-            </>
-          }
-        />
-      </nav>
-
-      <section className="mx-5 mt-6 rounded-[28px] bg-menthe p-[22px] text-sur-menthe">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-[21px] font-semibold tracking-[-0.02em]">
-            Livrée dans {SITE.paysLivres.length} pays
-          </h2>
-          <Truck aria-hidden="true" className="size-6" strokeWidth={1.6} />
+        <div className="flex gap-2.5 px-5 pt-2">
+          <Link to={CHEMINS.catalogue} className={cx(classesCta('or'), 'min-h-[52px] flex-1')}>
+            La boutique
+          </Link>
+          <Link
+            to={CHEMINS.prestations}
+            className="flex min-h-[52px] flex-1 items-center justify-center rounded-full bg-carte text-[16px] font-semibold text-encre no-underline shadow-[inset_0_0_0_1px_var(--color-filet-fort)] active:scale-[0.98]"
+          >
+            Le salon
+          </Link>
         </div>
-        <ul className="mt-3 flex flex-wrap gap-1.5">
-          {SITE.paysLivres.map((pays) => (
-            <li
-              key={pays}
-              className="flex min-h-7 items-center rounded-full bg-white/15 px-3 text-[13px] font-semibold"
-            >
-              {pays}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-3 text-[14px] leading-relaxed">
-          Paiement à la livraison, en espèces ou Mobile Money. Les frais se règlent directement à
-          l’agence.
-        </p>
-      </section>
+
+        {offre && (
+          <Link
+            to={lienProduit(offre.produit)}
+            className="mx-5 mt-4 flex items-center gap-3 rounded-full bg-carte py-2 pr-2 pl-2.5 no-underline shadow-panneau"
+          >
+            <BadgePromo reduction={offre.reduction} />
+            <span className="min-w-0 flex-1">
+              <span className="chiffres block truncate text-[14px] font-semibold text-encre">
+                {offre.produit.nom} · {formaterFcfa(offre.variante.prix)}
+              </span>
+              {offre.fin && (
+                <span className="block text-[12px] text-encre-3">
+                  <FinDans fin={offre.fin} />
+                </span>
+              )}
+            </span>
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-encre text-fond">
+              <ArrowRight aria-hidden="true" className="size-4" />
+            </span>
+          </Link>
+        )}
+      </div>
+      {/* Puis le jour (thème de l'appareil) : l'accueil « Rituel », par intention. */}
+      <div className="relative -mt-8 rounded-t-[36px] bg-fond">
+        <Rituel produits={liste} perruquesEpuisees={perruquesEpuisees} />
+        {gamme.length > 0 && (
+          <section className="mt-7">
+            <div className="flex items-baseline justify-between gap-3 px-5 pb-3">
+              <h2 className="text-[28px] font-semibold tracking-[-0.03em] text-encre">La gamme</h2>
+              <Link
+                to={CHEMINS.produits}
+                className="text-[13px] font-semibold text-or-texte no-underline"
+              >
+                {gamme.length} essentiels
+              </Link>
+            </div>
+            <ul className="flex [scrollbar-width:none] gap-3 overflow-x-auto px-5 pb-2">
+              {gamme.map((p) => {
+                const v = visuelProduit(p.slug)
+                const variante = p.variantes.find((x) => x.promo) ?? p.variantes[0]
+                return (
+                  <li key={p.id} className="w-[200px] shrink-0">
+                    <Link to={lienProduit(p)} className="flex flex-col gap-2.5 no-underline">
+                      <span className="socle-produit relative grid h-[250px] place-items-center overflow-hidden rounded-[28px] shadow-[inset_0_0_0_1px_var(--color-filet)]">
+                        {v.detoure ? (
+                          <img
+                            src={v.detoure}
+                            alt=""
+                            loading="lazy"
+                            className="h-[200px] object-contain drop-shadow-[0_20px_20px_rgb(0_0_0/0.5)]"
+                          />
+                        ) : v.pleine ? (
+                          <img
+                            src={v.pleine.petite}
+                            alt=""
+                            loading="lazy"
+                            className="absolute inset-0 size-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-[64px] font-semibold text-or/60">
+                            {p.nom.charAt(0)}
+                          </span>
+                        )}
+                        {variante?.promo && (
+                          <BadgePromo
+                            reduction={variante.promo.reduction}
+                            className="absolute top-3 left-3"
+                          />
+                        )}
+                      </span>
+                      <span className="flex items-baseline justify-between gap-2 px-1.5">
+                        <span className="truncate text-[17px] font-semibold text-encre">
+                          {p.nom}
+                        </span>
+                      </span>
+                      <span className="-mt-1.5 px-1.5">
+                        <PrixApp produit={p} variante={variante} />
+                      </span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
+        )}
+
+        <section className="mx-5 mt-6 rounded-[28px] bg-menthe p-[22px] text-sur-menthe">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-[21px] font-semibold tracking-[-0.02em]">
+              Livrée dans {SITE.paysLivres.length} pays
+            </h2>
+            <Truck aria-hidden="true" className="size-6" strokeWidth={1.6} />
+          </div>
+          <ul className="mt-3 flex flex-wrap gap-1.5">
+            {SITE.paysLivres.map((pays) => (
+              <li
+                key={pays}
+                className="flex min-h-7 items-center rounded-full bg-white/15 px-3 text-[13px] font-semibold"
+              >
+                {pays}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[14px] leading-relaxed">
+            Paiement à la livraison, en espèces ou Mobile Money. Les frais se règlent directement à
+            l’agence.
+          </p>
+        </section>
+      </div>
     </div>
   )
 }
