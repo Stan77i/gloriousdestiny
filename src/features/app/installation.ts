@@ -27,10 +27,29 @@ export function enregistrerApplication() {
     prevenir()
   })
   if ('serviceWorker' in navigator && import.meta.env.PROD) {
+    // Mises à jour automatiques, même pour l'app installée sur l'écran d'accueil : chaque
+    // publication porte un numéro ; à chaque retour dans l'app (et toutes les 15 min), on
+    // vérifie s'il y en a une nouvelle, et la page se recharge d'elle-même une fois installée.
+    const avaitControleur = navigator.serviceWorker.controller !== null
+    let recharge = false
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!avaitControleur || recharge) return
+      recharge = true
+      window.location.reload()
+    })
     window.addEventListener('load', () => {
-      void navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => {
-        /* sans service worker, le site reste utilisable en ligne */
-      })
+      navigator.serviceWorker
+        .register(`${import.meta.env.BASE_URL}sw.js?v=${__VERSION__}`, { updateViaCache: 'none' })
+        .then((reg) => {
+          const verifier = () => {
+            if (document.visibilityState === 'visible') void reg.update().catch(() => undefined)
+          }
+          document.addEventListener('visibilitychange', verifier)
+          window.setInterval(verifier, 15 * 60_000)
+        })
+        .catch(() => {
+          /* sans service worker, le site reste utilisable en ligne */
+        })
     })
   }
 }

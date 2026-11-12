@@ -2,7 +2,7 @@
  * - Pages : réseau d'abord, la dernière page connue hors connexion.
  * - Fichiers du site (assets/, icônes, polices) : cache d'abord (noms versionnés par Vite).
  * - Données (Supabase, autre domaine) : jamais mises en cache ici, toujours fraîches. */
-const VERSION = 'gd-v1'
+const VERSION = `gd-${new URL(self.location.href).searchParams.get('v') ?? '1'}`
 const PAGES = `${VERSION}-pages`
 const FICHIERS = `${VERSION}-fichiers`
 const RACINE = new URL('./', self.location).href

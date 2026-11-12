@@ -7,6 +7,8 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   // Sous-dossier de publication (GitHub Pages : /gloriousdestiny/). Racine par défaut.
   base: process.env['BASE_PATH'] ?? '/',
+  // Numéro de version : chaque publication met à jour l'application installée (service worker).
+  define: { __VERSION__: JSON.stringify(String(Date.now())) },
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },

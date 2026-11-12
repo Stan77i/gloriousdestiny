@@ -104,7 +104,7 @@ function Ecrin({ produits, offre }: { produits: Produit[]; offre: Offre | null }
         <Link
           to={CHEMINS.accueil}
           aria-label={`${SITE.nom}, accueil`}
-          className="grid size-11 shrink-0 place-items-center rounded-full bg-[#0f0f0e] text-[14px] font-bold tracking-[-0.04em] text-or no-underline"
+          className="degrade-or grid size-11 shrink-0 place-items-center rounded-full text-[17px] leading-none font-bold tracking-[-0.03em] text-sur-or no-underline shadow-or"
         >
           GD
         </Link>
