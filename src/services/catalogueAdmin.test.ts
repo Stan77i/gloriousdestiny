@@ -10,6 +10,8 @@ describe('formulaire produit', () => {
       seuilAlerte: '5',
       delaiAppro: '',
       stockSecurite: '7',
+      coupDeCoeur: true,
+      nouveauJusquAu: '',
     })
     expect(r).toEqual({
       prix: 12500,
@@ -18,6 +20,8 @@ describe('formulaire produit', () => {
       seuilAlerte: 5,
       delaiAppro: null,
       stockSecurite: 7,
+      coupDeCoeur: true,
+      nouveauJusquAu: null,
     })
   })
 

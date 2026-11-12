@@ -19,13 +19,16 @@ export type ProduitAdmin = {
   seuilAlerte: number
   delaiApproJours: number | null
   stockSecuriteJours: number | null
+  coupDeCoeur: boolean
+  /** Badge « Nouveau » jusqu'à cette date (AAAA-MM-JJ), ou aucun. */
+  nouveauJusquAu: string | null
 }
 
 export async function listerProduitsAdmin(): Promise<ProduitAdmin[]> {
   const { data, error } = await supabase()
     .from('produits')
     .select(
-      'id, nom, type, prix_fcfa, publie, description, seuil_alerte, delai_appro_jours, stock_securite_jours, categorie:categories!inner(nom)',
+      'id, nom, type, prix_fcfa, publie, description, seuil_alerte, delai_appro_jours, stock_securite_jours, coup_de_coeur, nouveau_jusqu_au, categorie:categories!inner(nom)',
     )
     .is('archive_at', null)
     .order('nom')
@@ -41,6 +44,8 @@ export async function listerProduitsAdmin(): Promise<ProduitAdmin[]> {
     seuilAlerte: p.seuil_alerte,
     delaiApproJours: p.delai_appro_jours,
     stockSecuriteJours: p.stock_securite_jours,
+    coupDeCoeur: p.coup_de_coeur,
+    nouveauJusquAu: p.nouveau_jusqu_au,
   }))
 }
 
@@ -82,6 +87,12 @@ export const schemaProduit = z.object({
   seuilAlerte: entierRequis(0, 10_000, 'Indiquez un seuil (0 ou plus).'),
   delaiAppro: entierOuVide(1, 365),
   stockSecurite: entierOuVide(0, 365),
+  coupDeCoeur: z.boolean(),
+  nouveauJusquAu: z
+    .string()
+    .trim()
+    .refine((x) => x === '' || /^\d{4}-\d{2}-\d{2}$/.test(x), 'Date invalide')
+    .transform((x) => (x === '' ? null : x)),
 })
 export type SaisieProduit = z.input<typeof schemaProduit>
 
@@ -95,6 +106,8 @@ export async function modifierProduit(id: string, saisie: z.output<typeof schema
       seuil_alerte: saisie.seuilAlerte,
       delai_appro_jours: saisie.delaiAppro,
       stock_securite_jours: saisie.stockSecurite,
+      coup_de_coeur: saisie.coupDeCoeur,
+      nouveau_jusqu_au: saisie.nouveauJusquAu,
     })
     .eq('id', id)
   if (error) throw versErreurApp(error)

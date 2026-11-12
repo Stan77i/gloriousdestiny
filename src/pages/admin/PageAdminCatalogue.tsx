@@ -65,6 +65,8 @@ function ModaleProduit({ produit, onFermer }: { produit: ProduitAdmin; onFermer:
     seuilAlerte: String(produit.seuilAlerte),
     delaiAppro: nombre(produit.delaiApproJours),
     stockSecurite: nombre(produit.stockSecuriteJours),
+    coupDeCoeur: produit.coupDeCoeur,
+    nouveauJusquAu: produit.nouveauJusquAu ?? '',
   })
   const [erreurs, setErreurs] = useState<Erreurs>({})
   const maj = (champ: keyof SaisieProduit) => (valeur: string | boolean) => {
@@ -194,6 +196,32 @@ function ModaleProduit({ produit, onFermer }: { produit: ProduitAdmin; onFermer:
             )}
           </Champ>
         </div>
+        <fieldset className="flex flex-col gap-4 rounded-[18px] border border-filet p-4">
+          <legend className="px-1 text-sm font-semibold text-encre">Badges sur la photo</legend>
+          <Interrupteur
+            libelle="Coup de cœur de l’équipe"
+            checked={v.coupDeCoeur}
+            onChange={(e) => {
+              maj('coupDeCoeur')(e.target.checked)
+            }}
+          />
+          <Champ
+            libelle="Badge « Nouveau » jusqu’au"
+            aide="Laissez vide pour ne pas l’afficher. « Stock limité » et « Meilleure vente » s’affichent tout seuls, d’après le stock et les ventes réels."
+            erreur={erreurs['nouveauJusquAu']}
+          >
+            {(a) => (
+              <Saisie
+                {...a}
+                type="date"
+                value={v.nouveauJusquAu}
+                onChange={(e) => {
+                  maj('nouveauJusquAu')(e.target.value)
+                }}
+              />
+            )}
+          </Champ>
+        </fieldset>
         <PromotionsProduit produitId={produit.id} prixProduit={produit.prixFcfa} />
       </div>
     </Modale>

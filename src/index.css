@@ -361,6 +361,16 @@
     transform: translateX(-120%);
     animation: reflet-passe 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
   }
+  /* Badges d'article : glissent depuis le bord de l'image, l'un après l'autre. */
+  .badge-article {
+    animation: badge-glisse 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes badge-glisse {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+  }
   @keyframes badge-entre {
     from {
       opacity: 0;
@@ -513,6 +523,7 @@
     }
     .parallaxe,
     .bulle,
+    .badge-article,
     .badge-promo::after {
       animation: none !important;
     }

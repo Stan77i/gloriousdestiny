@@ -54,10 +54,12 @@ export type Produit = {
   variantes: Variante[]
   /** Date de création : sert uniquement à signaler une vraie nouveauté. */
   creeLe: string
+  /** Badges, tous vrais : choix de l'équipe, nouveauté datée, ventes réelles. */
+  badges: { coupDeCoeur: boolean; nouveau: boolean; meilleureVente: boolean }
 }
 
 const CHAMPS_PRODUIT =
-  'id, slug, nom, description, fiche, type, prix_fcfa, created_at, categorie:categories!inner(slug, nom), variantes(id, sku, libelle, prix_fcfa, actif)'
+  'id, slug, nom, description, fiche, type, prix_fcfa, created_at, coup_de_coeur, nouveau_jusqu_au, categorie:categories!inner(slug, nom), variantes(id, sku, libelle, prix_fcfa, actif)'
 
 type LigneProduit = {
   id: string
@@ -68,6 +70,8 @@ type LigneProduit = {
   type: string
   prix_fcfa: number
   created_at: string
+  coup_de_coeur: boolean
+  nouveau_jusqu_au: string | null
   categorie: { slug: string; nom: string }
   variantes: {
     id: string
@@ -117,7 +121,20 @@ async function promotionsEnCours(): Promise<Map<string, Promo>> {
   )
 }
 
-function versProduit(l: LigneProduit, promos: Map<string, Promo>): Produit {
+/** Produits les plus vendus (calcul serveur sur les ventes réelles ; vide sans ventes). */
+async function meilleuresVentes(): Promise<Set<string>> {
+  const { data, error } = await supabase().rpc('meilleures_ventes')
+  // Badge secondaire : en cas d'échec, le catalogue s'affiche sans lui.
+  if (error) return new Set()
+  return new Set(data)
+}
+
+function aujourdhui(): string {
+  const d = new Date()
+  return `${String(d.getFullYear())}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function versProduit(l: LigneProduit, promos: Map<string, Promo>, top: Set<string>): Produit {
   return {
     id: l.id,
     slug: l.slug,
@@ -128,6 +145,11 @@ function versProduit(l: LigneProduit, promos: Map<string, Promo>): Produit {
     prix: l.prix_fcfa,
     categorie: l.categorie,
     creeLe: l.created_at,
+    badges: {
+      coupDeCoeur: l.coup_de_coeur,
+      nouveau: l.nouveau_jusqu_au !== null && l.nouveau_jusqu_au >= aujourdhui(),
+      meilleureVente: top.has(l.id),
+    },
     variantes: l.variantes
       .filter((v) => v.actif)
       .map((v) => {
@@ -153,20 +175,21 @@ function versProduit(l: LigneProduit, promos: Map<string, Promo>): Produit {
 }
 
 export async function listerProduits(): Promise<Produit[]> {
-  const [{ data, error }, promos] = await Promise.all([
+  const [{ data, error }, promos, top] = await Promise.all([
     supabase()
       .from('produits')
       .select(CHAMPS_PRODUIT)
       .order('nom')
       .overrideTypes<LigneProduit[], { merge: false }>(),
     promotionsEnCours(),
+    meilleuresVentes(),
   ])
   if (error) throw versErreurApp(error)
-  return data.map((l) => versProduit(l, promos))
+  return data.map((l) => versProduit(l, promos, top))
 }
 
 export async function produitParSlug(slug: string): Promise<Produit | null> {
-  const [{ data, error }, promos] = await Promise.all([
+  const [{ data, error }, promos, top] = await Promise.all([
     supabase()
       .from('produits')
       .select(CHAMPS_PRODUIT)
@@ -174,9 +197,10 @@ export async function produitParSlug(slug: string): Promise<Produit | null> {
       .maybeSingle()
       .overrideTypes<LigneProduit | null, { merge: false }>(),
     promotionsEnCours(),
+    meilleuresVentes(),
   ])
   if (error) throw versErreurApp(error)
-  return data ? versProduit(data, promos) : null
+  return data ? versProduit(data, promos, top) : null
 }
 
 const STATUTS = new Set<Disponibilite>(['disponible', 'bientot_epuise', 'epuise'])

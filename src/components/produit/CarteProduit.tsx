@@ -7,6 +7,8 @@ import type { Disponibilite } from '@/services/catalogue.service'
 import { Monogramme } from './Monogramme'
 import { Bulles } from './Bulles'
 import { BadgePromo } from './PrixProduit'
+import { BadgeArticle } from './BadgesArticle'
+import type { TypeBadge } from './badges'
 
 export type { Disponibilite }
 
@@ -37,6 +39,7 @@ export function CarteProduit({
   photo,
   prix,
   reduction,
+  badges = [],
   disponibilite,
   vers,
   onAjouter,
@@ -60,6 +63,8 @@ export function CarteProduit({
   prix: ReactNode
   /** Réduction réelle en cours, en %. */
   reduction?: number | undefined
+  /** Badges vrais (voir BadgesArticle), déjà triés et limités. */
+  badges?: TypeBadge[]
   disponibilite: Disponibilite | undefined
   vers?: string
   onAjouter?: () => void
@@ -142,6 +147,9 @@ export function CarteProduit({
         <span aria-hidden="true" className="reflet-or pointer-events-none absolute inset-0 z-10" />
         <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-1.5">
           {reduction !== undefined && <BadgePromo reduction={reduction} />}
+          {badges.map((b, i) => (
+            <BadgeArticle key={b} type={b} indice={i + (reduction === undefined ? 0 : 1)} />
+          ))}
         </div>
         {epuise && (
           <div className="absolute inset-x-3 bottom-3 z-20 rounded-full bg-carte/90 py-1.5 text-center text-[12px] font-semibold text-encre-2 backdrop-blur-sm">

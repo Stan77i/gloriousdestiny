@@ -1132,12 +1132,14 @@ export type Database = {
         Row: {
           archive_at: string | null
           categorie_id: string
+          coup_de_coeur: boolean
           created_at: string
           delai_appro_jours: number | null
           description: string | null
           fiche: Json
           id: string
           nom: string
+          nouveau_jusqu_au: string | null
           prix_fcfa: number
           publie: boolean
           seuil_alerte: number
@@ -1150,12 +1152,14 @@ export type Database = {
         Insert: {
           archive_at?: string | null
           categorie_id: string
+          coup_de_coeur?: boolean
           created_at?: string
           delai_appro_jours?: number | null
           description?: string | null
           fiche?: Json
           id?: string
           nom: string
+          nouveau_jusqu_au?: string | null
           prix_fcfa: number
           publie?: boolean
           seuil_alerte?: number
@@ -1168,12 +1172,14 @@ export type Database = {
         Update: {
           archive_at?: string | null
           categorie_id?: string
+          coup_de_coeur?: boolean
           created_at?: string
           delai_appro_jours?: number | null
           description?: string | null
           fiche?: Json
           id?: string
           nom?: string
+          nouveau_jusqu_au?: string | null
           prix_fcfa?: number
           publie?: boolean
           seuil_alerte?: number
@@ -1933,6 +1939,7 @@ export type Database = {
         Returns: undefined
       }
       marquer_rappel_envoye: { Args: { p_id: string }; Returns: undefined }
+      meilleures_ventes: { Args: never; Returns: string[] }
       mes_notifications: { Args: { p_limite?: number }; Returns: Json }
       message_whatsapp_commande: { Args: { p_id: string }; Returns: string }
       modifier_article: { Args: { p: Json }; Returns: undefined }

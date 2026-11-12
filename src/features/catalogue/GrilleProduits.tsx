@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { useNotifications } from '@/components/feedback/notifications/useNotifications'
 import { CarteProduit, type Univers } from '@/components/produit/CarteProduit'
 import { PrixProduit } from '@/components/produit/PrixProduit'
+import { choisirBadges } from '@/components/produit/badges'
 import { SLUGS_BULLES } from '@/components/produit/bulles'
 import { useRevele } from '@/hooks/useRevele'
 import { Squelette } from '@/components/ui/Chargeur'
@@ -102,6 +103,10 @@ export function GrilleProduits({
         // Meilleure réduction réelle parmi les formats (badge de l'image).
         const reductions = p.variantes.flatMap((v) => (v.promo ? [v.promo.reduction] : []))
         const reduction = reductions.length > 0 ? Math.max(...reductions) : undefined
+        const badges = choisirBadges(
+          { ...p.badges, stockLimite: !dispo.isPending && statut === 'bientot_epuise' },
+          reduction === undefined ? 2 : 1,
+        )
         return (
           <CelluleRevelee key={p.id} indice={i % 4} large={large}>
             <CarteProduit
@@ -129,6 +134,7 @@ export function GrilleProduits({
                 />
               }
               reduction={reduction}
+              badges={badges}
               disponibilite={dispo.isPending ? undefined : (statut ?? 'epuise')}
               vers={lienProduit(p)}
               choisir={plusieurs}

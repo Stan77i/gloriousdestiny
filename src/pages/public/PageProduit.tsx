@@ -23,6 +23,8 @@ import { Squelette } from '@/components/ui/Chargeur'
 import { EtatErreur } from '@/components/ui/Etats'
 import { SelecteurQuantite } from '@/components/ui/SelecteurQuantite'
 import { GrilleProduits } from '@/features/catalogue/GrilleProduits'
+import { BadgeArticle } from '@/components/produit/BadgesArticle'
+import { choisirBadges } from '@/components/produit/badges'
 import { useDisponibilites, useProduit, useProduits } from '@/features/catalogue/requetes'
 import { SLUG_LA_GAMME, visuelProduit } from '@/features/catalogue/visuels'
 import { QUANTITE_MAX } from '@/features/panier/panier'
@@ -187,6 +189,13 @@ export function PageProduit() {
               <Monogramme nom={p.nom} />
             )}
             {SLUGS_BULLES.has(p.slug) && vue === 'produit' && <Bulles auto />}
+            <div className="absolute top-4 left-4 z-20 flex flex-col items-start gap-1.5">
+              {choisirBadges({ ...p.badges, stockLimite: statut === 'bientot_epuise' }, 3).map(
+                (b, i) => (
+                  <BadgeArticle key={b} type={b} indice={i} />
+                ),
+              )}
+            </div>
           </div>
           {visuel.photo && visuel.detoure && (
             <div role="group" aria-label="Choisir la vue" className="flex gap-3">
