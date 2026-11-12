@@ -18,8 +18,7 @@ import { OffresDuMoment, RegardCils } from '@/features/accueil/SectionsBeaute'
 import { PrestationsAccueil } from '@/features/accueil/PrestationsAccueil'
 import { Univers } from '@/features/accueil/Univers'
 import { BarreOffre } from '@/features/accueil/BarreOffre'
-import { CarrouselGammes } from '@/features/accueil/CarrouselGammes'
-import { Meches } from '@/components/marque/Meches'
+import { SoieOr } from '@/components/marque/SoieOr'
 import { Revele } from '@/components/marque/Revele'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
 import { cx } from '@/lib/cx'
@@ -144,11 +143,15 @@ export function PageAccueil() {
 
   return (
     <>
-      {/* Premier écran */}
-      <section className="relative mx-auto grid max-w-7xl gap-8 px-4 pt-8 pb-16 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-[1fr_0.95fr] lg:items-center lg:gap-14 lg:px-10 lg:py-10">
-        {/* Mèches d'or : la chevelure qui passe du texte à la photo. */}
-        <Meches className="pointer-events-none absolute top-0 right-0 -z-0 h-[420px] w-40 opacity-50 lg:top-[4%] lg:right-auto lg:left-[41%] lg:h-[92%] lg:w-56 lg:opacity-90" />
-        <div className="relative z-10">
+      {/* Premier écran : la soie d'or (WebGL) derrière le titre. */}
+      <section className="relative isolate overflow-hidden">
+        <SoieOr className="absolute inset-0 -z-20" />
+        {/* Voile : garde le texte lisible (en haut sur téléphone, à gauche sur ordinateur). */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-fond from-25% via-fond/75 via-50% to-transparent to-80% lg:bg-gradient-to-r lg:from-fond lg:from-20% lg:via-fond/70 lg:via-45% lg:to-transparent lg:to-75%"
+        />
+        <div className="mx-auto flex min-h-[88svh] max-w-7xl flex-col px-4 pt-10 pb-16 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:justify-center lg:px-10 lg:py-16">
           <h1 className="titre-affiche text-[56px] text-encre sm:text-[84px] xl:text-[96px]">
             Votre pose,
             <br />
@@ -174,7 +177,6 @@ export function PageAccueil() {
             </Link>
           </div>
         </div>
-        <CarrouselGammes className="z-[1] h-[480px] sm:h-[580px] lg:h-[min(720px,calc(100svh-8rem))]" />
       </section>
 
       <Univers produits={produits.data} />

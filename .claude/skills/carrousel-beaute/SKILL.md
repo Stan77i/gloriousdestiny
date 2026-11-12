@@ -5,8 +5,10 @@ description: Construire ou modifier un carrousel d'images haut de gamme (premier
 
 # Carrousel beauté (Glorious Destiny)
 
-Implémentation de référence : `src/features/accueil/CarrouselGammes.tsx` (composant) et la section
-« Carrousel des gammes » de `src/index.css` (`.diapo-*`, `.carrousel-*`). Réutiliser ce composant
+Implémentation de référence : retirée de l'accueil à la demande de la cliente (12/11/2026, remplacée
+par la soie d'or WebGL `src/components/marque/SoieOr.tsx`). Le composant `CarrouselGammes.tsx` et
+ses styles `.diapo-*` / `.carrousel-*` restent consultables dans l'historique git
+(`git show 9f97822:src/features/accueil/CarrouselGammes.tsx`). Réutiliser ce composant
 ou en copier le principe ; ne pas ajouter de bibliothèque (Swiper, Embla…) pour cet usage.
 
 ## Principes (tirés de l'étude des premiers écrans de marques beauté premium)
