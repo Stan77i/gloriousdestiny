@@ -408,6 +408,47 @@
       transform: translateY(-6px);
     }
   }
+  /* Prestations : cinq étapes en demi-cercle. Les médaillons éclosent l'un après l'autre,
+     l'étape active grandit avec un halo à sa couleur, l'arc d'or progresse jusqu'à elle. */
+  .arc-medaillon {
+    transition:
+      scale 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.45s ease;
+    box-shadow: 0 4px 12px rgb(23 20 15 / 0.12);
+  }
+  .arc-etapes:not(.vu) .arc-medaillon,
+  .arc-etapes:not(.vu) .arc-progres {
+    opacity: 0;
+  }
+  .arc-etapes.vu .arc-medaillon {
+    animation: medaillon-eclot 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    animation-delay: calc(var(--i) * 120ms);
+  }
+  .arc-medaillon.actif {
+    scale: 1.16;
+    box-shadow:
+      0 0 0 5px var(--halo),
+      0 12px 28px var(--halo);
+  }
+  .arc-medaillon.actif svg {
+    animation: medaillon-flotte 2.6s ease-in-out infinite;
+  }
+  .arc-progres {
+    transition:
+      stroke-dashoffset 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.6s ease 0.6s;
+  }
+  @keyframes medaillon-eclot {
+    from {
+      opacity: 0;
+      scale: 0.3;
+    }
+  }
+  @keyframes medaillon-flotte {
+    50% {
+      transform: translateY(-2px) rotate(-4deg);
+    }
+  }
   /* Barre d'onglets (téléphone) : au-dessus de la zone du geste d'accueil. */
   .barre-onglets {
     bottom: calc(0.75rem + env(safe-area-inset-bottom));

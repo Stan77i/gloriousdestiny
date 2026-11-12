@@ -112,5 +112,28 @@ select pg_temp.attendre_erreur($q$delete from public.demandes_prestations$q$, 'H
 select pg_temp.attendre_erreur($q$insert into public.services (slug, nom, type, prix_fcfa) values ('sans-duree', 'Sans durée', 'autre', 1000)$q$, 'services_duree_creneau');
 select pg_temp.attendre_erreur($q$insert into public.rendez_vous (service_id) values ((select id from public.services where slug = 'pose-frontale'))$q$, 'sur demande');
 
+-- 8. Badge « Très demandée » : calculé sur les demandes réelles (3 au moins, hors annulées).
+insert into public.demandes_prestations (reference, service_id, nom_prestation, prix_fcfa, nom_cliente,
+  telephone, date_souhaitee, heure_souhaitee, cle_idempotence, statut)
+select 'PR-TEST-' || g, s.id, s.nom, s.prix_fcfa, 'Cliente test', '+23767000010' || g, current_date + 2,
+  '11:00', 'cle-badge-' || g, case when g = 4 then 'annulee' else 'en_attente' end
+from public.services s, generate_series(1, 4) g
+where s.slug = 'traitement-de-perruque';
+insert into public.demandes_prestations (reference, service_id, nom_prestation, prix_fcfa, nom_cliente,
+  telephone, date_souhaitee, heure_souhaitee, cle_idempotence, statut)
+select 'PR-TESTM-' || g, s.id, s.nom, s.prix_fcfa, 'Cliente test', '+23767000020' || g, current_date + 2,
+  '11:00', 'cle-badgm-' || g, case when g = 1 then 'en_attente' else 'annulee' end
+from public.services s, generate_series(1, 3) g
+where s.slug = 'montage-de-perruque';
+set local role anon;
+do $$ begin
+  assert (select id from public.services where slug = 'traitement-de-perruque') in (select public.prestations_tres_demandees()),
+    'traitement : 3 demandes non annulées';
+  assert (select id from public.services where slug = 'montage-de-perruque') not in (select public.prestations_tres_demandees()),
+    'montage : 2 demandes annulées ne comptent pas';
+  assert (select coup_de_coeur from public.services where slug = 'pose-frontale'), 'coup de cœur lisible du public';
+end $$;
+reset role;
+
 select 'TESTS PRESTATIONS PASSÉS' as resultat;
 rollback;

@@ -34,6 +34,14 @@ function Eclat() {
   )
 }
 
+function Flamme() {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3.5" fill="currentColor">
+      <path d="M8.6 1c.4 2.4-.6 3.6-1.7 4.8C5.8 7 4.5 8.3 4.5 10.4A3.6 3.6 0 0 0 8 14.5a3.7 3.7 0 0 0 3.6-3.7c0-1.3-.6-2.3-1.2-3 .1 1-.3 1.9-1.1 2.3.4-2.4-.1-6.4-.7-9.1Z" />
+    </svg>
+  )
+}
+
 const STYLE: Record<TypeBadge, { libelle: string; classe: string; icone: ReactNode }> = {
   'meilleure-vente': {
     libelle: 'Meilleure vente',
@@ -54,6 +62,11 @@ const STYLE: Record<TypeBadge, { libelle: string; classe: string; icone: ReactNo
     libelle: 'Coup de cœur',
     classe: 'bg-[#fbf8f2]/95 text-[#17140f]',
     icone: <Coeur />,
+  },
+  'tres-demandee': {
+    libelle: 'Très demandée',
+    classe: 'bg-[#17140f] text-[#fbf8f2] [&_svg]:text-[#f08a4b]',
+    icone: <Flamme />,
   },
   nouveau: {
     libelle: 'Nouveau',

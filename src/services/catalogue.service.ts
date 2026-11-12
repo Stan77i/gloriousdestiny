@@ -229,6 +229,8 @@ export type Prestation = {
   prix: number
   /** URL publique de la photo, ou null tant qu'aucune photo n'a été déposée. */
   photo: string | null
+  /** Badges vrais : choix de l'équipe, et demandes réelles (calcul serveur). */
+  badges: { coupDeCoeur: boolean; tresDemandee: boolean }
 }
 
 export function urlPhotoPrestation(chemin: string | null): string | null {
@@ -237,13 +239,19 @@ export function urlPhotoPrestation(chemin: string | null): string | null {
 }
 
 export async function listerPrestations(): Promise<Prestation[]> {
-  const { data, error } = await supabase()
-    .from('services')
-    .select('id, slug, nom, description, prix_fcfa, image')
-    .eq('mode_reservation', 'demande')
-    .eq('publie', true)
-    .is('archive_at', null)
-    .order('ordre')
+  const [{ data, error }, demandees] = await Promise.all([
+    supabase()
+      .from('services')
+      .select('id, slug, nom, description, prix_fcfa, image, coup_de_coeur')
+      .eq('mode_reservation', 'demande')
+      .eq('publie', true)
+      .is('archive_at', null)
+      .order('ordre'),
+    // Badge secondaire : en cas d'échec, les prestations s'affichent sans lui.
+    supabase()
+      .rpc('prestations_tres_demandees')
+      .then((r) => new Set(r.error ? [] : r.data)),
+  ])
   if (error) throw versErreurApp(error)
   return data.map((l) => ({
     id: l.id,
@@ -252,5 +260,6 @@ export async function listerPrestations(): Promise<Prestation[]> {
     description: l.description,
     prix: l.prix_fcfa,
     photo: urlPhotoPrestation(l.image),
+    badges: { coupDeCoeur: l.coup_de_coeur, tresDemandee: demandees.has(l.id) },
   }))
 }

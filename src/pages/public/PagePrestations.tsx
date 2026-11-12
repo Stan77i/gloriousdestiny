@@ -5,67 +5,91 @@ import { Squelette } from '@/components/ui/Chargeur'
 import { Bouton } from '@/components/ui/Bouton'
 import { EtatErreur } from '@/components/ui/Etats'
 import { usePrestations } from '@/features/catalogue/prestations'
-import { PhotoPrestation } from '@/features/prestations/PhotoPrestation'
+import { ArcEtapes } from '@/features/prestations/ArcEtapes'
+import { BadgeArticle } from '@/components/produit/BadgesArticle'
+import type { TypeBadge } from '@/components/produit/badges'
 import { ReservationPrestation } from '@/features/prestations/ReservationPrestation'
 import { universPrestation } from '@/features/prestations/univers'
 import { useRevele } from '@/hooks/useRevele'
 import { useTitreDocument } from '@/hooks/useTitreDocument'
-import { cx } from '@/lib/cx'
 import { versErreurApp } from '@/lib/errors/versErreurApp'
 import { formaterFcfa } from '@/lib/format/montant'
 import type { Prestation } from '@/services/catalogue.service'
 
-function BlocPrestation({
-  p,
-  rang,
-  onReserver,
-}: {
-  p: Prestation
-  rang: number
-  onReserver: () => void
-}) {
+/** Le tarif dans son carré : libellé, montant en grand, devise en petites capitales. */
+function CarreTarif({ prix }: { prix: number }) {
+  const [chiffres] = formaterFcfa(prix).split(/\s*FCFA/)
+  return (
+    <p className="presta-tarif chiffres flex flex-col items-center justify-center rounded-[20px] bg-or-doux px-5 py-3 text-center ring-1 ring-or/30">
+      <span className="text-[11px] font-semibold tracking-[0.14em] text-or-texte uppercase">
+        Tarif
+      </span>
+      <span className="text-[28px] leading-tight font-bold text-encre">{chiffres}</span>
+      <span className="text-[11px] font-semibold tracking-[0.14em] text-or-texte">FCFA</span>
+    </p>
+  )
+}
+
+function BlocPrestation({ p, onReserver }: { p: Prestation; onReserver: () => void }) {
   const ref = useRevele()
-  const inverse = rang % 2 === 1
+  const badges: TypeBadge[] = [
+    ...(p.badges.coupDeCoeur ? (['coup-de-coeur'] as const) : []),
+    ...(p.badges.tresDemandee ? (['tres-demandee'] as const) : []),
+  ]
   return (
     <article
       ref={ref}
       id={p.slug}
       aria-labelledby={`titre-${p.slug}`}
-      className="presta grid scroll-mt-24 items-center gap-8 lg:grid-cols-2 lg:gap-16"
+      className="presta flex scroll-mt-24 flex-col items-center rounded-panneau bg-carte px-5 pt-8 pb-7 text-center shadow-panneau sm:px-8"
     >
-      <PhotoPrestation
-        prestation={p}
-        className={cx(
-          'rounded-[28px] shadow-[0_30px_70px_-40px_rgb(23_20_15/0.55)]',
-          inverse && 'lg:order-2',
+      <ArcEtapes slug={p.slug} photo={p.photo} />
+      <div className="mt-6 flex flex-col items-center gap-3">
+        {badges.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-1.5">
+            {badges.map((b, i) => (
+              <BadgeArticle key={b} type={b} indice={i} />
+            ))}
+          </div>
         )}
-      />
-      <div className="flex flex-col gap-5 lg:max-w-lg">
         <h2
           id={`titre-${p.slug}`}
-          className="titre-affiche text-[40px] leading-[1.02] text-encre sm:text-[52px]"
+          className="titre-affiche text-[34px] leading-[1.04] text-encre sm:text-[40px]"
         >
           {p.nom}
-          <span className="mt-3 block font-sans text-[15px] font-medium tracking-normal text-or-texte">
+          <span className="mt-2 block font-sans text-[15px] font-medium tracking-normal text-or-texte">
             {universPrestation(p.slug).accroche}
           </span>
         </h2>
-        {p.description && (
-          <p className="text-[17px] leading-relaxed text-encre-2">{p.description}</p>
-        )}
-        <p className="presta-prix chiffres self-start text-[34px] leading-none font-semibold text-encre">
-          {formaterFcfa(p.prix)}
-        </p>
-        <Bouton
-          variante="or"
-          taille="grand"
-          icone={<CalendarHeart />}
-          className="self-start"
-          onClick={onReserver}
-        >
-          Réserver cette prestation
+      </div>
+      <div className="mt-5 flex w-full flex-wrap items-center justify-center gap-3">
+        <CarreTarif prix={p.prix} />
+        <Bouton variante="or" taille="grand" icone={<CalendarHeart />} onClick={onReserver}>
+          Réserver
         </Bouton>
       </div>
+      {p.description && (
+        <details className="group mt-5 w-full border-t border-filet text-left">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 pt-3 text-[15px] font-semibold text-encre [&::-webkit-details-marker]:hidden">
+            En savoir plus
+            <svg
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.8}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="size-5 text-or-texte transition-transform duration-300 group-open:rotate-180"
+            >
+              <path d="m5 7.5 5 5 5-5" />
+            </svg>
+          </summary>
+          <p className="depliable-contenu pt-2 text-[15px] leading-relaxed text-encre-2">
+            {p.description}
+          </p>
+        </details>
+      )}
     </article>
   )
 }
@@ -109,23 +133,22 @@ export function PagePrestations() {
         </div>
       </section>
 
-      <div className="flex flex-col gap-24 py-20 sm:gap-32">
+      <div className="grid gap-6 py-12 sm:py-16 lg:grid-cols-2 lg:gap-8">
         {prestations.isError ? (
           <EtatErreur
             message={versErreurApp(prestations.error).message}
             onReessayer={() => void prestations.refetch()}
           />
         ) : prestations.isPending ? (
-          <div className="grid gap-8 lg:grid-cols-2">
-            <Squelette className="aspect-[4/5] w-full rounded-[28px]" />
-            <Squelette className="h-64 w-full" />
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Squelette className="h-[560px] w-full rounded-panneau" />
+            <Squelette className="h-[560px] w-full rounded-panneau" />
           </div>
         ) : (
-          prestations.data.map((p, i) => (
+          prestations.data.map((p) => (
             <BlocPrestation
               key={p.id}
               p={p}
-              rang={i}
               onReserver={() => {
                 setChoisie(p)
               }}

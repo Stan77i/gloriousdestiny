@@ -125,13 +125,15 @@ export type ServiceAdmin = {
   tamponApresMinutes: number
   prixFcfa: number
   publie: boolean
+  /** Badge « Coup de cœur » (prestations). */
+  coupDeCoeur: boolean
 }
 
 export async function listerServicesAdmin(): Promise<ServiceAdmin[]> {
   const { data, error } = await supabase()
     .from('services')
     .select(
-      'id, nom, description, mode_reservation, image, ordre, duree_minutes, tampon_apres_minutes, prix_fcfa, publie',
+      'id, nom, description, mode_reservation, image, ordre, duree_minutes, tampon_apres_minutes, prix_fcfa, publie, coup_de_coeur',
     )
     .is('archive_at', null)
     .order('mode_reservation', { ascending: false })
@@ -148,6 +150,7 @@ export async function listerServicesAdmin(): Promise<ServiceAdmin[]> {
     tamponApresMinutes: s.tampon_apres_minutes,
     prixFcfa: s.prix_fcfa,
     publie: s.publie,
+    coupDeCoeur: s.coup_de_coeur,
   }))
 }
 
@@ -180,6 +183,7 @@ export const schemaPrestation = z.object({
   prix: entierRequis(0, 10_000_000, 'Indiquez un prix en FCFA (nombre entier).'),
   publie: z.boolean(),
   description: z.string().trim().max(1000, '1 000 caractères au plus'),
+  coupDeCoeur: z.boolean(),
 })
 export type SaisiePrestation = z.input<typeof schemaPrestation>
 
@@ -195,6 +199,7 @@ export async function modifierPrestation(
       prix_fcfa: saisie.prix,
       publie: saisie.publie,
       description: saisie.description === '' ? null : saisie.description,
+      coup_de_coeur: saisie.coupDeCoeur,
       ...(image === undefined ? {} : { image }),
     })
     .eq('id', id)

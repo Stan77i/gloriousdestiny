@@ -1515,6 +1515,7 @@ export type Database = {
       services: {
         Row: {
           archive_at: string | null
+          coup_de_coeur: boolean
           created_at: string
           description: string | null
           duree_minutes: number | null
@@ -1533,6 +1534,7 @@ export type Database = {
         }
         Insert: {
           archive_at?: string | null
+          coup_de_coeur?: boolean
           created_at?: string
           description?: string | null
           duree_minutes?: number | null
@@ -1551,6 +1553,7 @@ export type Database = {
         }
         Update: {
           archive_at?: string | null
+          coup_de_coeur?: boolean
           created_at?: string
           description?: string | null
           duree_minutes?: number | null
@@ -1943,6 +1946,7 @@ export type Database = {
       mes_notifications: { Args: { p_limite?: number }; Returns: Json }
       message_whatsapp_commande: { Args: { p_id: string }; Returns: string }
       modifier_article: { Args: { p: Json }; Returns: undefined }
+      prestations_tres_demandees: { Args: never; Returns: string[] }
       promotions_en_cours: {
         Args: never
         Returns: {

@@ -33,6 +33,7 @@ export function ModalePrestation({
     prix: String(service.prixFcfa),
     publie: service.publie,
     description: service.description,
+    coupDeCoeur: service.coupDeCoeur,
   })
   const [erreurs, setErreurs] = useState<Partial<Record<string, string>>>({})
   const [photo, setPhoto] = useState<File | null>(null)
@@ -173,6 +174,16 @@ export function ModalePrestation({
             setV((x) => ({ ...x, publie: e.target.checked }))
           }}
         />
+        <Interrupteur
+          libelle="Badge « Coup de cœur » (choix de l’équipe)"
+          checked={v.coupDeCoeur}
+          onChange={(e) => {
+            setV((x) => ({ ...x, coupDeCoeur: e.target.checked }))
+          }}
+        />
+        <p className="-mt-3 text-[13px] text-encre-3">
+          « Très demandée » s’affiche tout seul à partir de 3 demandes reçues en 90 jours.
+        </p>
         <Champ libelle="Description" erreur={erreurs['description']}>
           {(a) => (
             <ZoneTexte
